@@ -8,10 +8,13 @@ But this hasn't happened yet!*/
 
 import 'phaser';
 import config from './config/config';
+import MainScene from './scenes/Mainscene';
 
 class Game extends Phaser.Game {
     constructor() {
         super(config);
+        this.scene.add('MainScene', MainScene);
+        this.scene.start('MainScene')
     }
 }
 
