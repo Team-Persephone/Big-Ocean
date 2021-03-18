@@ -18,7 +18,7 @@ const createApp = () => {
     app.use(express.static(path.join(__dirname, '..', 'public')));
 
     app.use((req, res, next) => {
-        if(path.extname(req.path.length)) {
+        if(path.extname(req.path).length) {
             const err = new Error('Not found');
             err.status = 404;
             next(err)
@@ -26,11 +26,12 @@ const createApp = () => {
             next();
         }
     })
+
+    app.use('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'public/index.html'))
+    });
 }
 
-app.use('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public/index.html'))
-});
 
 app.use((err, req, res, next) => {
     console.error(err);
@@ -39,12 +40,12 @@ app.use((err, req, res, next) => {
 })
 
 const startListening = () => {
-    const server = app.listen(PORT, () => 
+    const server = app.listen(PORT, () =>
     console.log(`Serving swimmingly on port ${PORT}`)
     );
 
     const io = socketio(server);
-    require('./socket')(io);
+    // require('./socket')(io);
 }
 
 async function bootApp() {
@@ -53,7 +54,7 @@ async function bootApp() {
 }
 
 //this evaluates as true when this file is run directly from our commandline,
-//aka if we want to sun it on our browser (localhost) app will load and mount onto localhost, 
+//aka if we want to sun it on our browser (localhost) app will load and mount onto localhost,
 //if tirggered by test specs it will only creat app but not run on localhost again
 
 if (require.main === module) {
