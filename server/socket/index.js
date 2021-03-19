@@ -4,7 +4,7 @@ const activeGames = {
   // [urlCode]: {
   //   player: { 'name': [x, y], 'name': [x, y], 'name': [x, y]},
   //   score: { 'name': 0, 'name': 0, 'name': 0},
-  //   avatars: ['red', 'blue', 'green'],
+  //   avatars: {'name': 'scubaOne', 'name':'scubaTwo', 'name':'scubaThree'},
   //   level: 1,
   //   question: {
   //     q1: {position: [x, y], isResolved: false},
