@@ -14,41 +14,53 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
    updateMovement(cursors) {
     //move down
     if(cursors.down.isDown) {
-        if(this.facingUp){
-            this.setAngle(45)
-            this.facingUp = false;
+        if(this.facingUp && this.faceRight){
+                this.setAngle(45)
+                this.facingUp = false;
         }
-        this.setVelocityY(300);
+        else if(this.facingUp && !this.faceRight){
+                this.setAngle(-45)
+                this.facingUp = false;
+            }
+        this.anims.play('swimm', true)
+        this.setVelocityY(50);
     }
     //move up
     else if(cursors.up.isDown) {
-        if(!this.facingUp){
-            this.setAngle(-45)
-            this.facingUp = true;
-        }
-        this.setVelocityY(-300);
+        if(!this.facingUp && this.faceRight){
+                this.setAngle(-45)
+                this.facingUp = true;
+            }
+        else if(!this.faceUp && !this.faceRight){
+                this.setAngle(45)
+                this.facingUp = true;
+            }
+        this.anims.play('swimm', true)
+        this.setVelocityY(-50);
     }
     //move left
     else if(cursors.left.isDown) {
-        if(!this.faceRight){
-            this.flipY = !this.flipY;
-            this.faceRight = true;
+        
+        if(this.faceRight){
+            this.flipX = !this.flipX;
+            this.faceRight = false;
         }
-
-        this.setVelocityX(-300);
+        this.anims.play('swimm', true)
+        this.setVelocityX(-50);
     }
     //move right
     else if(cursors.right.isDown) {
-        if(this.faceRight){
-            this.flipY = !this.flipY;
-            this.faceRight = false;
+        if(!this.faceRight){
+            this.flipX = !this.flipX;
+            this.faceRight = true;
         }
-
-        this.setVelocityX(300);
+        this.anims.play('swimm', true)
+        this.setVelocityX(50);
     }
     else {
-        this.setVelocityY(0);
         this.setVelocityX(0);
+        this.setVelocityY(0);
+        this.angle = 0
     }
    }
 
