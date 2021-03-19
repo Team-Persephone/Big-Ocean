@@ -1,5 +1,7 @@
 import phaser from 'phaser';
 
+import Scuba from '../entities/Scuba'
+
 export default class MainScene extends Phaser.Scene {
   constructor(){
     super('MainScene')
@@ -7,6 +9,11 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.image('woman', '/assets/woman h1.png')
+    this.load.spritesheet('scubaOne', '/assets/scubaOne.png', {
+      frameWidth: 800,
+      frameHeight: 460,
+    });
+
     this.load.image('tiles', '/assets/ocean-tilesheet.png')
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json')
 
@@ -24,12 +31,16 @@ create(){
   map.createStaticLayer('rocklevel2', tileset)
   map.createStaticLayer('seeweed', tileset)
 
-  this.add.image(100, 200, 'woman')
+  this.woman = new Scuba (this, 100, 200, 'woman').setScale(.75)
+  this.scubaOne = new Scuba(this, 200, 200, 'scubaOne').setScale(.15)
+  this.scubaOne.setAngle(-45)
+  
 
+  this.cursors = this.input.keyboard.createCursorKeys();
 }
 
   update(){
-
+    this.scubaOne.update(this.cursors);
   }
 }
 
