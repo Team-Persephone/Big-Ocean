@@ -1,10 +1,19 @@
 import phaser from 'phaser';
 
-import Scuba from '../entities/Scuba'
+import Scuba from '../entities/Scuba';
 
 export default class MainScene extends Phaser.Scene {
-  constructor(){
-    super('MainScene')
+  constructor() {
+    super('MainScene');
+    this.state = {
+      key: '',
+      player: {},
+      score: {},
+      level: 1,
+      questions: [],
+      facts: [],
+      taskPositions: {},
+    };
   }
 
   preload() {
@@ -17,12 +26,10 @@ export default class MainScene extends Phaser.Scene {
       frameHeight: 420,
     });
 
-    this.load.image('tiles', '/assets/ocean-tilesheet.png')
-    this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json')
-
-  }
-
-  createAnimations() {
+    this.load.image('tiles', '/assets/ocean-tilesheet.png');
+    this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
+    
+    createAnimations() {
     this.anims.create({
       key: 'swimm',
       frames: this.anims.generateFrameNumbers('scubaGreen', { start: 5, end: 9}),
@@ -30,19 +37,18 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     });
   }
-
-  create(){
-  
+  create() {
     this.socket = io();
-    this.scene.launch('WaitingRoom', { socket: this.socket})
+    this.scene.launch('WaitingRoom', { socket: this.socket });
 
-    const map = this.make.tilemap({ key: 'tilemap' })
-    const tileset = map.addTilesetImage('ocean-scene', 'tiles')
 
-    map.createStaticLayer('water', tileset)
-    map.createStaticLayer('rocklevel1', tileset)
-    map.createStaticLayer('rocklevel2', tileset)
-    map.createStaticLayer('seeweed', tileset)
+    const map = this.make.tilemap({ key: 'tilemap' });
+    const tileset = map.addTilesetImage('ocean-scene', 'tiles');
+
+    map.createStaticLayer('water', tileset);
+    map.createStaticLayer('rocklevel1', tileset);
+    map.createStaticLayer('rocklevel2', tileset);
+    map.createStaticLayer('seeweed', tileset);
 
     this.scubaPink = new Scuba (this, 100, 300, 'scubaPink').setScale(.2)
     this.scubaGreen = new Scuba(this, 200, 200, 'scubaGreen').setScale(.2)
@@ -50,12 +56,31 @@ export default class MainScene extends Phaser.Scene {
     
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
+
+    this.socket.on('gameCreated', function (gameInfo) {
+      const {
+        key,
+        player,
+        score,
+        level,
+        questions,
+        facts,
+        taskPositions,
+      } = gameInfo;
+      this.state.key = key;
+      this.state.player = player;
+      this.state.score = score;
+      this.state.level = level;
+      this.state.questions = questions;
+      this.state.facts = facts;
+      this.state.taskPositions = taskPositions;
+    });
   }
 
-  update(){
+  update() {
     this.scubaGreen.update(this.cursors);
   }
-}
+  }
 
 //SET SCREEN SIZE
 // var windowWidth = window.innerWidth;

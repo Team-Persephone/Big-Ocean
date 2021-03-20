@@ -1,12 +1,15 @@
 const { PearlQuest, ShrimpFact, Level, GameRoom } = require('../db/models');
 
 const activeGames = {
+  // key
   // [urlCode]: {
-  //   player: { 'name': [x, y], 'name': [x, y], 'name': [x, y]},
+  //   player: { 'name': {position: [x, y], avatar: 'scubaOne' }, 'name': {position: [x, y], avatar: 'scubaTwo' }, 'name': {position: [x, y], avatar: 'scubaThree' }},
   //   score: { 'name': 0, 'name': 0, 'name': 0},
-  //   avatars: {'name': 'scubaOne', 'name':'scubaTwo', 'name':'scubaThree'},
+  //   avatars: ['scubaOne', 'scubaTwo','scubaThree'],
   //   level: 1,
-  //   question: {
+  //   questions: [],
+  //    facts: [],
+  //   taskPositions: {
   //     q1: {position: [x, y], isResolved: false},
   //     q2: {position: [x, y], isResolved: false},
   //     q3: {position: [x, y], isResolved: false},
@@ -26,5 +29,32 @@ module.exports = (io) => {
     console.log(
       `A socket connection to the server has been made: ${socket.id}`
     );
+    socket.on('createNewGame', async function () {
+      let key = codeGenerator();
+      while (Object.keys(activeGames).includes(key)) {
+        key = codeGenerator();
+      }
+      activeGames[key] = {
+        key,
+        player: { player1: { position: [100, 100] } },
+        score: { player1: 0 },
+        level: 1,
+        questions: [],
+        facts: [],
+        taskPositions: {},
+      };
+
+      const gameInfo = activeGames[key];
+      socket.emit('gameCreated', gameInfo);
+    });
   });
 };
+
+function codeGenerator() {
+  let code = '';
+  let chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  for (let i = 0; i < 5; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
