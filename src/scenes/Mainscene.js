@@ -59,6 +59,20 @@ export default class MainScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
     const state = this.state;
+
+    const addUrl = (gameKey) => {
+      const url = `http://localhost:3000/${gameKey}`
+      const link = this.add.text(100, 100, url)
+      link.setInteractive();
+
+      link.on('pointerdown', () => {
+        navigator.clipboard.writeText(url);
+        link.setText('copied!')
+        // let s = window.open(url, '_blank')
+        // if(s && s.focus) s.focus()
+        // else if (!s) window.location.href = url
+      })
+    }
     this.socket.on("gameCreated", function (gameInfo) {
       const {
         key,
@@ -69,7 +83,7 @@ export default class MainScene extends Phaser.Scene {
         facts,
         taskPositions,
       } = gameInfo;
-
+      console.log(gameInfo)
       state.key = key;
       state.player = player;
       state.score = score;
@@ -77,6 +91,8 @@ export default class MainScene extends Phaser.Scene {
       state.questions = questions;
       state.facts = facts;
       state.taskPositions = taskPositions;
+
+      addUrl(state.key)
     });
   }
 
