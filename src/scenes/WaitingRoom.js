@@ -15,6 +15,16 @@ export default class WaitingRoom extends Phaser.Scene {
   }
 
   create() {
+    //if there is a gameKey in the url, stop the waiting room because the code was already generated
+    if(window.location.pathname.length > 1){
+      //gets gameKey from url
+      const gameKey = window.location.pathname.slice(1)
+
+      this.socket.emit('joinGame', gameKey)
+      this.scene.stop('WaitingRoom')
+      return
+    }
+
     const createGameButton = this.add.text(600, 500, 'Create new game', {
       fontFamily: 'menlo',
     });
