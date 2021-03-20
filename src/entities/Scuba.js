@@ -4,7 +4,6 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
    constructor(scene, x, y, spriteKey) {
        super(scene, x, y, spriteKey);
 
-        this.facingUp = true
         this.faceRight = true
 
        this.scene = scene;
@@ -14,26 +13,22 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
    updateMovement(cursors) {
     //move down
     if(cursors.down.isDown) {
-        if(this.facingUp && this.faceRight){
+        if(this.faceRight){
                 this.setAngle(45)
-                this.facingUp = false;
         }
-        else if(this.facingUp && !this.faceRight){
+        else if(!this.faceRight){
                 this.setAngle(-45)
-                this.facingUp = false;
             }
         this.anims.play('swimm', true)
         this.setVelocityY(50);
     }
     //move up
     else if(cursors.up.isDown) {
-        if(!this.facingUp && this.faceRight){
+        if(this.faceRight){
                 this.setAngle(-45)
-                this.facingUp = true;
             }
-        else if(!this.faceUp && !this.faceRight){
+        else if(!this.faceRight){
                 this.setAngle(45)
-                this.facingUp = true;
             }
         this.anims.play('swimm', true)
         this.setVelocityY(-50);

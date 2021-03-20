@@ -8,8 +8,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('woman', '/assets/woman h1.png')
-    this.load.spritesheet('scubaOne', '/assets/scubaOne.png', {
+    this.load.spritesheet('scubaPink', '/assets/scuba_divers/scubaPink.png', {
+      frameWidth: 820,
+      frameHeight: 420,
+    })
+    this.load.spritesheet('scubaGreen', '/assets/scuba_divers/scubaGreen.png', {
       frameWidth: 820,
       frameHeight: 420,
     });
@@ -22,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
   createAnimations() {
     this.anims.create({
       key: 'swimm',
-      frames: this.anims.generateFrameNumbers('scubaOne', { start: 5, end: 9}),
+      frames: this.anims.generateFrameNumbers('scubaGreen', { start: 5, end: 9}),
       frameRate: 5,
       repeat: -1,
     });
@@ -41,16 +44,16 @@ export default class MainScene extends Phaser.Scene {
     map.createStaticLayer('rocklevel2', tileset)
     map.createStaticLayer('seeweed', tileset)
 
-    this.woman = new Scuba (this, 100, 200, 'woman').setScale(.75)
-    this.scubaOne = new Scuba(this, 200, 200, 'scubaOne').setScale(.2)
-    this.scubaOne.setAngle(-45);
+    this.scubaPink = new Scuba (this, 100, 300, 'scubaPink').setScale(.2)
+    this.scubaGreen = new Scuba(this, 200, 200, 'scubaGreen').setScale(.2)
+    this.scubaGreen.setAngle(-45);
     
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
   }
 
   update(){
-    this.scubaOne.update(this.cursors);
+    this.scubaGreen.update(this.cursors);
   }
 }
 
