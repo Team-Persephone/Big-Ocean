@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
-    const state = this.state;
+
 
     const addUrl = (gameKey) => {
       const url = `http://localhost:3000/${gameKey}`
@@ -73,27 +73,38 @@ export default class MainScene extends Phaser.Scene {
         // else if (!s) window.location.href = url
       })
     }
-    this.socket.on("gameCreated", function (gameInfo) {
+    this.socket.on("gameCreated", (gameInfo) => {
       const {
         key,
-        player,
+        players,
         score,
         level,
         questions,
         facts,
         taskPositions,
       } = gameInfo;
-      console.log(gameInfo)
-      state.key = key;
-      state.player = player;
-      state.score = score;
-      state.level = level;
-      state.questions = questions;
-      state.facts = facts;
-      state.taskPositions = taskPositions;
 
-      addUrl(state.key)
+      this.state.key = key;
+      this.state.players = players;
+      this.state.score = score;
+      this.state.level = level;
+      this.state.questions = questions;
+      this.state.facts = facts;
+      this.state.taskPositions = taskPositions;
+
+      addUrl(this.state.key)
     });
+
+    //letting everyone in the game know someone has joined
+    this.socket.on("joinedGame", (joinInfo) => {
+      const playerId = joinInfo.playerId
+      const gameKey = joinInfo.gameKey
+      console.log(this.state)
+      if(gameKey === this.state.key){
+        console.log('someone joined game')
+
+      }
+    })
   }
 
   update() {
