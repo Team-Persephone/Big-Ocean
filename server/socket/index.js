@@ -6,7 +6,9 @@ const activeGames = {
   //   score: { 'name': 0, 'name': 0, 'name': 0},
   //   avatars: ['scubaOne', 'scubaTwo','scubaThree'],
   //   level: 1,
-  //   question: {
+  //   questions: [],
+  //    facts: [],
+  //   taskPositions: {
   //     q1: {position: [x, y], isResolved: false},
   //     q2: {position: [x, y], isResolved: false},
   //     q3: {position: [x, y], isResolved: false},
@@ -31,6 +33,12 @@ module.exports = (io) => {
       while (Object.keys(activeGames).includes(key)) {
         key = codeGenerator();
       }
+      activeGames[key] = {
+        player: { player1: { position: [100, 100], avatar: 'scubaOne' } },
+        score: { player1: 0 },
+        level: 1,
+        question: {},
+      };
       socket.emit('gameCreated', key);
     });
   });

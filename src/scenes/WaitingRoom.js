@@ -10,7 +10,6 @@ export default class WaitingRoom extends Phaser.Scene {
   }
 
   preload() {
-    // this.load.html("createGame", "assets/text/createGameButton.html");
     this.load.image('tiles', '/assets/ocean-tilesheet.png');
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
   }
@@ -24,8 +23,7 @@ export default class WaitingRoom extends Phaser.Scene {
       createGameButton.setVisible(false);
       this.socket.emit('createNewGame');
       this.socket.on('gameCreated', function (key) {
-        window.location.replace(`/${key}`).preventDefault();
-        // this.scene.stop('WaitingRoom');
+        window.location.replace(`/${key}`);
       });
     });
   }
