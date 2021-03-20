@@ -4,7 +4,7 @@ export default {
     width: 800,
     height: 600,
     render: {
-        pixelArt: true,
+        // pixelArt: true,
     },
     scale: {
         parent: 'big-ocean',
