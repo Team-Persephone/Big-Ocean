@@ -47,6 +47,10 @@ module.exports = (io) => {
       const gameInfo = activeGames[key];
       socket.emit('gameCreated', gameInfo);
     });
+
+    socket.on('joinGame', async function (gameKey) {
+      socket.broadcast.emit('joinedGame', 'player joined game ' + gameKey)
+    })
   });
 };
 
