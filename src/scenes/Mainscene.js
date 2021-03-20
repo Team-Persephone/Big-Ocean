@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
-
+    const state = this.state;
     this.socket.on("gameCreated", function (gameInfo) {
       const {
         key,
@@ -69,13 +69,14 @@ export default class MainScene extends Phaser.Scene {
         facts,
         taskPositions,
       } = gameInfo;
-      this.state.key = key;
-      this.state.player = player;
-      this.state.score = score;
-      this.state.level = level;
-      this.state.questions = questions;
-      this.state.facts = facts;
-      this.state.taskPositions = taskPositions;
+
+      state.key = key;
+      state.player = player;
+      state.score = score;
+      state.level = level;
+      state.questions = questions;
+      state.facts = facts;
+      state.taskPositions = taskPositions;
     });
   }
 
