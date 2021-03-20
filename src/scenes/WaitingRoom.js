@@ -22,9 +22,7 @@ export default class WaitingRoom extends Phaser.Scene {
     createGameButton.on('pointerdown', () => {
       createGameButton.setVisible(false);
       this.socket.emit('createNewGame');
-      this.socket.on('gameCreated', function (key) {
-        window.location.replace(`/${key}`);
-      });
+      this.scene.stop('WaitingRoom');
     });
   }
 

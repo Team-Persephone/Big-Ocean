@@ -1,6 +1,7 @@
 const { PearlQuest, ShrimpFact, Level, GameRoom } = require('../db/models');
 
 const activeGames = {
+  // key
   // [urlCode]: {
   //   player: { 'name': {position: [x, y], avatar: 'scubaOne' }, 'name': {position: [x, y], avatar: 'scubaTwo' }, 'name': {position: [x, y], avatar: 'scubaThree' }},
   //   score: { 'name': 0, 'name': 0, 'name': 0},
@@ -34,12 +35,17 @@ module.exports = (io) => {
         key = codeGenerator();
       }
       activeGames[key] = {
-        player: { player1: { position: [100, 100], avatar: 'scubaOne' } },
+        key,
+        player: { player1: { position: [100, 100] } },
         score: { player1: 0 },
         level: 1,
-        question: {},
+        questions: [],
+        facts: [],
+        taskPositions: {},
       };
-      socket.emit('gameCreated', key);
+
+      const gameInfo = activeGames[key];
+      socket.emit('gameCreated', gameInfo);
     });
   });
 };
