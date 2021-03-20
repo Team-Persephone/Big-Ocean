@@ -99,11 +99,9 @@ export default class MainScene extends Phaser.Scene {
     this.socket.on("joinedGame", (joinInfo) => {
       const playerId = joinInfo.playerId
       const gameKey = joinInfo.gameKey
-      console.log(this.state)
-      if(gameKey === this.state.key){
-        console.log('someone joined game')
 
-      }
+      console.log(`${playerId} joined game`)
+
     })
   }
 

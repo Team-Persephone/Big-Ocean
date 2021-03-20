@@ -54,6 +54,8 @@ module.exports = (io) => {
     });
 
     socket.on("joinGame", async function (gameKey) {
+      const playerIds = Object.keys(activeGames[gameKey].players);
+
       //adding the correct information for active games object
       //socket id of the person joinging the game
       activeGames[gameKey].players[socket.id] = {
@@ -62,9 +64,12 @@ module.exports = (io) => {
       activeGames[gameKey].score[socket.id] = 0;
 
       //sends to everyone
-      socket.broadcast.emit("joinedGame", {
-        playerId: socket.id,
-        gameKey: gameKey,
+      playerIds.forEach((playerId) => {
+        io.to(playerId).emit("joinedGame", {
+          gameInfo: activeGames[gameKey],
+          playerId: socket.id,
+          gameKey: gameKey,
+        });
       });
     });
   });
