@@ -70,8 +70,12 @@ export default class MainScene extends Phaser.Scene {
     this.scubaGreen = new Scuba(this, 200, 200, "scubaGreen").setScale(0.2);
     this.scubaGreen.setAngle(-45);
 
+    //creating movement and navitagion for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
     this.createAnimations();
+    //scuba can't leave the screne
+    this.scubaGreen.body.collideWorldBounds = true;
+
 
 
     const addUrl = (gameKey) => {
