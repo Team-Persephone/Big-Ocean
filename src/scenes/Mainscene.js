@@ -17,6 +17,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
+
     this.load.spritesheet('scubaPink', '/assets/scuba_divers/scubaPink.png', {
       frameWidth: 820,
       frameHeight: 420,
@@ -25,10 +26,7 @@ export default class MainScene extends Phaser.Scene {
       frameWidth: 820,
       frameHeight: 420,
     });
-    this.load.spritesheet(
-      'scubaPurple',
-      '/assets/scuba_divers/scubaPurple.png',
-      {
+    this.load.spritesheet('scubaPurple','/assets/scuba_divers/scubaPurple.png', {
         frameWidth: 820,
         frameHeight: 420,
       }
@@ -39,6 +37,12 @@ export default class MainScene extends Phaser.Scene {
 
     //Audio
     this.load.audio('music', ['/audio/Waiting_Room.mp3']);
+  }
+  createPlayer (player) {
+    this[player.avatar] = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
+        this[player.avatar].setAngle(-45);
+        //scuba can't leave the screne
+        this[player.avatar].body.collideWorldBounds = true;
   }
 
   createAnimations(avatar) {
@@ -88,10 +92,11 @@ export default class MainScene extends Phaser.Scene {
         // else if (!s) window.location.href = url
       });
     };
-    this.socket.on('gameCreated', (gameInfo) => {
+    this.socket.on('gameCreated', ({gameInfo, socketId}) => {
       const {
         key,
         players,
+        avatars,
         score,
         level,
         questions,
@@ -101,6 +106,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.state.key = key;
       this.state.players = players;
+      this.state.avatars = avatars;
       this.state.score = score;
       this.state.level = level;
       this.state.questions = questions;
@@ -111,24 +117,22 @@ export default class MainScene extends Phaser.Scene {
 
       //Volume - add volume sound bar for display here
 
-      addUrl(this.state.key);
-      this.scubaGreen = new Scuba(this, 200, 200, 'scubaGreen').setScale(0.2);
-      this.scubaGreen.setAngle(-45);
-      //scuba can't leave the screne
-      this.scubaGreen.body.collideWorldBounds = true;
+      addUrl(key);
+      this.createPlayer(gameInfo.players[socketId])
     });
 
     //letting everyone in the game know someone has joined
-    this.socket.on('joinedGame', (newPlayer) => {
+    this.socket.on('joinedGame', ({newPlayer, allPlayers}) => {
       console.log('joinInfo -->', newPlayer);
-
-      let avatar = newPlayer.avatar;
-      console.log(avatar);
-
-      avatar = new Scuba(this, 100, 300, `${avatar}`).setScale(0.2);
-      avatar.setAngle(-45);
-      //scuba can't leave the screne
-      avatar.body.collideWorldBounds = true;
+      console.log('joinedGame allPlayers --->', allPlayers)
+      this.state.players = allPlayers;
+      for(let player in this.state.players) {
+        if(player.avatar !== newPlayer.avatar){
+       //here we want to add existing player to scene
+        } else {
+          this.createPlayer(newPlayer)
+        }
+      }
 
       // console.log(`${playerId} joined game`);
     });
@@ -137,22 +141,14 @@ export default class MainScene extends Phaser.Scene {
   update() {
     // console.log('obj.values -->', Object.values(this.state.players));
 
-    Object.values(this.state.players).forEach((player) => {
-      if (player.avatar === 'scubaGreen') {
-        this.scubaGreen.update(this.cursors);
-      }
-      if (player.avatar === 'scubaPink') {
-        this.scubaPink.update(this.cursors);
-      }
-      if (player.avatar === 'scubaPurple') {
-        this.scubaPurple.update(this.cursors);
-      }
-      //
-    });
+    //this.scubaGreen.update(this.cursors)
+    // Object.values(this.state.players).forEach( player => {
+    //   [player.avatar].update(this.cursors);
+    // })
+    
 
     // socket.emit('playerMoved')...
 
-    // this.scubaGreen.update(this.cursors);
   }
 }
 
