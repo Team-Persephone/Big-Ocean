@@ -28,7 +28,13 @@ export default class MainScene extends Phaser.Scene {
 
     this.load.image("tiles", "/assets/ocean-tilesheet.png");
     this.load.tilemapTiledJSON("tilemap", "/assets/big-ocean-level1.json");
+  
+    //Audio
+    this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
   }
+
+
+
   createAnimations() {
     this.anims.create({
       key: "swimm",
@@ -40,7 +46,15 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     });
   }
+
   create() {
+
+    this.music = this.sound.add("music", {
+      volume: 0.5,
+      loop: true,
+    });
+    this.music.play();
+
     this.socket = io();
     this.scene.launch("WaitingRoom", { socket: this.socket });
 
@@ -91,6 +105,9 @@ export default class MainScene extends Phaser.Scene {
       this.state.questions = questions;
       this.state.facts = facts;
       this.state.taskPositions = taskPositions;
+
+      //Volume - add volume sound bar for display here
+
 
       addUrl(this.state.key)
     });
