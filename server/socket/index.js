@@ -75,21 +75,15 @@ module.exports = (io) => {
         newPlayer: gameInfo.players[socket.id],
         numPlayers: gameInfo.numPlayers,
       })
-      // const playerIds = Object.keys(activeGames[gameKey].players);
-      // console.log(playerIds);
-
-      // const newPlayer = activeGames[gameKey].players[socket.id];
-      // console.log('this is newPlayer--->', newPlayer)
-      // // const gameInfo = activeGames[gameKey];
-      // const allPlayers = activeGames[gameKey].players
-      // console.log('this is allPlayers-->', allPlayers)
-      // //adding the correct information for active games object
-      // //socket id of the person joinging the game
-      // playerIds.forEach( playerId => {
-      //   //sends to everyone
-      //   io.to(playerId).emit('joinedGame',{ newPlayer, allPlayers});
-      // })
     });
+    
+    //Player Movement
+    socket.on('playerMovement', async function (data) { 
+      const { x, y, key } = data
+      activeGames[key].players[socket.id].position.x = x;
+      activeGames[key].players[socket.id].position.y = y;
+      socket.to(key).emit('friendMoved', activeGames[key].players[socket.id]);
+    })
   });
 };
 
