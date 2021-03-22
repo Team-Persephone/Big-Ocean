@@ -80,7 +80,7 @@ export default class MainScene extends Phaser.Scene {
     //launch the socket connection
     this.socket = io();
     //connect the socket connection to the WaitingRoom
-    this.scene.launch('WaitingRoom', { socket: this.socket });
+    this.scene.launch('IntroScene', { socket: this.socket });
     scene.playerFriends = this.physics.add.group(); //---> WHAT DOES THIS AND IS THIS CORRECTLY IMPLIED FOR OUR PROJECT?!
     // create scene from tilemap
     const map = this.make.tilemap({ key: 'tilemap' });
