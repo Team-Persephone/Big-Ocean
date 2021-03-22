@@ -9,12 +9,14 @@ But this hasn't happened yet!*/
 import 'phaser';
 import config from './config/config';
 import MainScene from './scenes/Mainscene';
+import IntroScene from './scenes/IntroScene';
 import WaitingRoom from './scenes/WaitingRoom';
 
 class Game extends Phaser.Game {
   constructor() {
     super(config);
     this.scene.add('MainScene', MainScene);
+    this.scene.add('IntroScene', IntroScene);
     this.scene.add('WaitingRoom', WaitingRoom);
     this.scene.start('MainScene');
   }

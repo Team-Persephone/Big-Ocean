@@ -47,7 +47,7 @@ module.exports = (io) => {
     });
 
     //socket listen on plaery joinGame
-    socket.on('joinGame', async function (gameKey) {
+    socket.on('joinWaitingRoom', async function (gameKey) {
       socket.join(gameKey); //WHAT IS THIS DOING??
       console.log('this is socket.id', socket.id)
       const gameInfo = activeGames[gameKey];

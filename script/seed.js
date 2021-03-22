@@ -110,7 +110,7 @@ async function seed() {
       levelId: 3,
     }),
     Task.create({
-      question: `What is the time complexity of the following code:
+      question: `What is the time complexity of the following function:
       const findThirdIndex = arr => {
         const thirdIndex = n[2]
         return thirdIndex
@@ -120,7 +120,7 @@ async function seed() {
       levelId: 4,
     }),
     Task.create({
-      question: `What is the time complexity of the following code:
+      question: `What is the time complexity of the following function:
       const findIndex = (items, match) => {
         for (let i = 0; i < items.length; i++)
           if (items[i] === match) {
@@ -133,7 +133,7 @@ async function seed() {
       levelId: 4,
     }),
     Task.create({
-      question: `What is the time complexity of the following code:
+      question: `What is the time complexity of the following function:
       const buildSquareMatrix = items => {
         let matrix = [];
         for (let i = 0; i < items.length; i++){
@@ -148,7 +148,7 @@ async function seed() {
       levelId: 4,
     }),
     Task.create({
-      question: `What is the time complexity of the following code:
+      question: `What is the time complexity of the following function:
       const countOperations = num => {
         let operations = 0
         let i = 1
@@ -163,7 +163,7 @@ async function seed() {
       levelId: 4,
     }),
     Task.create({
-      question: `What is the time complexity of the following code:
+      question: `What is the time complexity of the following function:
       const logEverythingTwice = arr => {
         for (let i = 0; i < items.length; i++){
           console.log(items[i])
@@ -212,15 +212,47 @@ async function seed() {
       levelId: 5,
     }),
     Task.create({
-      question: '',
-      options: ['O(n)', 'O(n^2)', 'O(log n)', 'O(1)'],
-      answer: 'O(n)',
+      question: `What is the time complexity of the following function:
+      const sortedStrings = arr => {
+        for (let i = 0; i < arr.length; i++){
+          arr[i].sort()
+        }
+      }
+      `,
+      options: ['O(n)', 'O(n^2)', 'O(n * s log s)', 'O(s log s)'],
+      answer: 'O(n * s log s)',
       levelId: 5,
     }),
     Task.create({
-      question: '',
-      options: ['O(n)', 'O(n^2)', 'O(log n)', 'O(n^n)'],
-      answer: 'O(n)',
+      question: `What are the time complexities of the following functions:
+      const count 1 = n => {
+        let count = 0;
+        for (let i = 0; i < n; i++){
+            count += 1;
+        }
+        for (let i = 0; i < 5*n; i++){
+            count += 1;
+        }
+        return count;
+    }
+
+      const count2 = n => {
+        let count =0;
+        for (let i = 0; i < n; i++){
+            count += 1;
+            for (let i = 0; i < 5*n; i++){
+                count += 1;
+            }
+        }
+        return count;
+    }`,
+      options: [
+        'count1: O(n) count2: O(n^2)',
+        'count1: O(n^2) count2: O(n^2)',
+        'count1: O(2n) count2: O(10n)',
+        'count1: O(n * n) count2: O(n^2)',
+      ],
+      answer: 'count1: O(n) count2: O(n^2)',
       levelId: 5,
     }),
   ]);
