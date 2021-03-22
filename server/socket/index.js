@@ -1,27 +1,22 @@
 const { PearlQuest, ShrimpFact, Level, GameRoom } = require('../db/models');
 
-const activeGames = {
-  // key
-  // [urlCode]: {
-  //   players: { 'name': {position: [x, y], avatar: 'scubaGreen' }, 'name': {position: [x, y], avatar: 'scubaPink' }, 'name': {position: [x, y], avatar: 'scubaPurple' }},
-  //   score: { 'name': 0, 'name': 0, 'name': 0},
-  //   level: 1,
-  //   questions: [],
-  //    facts: [],
-  //   taskPositions: {
-  //     q1: {position: [x, y], isResolved: false},
-  //     q2: {position: [x, y], isResolved: false},
-  //     q3: {position: [x, y], isResolved: false},
-  //     q4: {position: [x, y], isResolved: false},
-  //     q5: {position: [x, y], isResolved: false},
-  //     f1: {position: [x, y], isResolved: false},
-  //     f2: {position: [x, y], isResolved: false},
-  //     f3: {position: [x, y], isResolved: false},
-  //     f4: {position: [x, y], isResolved: false},
-  //     f5: {position: [x, y], isResolved: false},
-  //   },
-  // },
-};
+const activeGames = {};
+
+//INSIDE ACTIVEGAMES:
+/* key: {
+    players: {
+    socket.id: {
+      position,
+      playerId
+      }
+    },
+    numPlayers: 0
+    score: { socket.id: playerScore = 0},
+    level: 1,
+    questions: [],
+    facts: []
+    // 
+  }*/ 
 
 
 module.exports = (io) => {
@@ -30,55 +25,70 @@ module.exports = (io) => {
       `A socket connection to the server has been made: ${socket.id}`
       );
       
-      socket.on('createNewGame', async function () {
+      //socket listen on createGame
+      socket.on('createGame', async function () {
         let key = codeGenerator();
         while (Object.keys(activeGames).includes(key)) {
           key = codeGenerator();
         }
         activeGames[key] = {
           key,
-          players: {
-            //socket id of the person creating the game
-            [socket.id]: {
-              position: [100, 100],
-              avatar: 'scubaGreen',
-            },
-          },
-        avatars: ['scubaPink', 'scubaPurple'],
-        score: { [socket.id]: 0 },
-        level: 1,
-        questions: [],
-        facts: [],
-        taskPositions: {},
-      };
+          players: {},
+          numPlayers: 0,
+          avatars: ['scubaGreen', 'scubaPink', 'scubaPurple'],
+          score: {},
+          level: 1,
+          questions: [],
+          facts: [],
+          // taskPositions: {},
+        };
 
-      const gameInfo = activeGames[key];
-      socket.emit('gameCreated',{ gameInfo, socketId: socket.id });
+      socket.emit('gameCreated', key);
     });
 
+    //socket listen on plaery joinGame
     socket.on('joinGame', async function (gameKey) {
-
+      socket.join(gameKey); //WHAT IS THIS DOING??
+      console.log('this is socket.id', socket.id)
+      const gameInfo = activeGames[gameKey];
       const newAvatar = activeGames[gameKey].avatars.pop();
       activeGames[gameKey].players[socket.id] = {
-        position: [100, 100],
+        position: {
+          x: 100,
+          y: 100
+        },
         avatar: newAvatar,
+        playerId: socket.id
       };
-      activeGames[gameKey].score[socket.id] = 0;
 
-      const playerIds = Object.keys(activeGames[gameKey].players);
-      console.log(playerIds);
-
-      const newPlayer = activeGames[gameKey].players[socket.id];
-      console.log('this is newPlayer--->', newPlayer)
-      // const gameInfo = activeGames[gameKey];
-      const allPlayers = activeGames[gameKey].players
-      console.log('this is allPlayers-->', allPlayers)
-      //adding the correct information for active games object
-      //socket id of the person joinging the game
-      playerIds.forEach( playerId => {
-        //sends to everyone
-        io.to(playerId).emit('joinedGame',{ newPlayer, allPlayers});
+      gameInfo.numPlayer = Object.keys(gameInfo.players).length
+      gameInfo.score[socket.id] = 0;
+      //send state info
+      socket.emit('setState', gameInfo)
+      //send current players info
+      socket.emit('currentPlayers', {
+        players: gameInfo.players,
+        numPlayers: gameInfo.numPlayers
+      });
+      //send new player info
+      socket.to(gameKey).emit('newPlayer', {
+        newPlayer: gameInfo.players[socket.id],
+        numPlayers: gameInfo.numPlayers,
       })
+      // const playerIds = Object.keys(activeGames[gameKey].players);
+      // console.log(playerIds);
+
+      // const newPlayer = activeGames[gameKey].players[socket.id];
+      // console.log('this is newPlayer--->', newPlayer)
+      // // const gameInfo = activeGames[gameKey];
+      // const allPlayers = activeGames[gameKey].players
+      // console.log('this is allPlayers-->', allPlayers)
+      // //adding the correct information for active games object
+      // //socket id of the person joinging the game
+      // playerIds.forEach( playerId => {
+      //   //sends to everyone
+      //   io.to(playerId).emit('joinedGame',{ newPlayer, allPlayers});
+      // })
     });
   });
 };

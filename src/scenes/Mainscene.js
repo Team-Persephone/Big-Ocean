@@ -5,19 +5,14 @@ import Scuba from '../entities/Scuba';
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super('MainScene');
-    this.state = {
-      key: '',
-      players: {},
-      score: {},
-      level: 1,
-      questions: [],
-      facts: [],
-      taskPositions: {},
-    };
+    //state will be used to hold socket info
+    this.state = {}
   }
 
+  // THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
   preload() {
 
+    // all avatars are loaded
     this.load.spritesheet('scubaPink', '/assets/scuba_divers/scubaPink.png', {
       frameWidth: 820,
       frameHeight: 420,
@@ -31,20 +26,37 @@ export default class MainScene extends Phaser.Scene {
         frameHeight: 420,
       }
     );
-
+    
+    // our background scene is loaded
     this.load.image('tiles', '/assets/ocean-tilesheet.png');
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
 
     //Audio
     this.load.audio('music', ['/audio/Waiting_Room.mp3']);
   }
-  createPlayer (player) {
-    this[player.avatar] = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
-        this[player.avatar].setAngle(-45);
-        //scuba can't leave the screne
-        this[player.avatar].body.collideWorldBounds = true;
+
+  //helper function to create avatar for player
+  createPlayer (scene, player) {
+    scene.scubaDiver = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
+    scene.scubaDiver.setAngle(-45);
+    //scuba can't leave the screne
+    scene.scubaDiver.body.collideWorldBounds = true;
+        // switch(player.avatar){
+        //   case 'scubaGreen':
+        //     const scubaGreen = newAvatar
+        //     return scubaGreen
+        //   case 'scubaPink':
+        //     const scubaPink = newAvatar
+        //     return scubaPink
+        //   case 'scubaPurple':
+        //     const scubaPurple = newAvatar
+        //     return scubaPurple
+        //   default:
+        //     console.log('no avatar created')
+        // }
   }
 
+  // helper function to add animation to avatars
   createAnimations(avatar) {
     this.anims.create({
       key: 'swim',
@@ -57,16 +69,33 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
+  //helper function to add other players to scene
+  addFriends(scene, player) {
+    const playerFriend = scene.add.sprite(
+      player.position.x + 40,
+      player.position.y + 40,
+      `${player.avatar}`
+    ).setScale(0.2);
+    playerFriend.playerId = player.playerId;
+    scene.playerFriends.add(playerFriend);
+  }
+
+ // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
   create() {
+    const scene = this;
+
     this.music = this.sound.add('music', {
       volume: 0.5,
       loop: true,
     });
     this.music.play();
 
+    //launch the socket connection
     this.socket = io();
+    //connect the socket connection to the WaitingRoom
     this.scene.launch('WaitingRoom', { socket: this.socket });
-
+    scene.playerFriends = this.physics.add.group(); //---> WHAT DOES THIS AND IS THIS CORRECTLY IMPLIED FOR OUR PROJECT?!
+    // create scene from tilemap
     const map = this.make.tilemap({ key: 'tilemap' });
     const tileset = map.addTilesetImage('ocean-scene', 'tiles');
 
@@ -75,78 +104,50 @@ export default class MainScene extends Phaser.Scene {
     map.createStaticLayer('rocklevel2', tileset);
     map.createStaticLayer('seeweed', tileset);
 
-    //creating movement and navitagion for scuba divers
+    //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
     // this.createAnimations();
 
-    const addUrl = (gameKey) => {
-      const url = `http://localhost:3000/${gameKey}`;
-      const link = this.add.text(100, 100, url);
-      link.setInteractive();
+    //Volume - add volume sound bar for display here
 
-      link.on('pointerdown', () => {
-        navigator.clipboard.writeText(url);
-        link.setText('copied!');
-        // let s = window.open(url, '_blank')
-        // if(s && s.focus) s.focus()
-        // else if (!s) window.location.href = url
-      });
-    };
-    this.socket.on('gameCreated', ({gameInfo, socketId}) => {
-      const {
-        key,
-        players,
-        avatars,
-        score,
-        level,
-        questions,
-        facts,
-        taskPositions,
-      } = gameInfo;
+    // this.createPlayer(gameInfo.players[socketId])
+    this.socket.on('setState', function(gameInfo){
+      const { key, players, avatars, score, level, questions, facts } = gameInfo;
+      //this.physics.resume() ----> WHAT DOES THIS??
 
-      this.state.key = key;
-      this.state.players = players;
-      this.state.avatars = avatars;
-      this.state.score = score;
-      this.state.level = level;
-      this.state.questions = questions;
-      this.state.facts = facts;
-      this.state.taskPositions = taskPositions;
+      //set state to gameInfo
+      scene.state.key = key;
+      scene.state.players = players;
+      scene.state.avatars = avatars;
+      scene.state.score = score;
+      scene.state.level = level;
+      scene.state.questions = questions;
+      scene.state.facts = facts;
+    })
 
-      console.log(this.state);
-
-      //Volume - add volume sound bar for display here
-
-      addUrl(key);
-      this.createPlayer(gameInfo.players[socketId])
-    });
-
-    //letting everyone in the game know someone has joined
-    this.socket.on('joinedGame', ({newPlayer, allPlayers}) => {
-      console.log('joinInfo -->', newPlayer);
-      console.log('joinedGame allPlayers --->', allPlayers)
-      this.state.players = allPlayers;
-      for(let player in this.state.players) {
-        if(this.state.players[player].avatar !== newPlayer.avatar){
-       //here we want to add existing player to scene
-        console.log('this is another player', this.state.players[player].avatar)
+    this.socket.on('currentPlayers', function({ players, numPlayers }) {
+      scene.state.numPlayers = numPlayers;
+      Object.keys(players).forEach( function(id){
+        if(players[id].playerId === scene.socket.id){
+          scene.createPlayer(scene, players[id])
         } else {
-          this.createPlayer(newPlayer)
+          scene.addFriends(scene, players[id]);
         }
-      }
-
-      // console.log(`${playerId} joined game`);
+      });
     });
+    //listen to add new player to scene
+    this.socket.on('newPlayer', function({ newPlayer, numPlayers }) {
+      scene.addFriends(scene, newPlayer);
+      scene.state.numPlayers = numPlayers;
+    })
+
   }
 
   update() {
-    // console.log('obj.values -->', Object.values(this.state.players));
-    //this.scubaGreen.update(this.cursors)
-    // Object.values(this.state.players).forEach( player => {
-    //   [player.avatar].update(this.cursors);
-    // })
-    
-
+    //update the movement
+    if(this.scubaDiver) {
+      this.scubaDiver.update(this.cursors);
+    }
     // socket.emit('playerMoved')...
 
   }
