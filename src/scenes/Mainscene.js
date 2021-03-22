@@ -38,6 +38,7 @@ export default class MainScene extends Phaser.Scene {
   createPlayer (scene, player) {
     scene.scubaDiver = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
     scene.scubaDiver.setAngle(-45);
+    //scene.scubaDiver.rotation(-45);
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
     this.createAnimations(player.avatar)
@@ -130,13 +131,18 @@ export default class MainScene extends Phaser.Scene {
     
     this.socket.on("friendMoved", function (friend) {
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
-//        console.log("friend--->", friend, 'playerFriend--->', playerFriend); 
+       console.log("friend--->", friend, 'playerFriend--->', playerFriend); 
 				if (friend.playerId === playerFriend.playerId) { 
-					const previousX = playerFriend.x; //not reaching here
+					const previousX = playerFriend.x; 
 					const previousY = playerFriend.y;
-					playerFriend.setPosition(friend.position.x, friend.position.y);
+          const previousAngle = playerFriend.angle;
+          //const previousFaceRight = playerFriend.faceRight;
+        //  console.log(previousFaceRight, "previousFaceRight")
+					playerFriend.setPosition(friend.position.x, friend.position.y, friend.position.angle, friend.position.faceRight);
 					playerFriend.x = friend.position.x;
 					playerFriend.y = friend.position.y;
+          playerFriend.angle = friend.position.angle;
+         // playerFriend.faceRight = friend.position.faceRight;
 				}
 			});
 		});

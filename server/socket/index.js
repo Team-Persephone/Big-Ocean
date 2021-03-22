@@ -55,7 +55,9 @@ module.exports = (io) => {
       activeGames[gameKey].players[socket.id] = {
         position: {
           x: 100,
-          y: 100
+          y: 100,
+          angle: 0,
+       //   faceRight: false,
         },
         avatar: newAvatar,
         playerId: socket.id
@@ -79,9 +81,11 @@ module.exports = (io) => {
     
     //Player Movement
     socket.on('playerMovement', async function (data) { 
-      const { x, y, key } = data
+      const { x, y, angle, faceRight, key } = data
       activeGames[key].players[socket.id].position.x = x;
       activeGames[key].players[socket.id].position.y = y;
+      activeGames[key].players[socket.id].position.angle = angle;
+    //  activeGames[key].players[socket.id].position.faceRight = faceRight;
       socket.to(key).emit('friendMoved', activeGames[key].players[socket.id]);
     })
   });
