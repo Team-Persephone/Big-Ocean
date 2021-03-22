@@ -26,8 +26,6 @@ export default class WaitingRoom extends Phaser.Scene {
       const url = `http://localhost:3000/${gameKey}`;
       const link = scene.add.text(100, 100, url);
       link.setInteractive();
-      console.log('this is the url', url)
-      console.log('here is scene', scene)
       link.on('pointerdown', () => {
         navigator.clipboard.writeText(url);
         link.setText('copied!');
