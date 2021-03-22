@@ -127,7 +127,19 @@ export default class MainScene extends Phaser.Scene {
       scene.addFriends(scene, newPlayer);
       scene.state.numPlayers = numPlayers;
     })
-
+    
+    this.socket.on("friendMoved", function (friend) {
+			scene.playerFriends.getChildren().forEach(function (playerFriend) {
+//        console.log("friend--->", friend, 'playerFriend--->', playerFriend); 
+				if (friend.playerId === playerFriend.playerId) { 
+					const previousX = playerFriend.x; //not reaching here
+					const previousY = playerFriend.y;
+					playerFriend.setPosition(friend.position.x, friend.position.y);
+					playerFriend.x = friend.position.x;
+					playerFriend.y = friend.position.y;
+				}
+			});
+		});
   }
 
   update() {

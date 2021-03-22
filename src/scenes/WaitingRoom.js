@@ -16,8 +16,6 @@ export default class WaitingRoom extends Phaser.Scene {
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
   }
 
-  
-  
   // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
   create() {
     const scene = this
@@ -70,7 +68,10 @@ export default class WaitingRoom extends Phaser.Scene {
         
 }
   
-  update() {}
+  update() {
+
+
+  }
 }
 
 // server: when socket connection is made, (aka, when someone lands on the intro) write a function to create a unique code and emit that code back to the frontend
