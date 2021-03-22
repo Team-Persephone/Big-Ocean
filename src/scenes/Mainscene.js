@@ -127,8 +127,9 @@ export default class MainScene extends Phaser.Scene {
       console.log('joinedGame allPlayers --->', allPlayers)
       this.state.players = allPlayers;
       for(let player in this.state.players) {
-        if(player.avatar !== newPlayer.avatar){
+        if(this.state.players[player].avatar !== newPlayer.avatar){
        //here we want to add existing player to scene
+        console.log('this is another player', this.state.players[player].avatar)
         } else {
           this.createPlayer(newPlayer)
         }
@@ -140,7 +141,6 @@ export default class MainScene extends Phaser.Scene {
 
   update() {
     // console.log('obj.values -->', Object.values(this.state.players));
-
     //this.scubaGreen.update(this.cursors)
     // Object.values(this.state.players).forEach( player => {
     //   [player.avatar].update(this.cursors);
