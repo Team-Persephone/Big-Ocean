@@ -1,5 +1,4 @@
-import phaser from 'phaser';
-
+import Phaser from 'phaser';
 import Scuba from '../entities/Scuba';
 
 export default class MainScene extends Phaser.Scene {
@@ -41,19 +40,7 @@ export default class MainScene extends Phaser.Scene {
     scene.scubaDiver.setAngle(-45);
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
-        // switch(player.avatar){
-        //   case 'scubaGreen':
-        //     const scubaGreen = newAvatar
-        //     return scubaGreen
-        //   case 'scubaPink':
-        //     const scubaPink = newAvatar
-        //     return scubaPink
-        //   case 'scubaPurple':
-        //     const scubaPurple = newAvatar
-        //     return scubaPurple
-        //   default:
-        //     console.log('no avatar created')
-        // }
+    this.createAnimations(player.avatar)
   }
 
   // helper function to add animation to avatars
