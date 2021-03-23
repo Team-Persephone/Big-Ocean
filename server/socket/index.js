@@ -1,3 +1,4 @@
+
 const { PearlQuest, ShrimpFact, Level } = require('../db/models');
 
 const activeGames = {};
@@ -23,7 +24,7 @@ const activeGames = {};
   }*/
 
 module.exports = (io) => {
-  io.on('connection', async (socket) => {
+  io.on("connection", async (socket) => {
     console.log(
       `A socket connection to the server has been made: ${socket.id}`
     );
@@ -63,22 +64,25 @@ module.exports = (io) => {
       });
 
       console.log(questionsObj);
-
-      socket.emit('gameCreated', key);
+      socket.emit("gameCreated", key);
     });
 
     //socket listen on plaery joinGame
+
     socket.on('joinWaitingRoom', async function (gameKey) {
       socket.join(gameKey); //WHAT IS THIS DOING??
       console.log('this is socket.id', socket.id);
+
       const gameInfo = activeGames[gameKey];
       const newAvatar = activeGames[gameKey].avatars.pop();
       activeGames[gameKey].players[socket.id] = {
         position: {
           x: 100,
           y: 100,
+
           angle: 0,
           //   faceRight: false,
+
         },
         avatar: newAvatar,
         playerId: socket.id,
@@ -87,17 +91,28 @@ module.exports = (io) => {
       gameInfo.numPlayer = Object.keys(gameInfo.players).length;
       gameInfo.score[socket.id] = 0;
       //send state info
-      socket.emit('setState', gameInfo);
+      
+      socket.emit("setState", gameInfo);
+
       //send current players info
-      socket.emit('currentPlayers', {
+      socket.emit("currentPlayers", {
         players: gameInfo.players,
         numPlayers: gameInfo.numPlayers,
       });
       //send new player info
-      socket.to(gameKey).emit('newPlayer', {
+      socket.to(gameKey).emit("newPlayer", {
         newPlayer: gameInfo.players[socket.id],
         numPlayers: gameInfo.numPlayers,
       });
+
+    socket.on("submitMemo", async function (key, username, message){
+      console.log("key", key);
+      console.log("userColor", username);
+      console.log("message", message);
+      socket.to(key).emit("broadcastMessage", {
+        username: username,
+        message: message
+      })
     });
 
     //Player Movement
@@ -108,13 +123,15 @@ module.exports = (io) => {
       activeGames[key].players[socket.id].position.angle = angle;
       activeGames[key].players[socket.id].position.faceRight = faceRight;
       socket.to(key).emit('friendMoved', activeGames[key].players[socket.id]);
+
     });
   });
 };
 
+
 function codeGenerator() {
-  let code = '';
-  let chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  let code = "";
+  let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
   for (let i = 0; i < 5; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }

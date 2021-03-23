@@ -25,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
         frameHeight: 420,
       }
     );
-    
+
     // our background scene is loaded
     this.load.image('tiles', '/assets/ocean-tilesheet.png');
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
@@ -41,7 +41,9 @@ export default class MainScene extends Phaser.Scene {
     scene.scubaDiver.faceRight = true;
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
+
     this.createAnimations(player.avatar)
+
   }
 
   // helper function to add animation to avatars
@@ -69,7 +71,7 @@ export default class MainScene extends Phaser.Scene {
     scene.playerFriends.add(playerFriend);
   }
 
- // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
+ // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
   create() {
     const scene = this;
 
@@ -82,7 +84,11 @@ export default class MainScene extends Phaser.Scene {
     //launch the socket connection
     this.socket = io();
     //connect the socket connection to the WaitingRoom
+
+    this.scene.launch('WaitingRoom', { socket: this.socket });
+    this.scene.launch('ChatScene', { socket: this.socket });
     this.scene.launch('IntroScene', { socket: this.socket });
+
     scene.playerFriends = this.physics.add.group(); //---> WHAT DOES THIS AND IS THIS CORRECTLY IMPLIED FOR OUR PROJECT?!
     // create scene from tilemap
     const map = this.make.tilemap({ key: 'tilemap' });
@@ -92,6 +98,7 @@ export default class MainScene extends Phaser.Scene {
     map.createStaticLayer('rocklevel1', tileset);
     map.createStaticLayer('rocklevel2', tileset);
     map.createStaticLayer('seeweed', tileset);
+
 
     //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -127,7 +134,10 @@ export default class MainScene extends Phaser.Scene {
     this.socket.on('newPlayer', function({ newPlayer, numPlayers }) {
       scene.addFriends(scene, newPlayer);
       scene.state.numPlayers = numPlayers;
+
+
     })
+ }
     
     this.socket.on("friendMoved", function (friend) {
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
@@ -156,17 +166,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    const scene = this;
     //update the movement
     if(this.scubaDiver) {
       this.scubaDiver.update(this.cursors);
     }
-    // socket.emit('playerMoved')...
 
   }
 }
-
-//SET SCREEN SIZE
-// var windowWidth = window.innerWidth;
-// var widnowHeight = window.innerHeight;
-// this.bg = this.add.image(windowWidth / 2, widnowHeight / 2, 'sky');
-// this.bg.setDisplaySize(windowWidth, widnowHeight);
