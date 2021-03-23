@@ -95,11 +95,11 @@ module.exports = (io) => {
     //   io.in(key).emit('broadcastMessage', username, message);
     // };
 
-    socket.on("submitMemo", (key, username, message) => {
+    socket.on("submitMemo", async function (key, username, message){
       console.log("key", key);
       console.log("userColor", username);
       console.log("message", message);
-      socket.emit("broadcastMessage", {
+      socket.to(key).emit("broadcastMessage", {
         username: username,
         message: message
       })
