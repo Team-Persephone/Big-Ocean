@@ -49,7 +49,6 @@ module.exports = (io) => {
     //socket listen on plaery joinGame
     socket.on('joinWaitingRoom', async function (gameKey) {
       socket.join(gameKey); //WHAT IS THIS DOING??
-      console.log('this is socket.id', socket.id)
       const gameInfo = activeGames[gameKey];
       const newAvatar = activeGames[gameKey].avatars.pop();
       activeGames[gameKey].players[socket.id] = {
@@ -62,6 +61,10 @@ module.exports = (io) => {
         avatar: newAvatar,
         playerId: socket.id
       };
+
+      socket.on('inWaitingRoom', async function () {
+        
+      })
 
       gameInfo.numPlayer = Object.keys(gameInfo.players).length
       gameInfo.score[socket.id] = 0;
