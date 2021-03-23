@@ -106,7 +106,7 @@ module.exports = (io) => {
       activeGames[key].players[socket.id].position.x = x;
       activeGames[key].players[socket.id].position.y = y;
       activeGames[key].players[socket.id].position.angle = angle;
-      //  activeGames[key].players[socket.id].position.faceRight = faceRight;
+      activeGames[key].players[socket.id].position.faceRight = faceRight;
       socket.to(key).emit('friendMoved', activeGames[key].players[socket.id]);
     });
   });
