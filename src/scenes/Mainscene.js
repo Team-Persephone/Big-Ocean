@@ -38,7 +38,7 @@ export default class MainScene extends Phaser.Scene {
   createPlayer (scene, player) {
     scene.scubaDiver = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
     scene.scubaDiver.setAngle(-45);
-    //scene.scubaDiver.rotation(-45);
+    scene.scubaDiver.faceRight = true;
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
     this.createAnimations(player.avatar)
@@ -64,6 +64,7 @@ export default class MainScene extends Phaser.Scene {
       player.position.y + 40,
       `${player.avatar}`
     ).setScale(0.2);
+    playerFriend.faceRight = true;
     playerFriend.playerId = player.playerId;
     scene.playerFriends.add(playerFriend);
   }
@@ -94,7 +95,6 @@ export default class MainScene extends Phaser.Scene {
 
     //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
-    // this.createAnimations();
 
     //Volume - add volume sound bar for display here
 
@@ -131,18 +131,27 @@ export default class MainScene extends Phaser.Scene {
     
     this.socket.on("friendMoved", function (friend) {
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
-       console.log("friend--->", friend, 'playerFriend--->', playerFriend); 
 				if (friend.playerId === playerFriend.playerId) { 
-					const previousX = playerFriend.x; 
+          const previousX = playerFriend.x; 
 					const previousY = playerFriend.y;
           const previousAngle = playerFriend.angle;
-          //const previousFaceRight = playerFriend.faceRight;
-        //  console.log(previousFaceRight, "previousFaceRight")
-					playerFriend.setPosition(friend.position.x, friend.position.y, friend.position.angle, friend.position.faceRight);
-					playerFriend.x = friend.position.x;
-					playerFriend.y = friend.position.y;
-          playerFriend.angle = friend.position.angle;
-         // playerFriend.faceRight = friend.position.faceRight;
+          const previousFaceRight = playerFriend.faceRight;
+          // playerFriend.setPosition(friend.position.x, friend.position.y, friend.position.angle, friend.position.faceRight);
+          if(previousX !== friend.position.x ) {
+            console.log('this is playerFriend', playerFriend)
+            // playerFriend.anims.play("swim", true);
+            playerFriend.x = friend.position.x;
+          }
+          if(previousY !== friend.position.y){
+            playerFriend.y = friend.position.y;
+          }
+          if(previousAngle !== friend.position.angle){
+            playerFriend.angle = friend.position.angle;
+          }
+          if(previousFaceRight !== friend.position.faceRight){
+            playerFriend.flipX = !playerFriend.flipX;
+            playerFriend.faceRight = friend.position.faceRight;
+           }
 				}
 			});
 		});
