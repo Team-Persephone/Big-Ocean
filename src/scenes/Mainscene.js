@@ -136,10 +136,8 @@ export default class MainScene extends Phaser.Scene {
 					const previousY = playerFriend.y;
           const previousAngle = playerFriend.angle;
           const previousFaceRight = playerFriend.faceRight;
-          // playerFriend.setPosition(friend.position.x, friend.position.y, friend.position.angle, friend.position.faceRight);
+          
           if(previousX !== friend.position.x ) {
-            console.log('this is playerFriend', playerFriend)
-            // playerFriend.anims.play("swim", true);
             playerFriend.x = friend.position.x;
           }
           if(previousY !== friend.position.y){

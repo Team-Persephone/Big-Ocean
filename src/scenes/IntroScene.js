@@ -22,7 +22,8 @@ export default class IntroScene extends Phaser.Scene {
     
     //add gamekey to url for host to share
     function addUrl (gameKey) {
-      const url = `http://localhost:3000/${gameKey}`;
+      // console.log(window.location.href);
+      const url = `${window.location.href}${gameKey}`;
       const link = scene.add.text(100, 100, url);
       link.setInteractive();
       link.on('pointerdown', () => {
