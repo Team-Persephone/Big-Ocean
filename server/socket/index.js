@@ -91,7 +91,7 @@ module.exports = (io) => {
       gameInfo.numPlayer = Object.keys(gameInfo.players).length;
       gameInfo.score[socket.id] = 0;
       //send state info
-      
+
       socket.emit("setState", gameInfo);
 
       //send current players info
@@ -126,7 +126,7 @@ module.exports = (io) => {
 
     });
   });
-};
+});
 
 
 function codeGenerator() {
@@ -136,4 +136,5 @@ function codeGenerator() {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return code;
+}
 }
