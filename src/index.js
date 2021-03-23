@@ -9,6 +9,7 @@ But this hasn't happened yet!*/
 import 'phaser';
 import config from './config/config';
 import MainScene from './scenes/Mainscene';
+import IntroScene from './scenes/IntroScene';
 import WaitingRoom from './scenes/WaitingRoom';
 import ChatScene from './scenes/ChatScene'
 
@@ -17,6 +18,7 @@ class Game extends Phaser.Game {
     super(config);
     this.scene.add('ChatScene', ChatScene)
     this.scene.add('MainScene', MainScene);
+    this.scene.add('IntroScene', IntroScene);
     this.scene.add('WaitingRoom', WaitingRoom);
     this.scene.start('MainScene');
   }

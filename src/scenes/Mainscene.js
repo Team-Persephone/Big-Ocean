@@ -1,5 +1,4 @@
-import phaser from 'phaser';
-
+import Phaser from 'phaser';
 import Scuba from '../entities/Scuba';
 
 export default class MainScene extends Phaser.Scene {
@@ -39,8 +38,12 @@ export default class MainScene extends Phaser.Scene {
   createPlayer (scene, player) {
     scene.scubaDiver = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
     scene.scubaDiver.setAngle(-45);
+    scene.scubaDiver.faceRight = true;
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
+
+    this.createAnimations(player.avatar)
+
   }
 
   // helper function to add animation to avatars
@@ -63,6 +66,7 @@ export default class MainScene extends Phaser.Scene {
       player.position.y + 40,
       `${player.avatar}`
     ).setScale(0.2);
+    playerFriend.faceRight = true;
     playerFriend.playerId = player.playerId;
     scene.playerFriends.add(playerFriend);
   }
@@ -80,8 +84,10 @@ export default class MainScene extends Phaser.Scene {
     //launch the socket connection
     this.socket = io();
     //connect the socket connection to the WaitingRoom
+
     this.scene.launch('WaitingRoom', { socket: this.socket });
     this.scene.launch('ChatScene', { socket: this.socket });
+    this.scene.launch('IntroScene', { socket: this.socket });
 
     scene.playerFriends = this.physics.add.group(); //---> WHAT DOES THIS AND IS THIS CORRECTLY IMPLIED FOR OUR PROJECT?!
     // create scene from tilemap
@@ -96,7 +102,6 @@ export default class MainScene extends Phaser.Scene {
 
     //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
-    // this.createAnimations();
 
     //Volume - add volume sound bar for display here
 
@@ -132,8 +137,33 @@ export default class MainScene extends Phaser.Scene {
 
 
     })
-
  }
+    
+    this.socket.on("friendMoved", function (friend) {
+			scene.playerFriends.getChildren().forEach(function (playerFriend) {
+				if (friend.playerId === playerFriend.playerId) { 
+          const previousX = playerFriend.x; 
+					const previousY = playerFriend.y;
+          const previousAngle = playerFriend.angle;
+          const previousFaceRight = playerFriend.faceRight;
+          
+          if(previousX !== friend.position.x ) {
+            playerFriend.x = friend.position.x;
+          }
+          if(previousY !== friend.position.y){
+            playerFriend.y = friend.position.y;
+          }
+          if(previousAngle !== friend.position.angle){
+            playerFriend.angle = friend.position.angle;
+          }
+          if(previousFaceRight !== friend.position.faceRight){
+            playerFriend.flipX = !playerFriend.flipX;
+            playerFriend.faceRight = friend.position.faceRight;
+           }
+				}
+			});
+		});
+  }
 
   update() {
     const scene = this;
