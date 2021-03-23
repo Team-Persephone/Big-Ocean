@@ -1,5 +1,12 @@
 import Phaser from 'phaser';
 
+
+function addMessageElement(el) {
+  messages.append(el);
+  messages.lastChild.scrollIntoView();
+}
+
+
 export default class WaitingRoom extends Phaser.Scene {
   constructor() {
     super('WaitingRoom');
@@ -16,13 +23,13 @@ export default class WaitingRoom extends Phaser.Scene {
     this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
   }
 
-  
-  
-  // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
+
+
+  // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
   create() {
     const scene = this
     let key;
-    
+
     //add gamekey to url for host to share
     function addUrl (gameKey) {
       const url = `http://localhost:3000/${gameKey}`;
@@ -55,7 +62,7 @@ export default class WaitingRoom extends Phaser.Scene {
       joinGameButton.setVisible(true)
       this.socket.emit('createGame')
     });
-    
+
     this.socket.on('gameCreated', gameKey => {
       key = gameKey
       addUrl(gameKey)
@@ -67,11 +74,11 @@ export default class WaitingRoom extends Phaser.Scene {
       joinGameButton.on('pointerdown', () => {
         joinGameButton.setVisible(false);
         this.socket.emit('joinGame', key)
-        this.scene.stop('WaitingRoom');   
+        this.scene.stop('WaitingRoom');
       });
-        
+
 }
-  
+
   update() {}
 }
 
