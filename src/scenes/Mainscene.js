@@ -137,16 +137,16 @@ export default class MainScene extends Phaser.Scene {
 
 
     })
- }
-    
+
+
     this.socket.on("friendMoved", function (friend) {
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
-				if (friend.playerId === playerFriend.playerId) { 
-          const previousX = playerFriend.x; 
+				if (friend.playerId === playerFriend.playerId) {
+          const previousX = playerFriend.x;
 					const previousY = playerFriend.y;
           const previousAngle = playerFriend.angle;
           const previousFaceRight = playerFriend.faceRight;
-          
+
           if(previousX !== friend.position.x ) {
             playerFriend.x = friend.position.x;
           }
