@@ -1,10 +1,5 @@
 const { db } = require('../server/db');
-const {
-  PearlQuest,
-  Level,
-  GameRoom,
-  ShrimpFact,
-} = require('../server/db/models');
+const { PearlQuest, Level, ShrimpFact } = require('../server/db/models');
 
 async function seed() {
   await db.sync({ force: true });
@@ -276,7 +271,7 @@ async function seed() {
     }),
     ShrimpFact.create({
       fact:
-        'Algorithms – which is what are measuring with big-O – are sets of logical steps that act on an input to produce an output. You can think of "algorithm" as a fancy word for a function.',
+        'Algorithms – which are what we are measuring with big-O – are sets of logical steps that act on an input to produce an output. You can think of "algorithm" as a fancy word for a function.',
       levelId: 1,
     }),
     ShrimpFact.create({
@@ -286,7 +281,7 @@ async function seed() {
     }),
     ShrimpFact.create({
       fact:
-        'These are the seven examples of big-O that you will encounter most frequently, ranked from most efficient to least efficient: O(1) — Constant, O(log n) — Logarithmic, O(n) — Linear, O(n log n) — Log-linear, O(nᵏ) — Polynomial, O(kⁿ) — Exponential, O(n!) — Factorial.',
+        'These are the seven examples of big-O that you will encounter most frequently, ranked from most efficient to least: O(1) — Constant, O(log n) — Logarithmic, O(n) — Linear, O(n log n) — Log-linear, O(nᵏ) — Polynomial, O(kⁿ) — Exponential, O(n!) — Factorial.',
       levelId: 2,
     }),
     ShrimpFact.create({
@@ -311,12 +306,12 @@ async function seed() {
     }),
     ShrimpFact.create({
       fact:
-        'Big O analysis is usually used to describe the dominant trend of an algorithm as the input gets very large. Thus, similar to coefficients, insignificant notations can be dropped if they are overpowered by more significant terms. For instance, an algorithm with a computed time complexity O(n² + n) would simply be referred to as O(n²) due to the effect of the n² term greatly outstrips that of the n term.',
+        'Big-O analysis is usually used to describe the dominant trend of an algorithm as the input gets very large. Thus, similar to coefficients, insignificant notations can be dropped if they are overpowered by more significant terms. For instance, an algorithm with a computed time complexity O(n² + n) would simply be referred to as O(n²) due to the effect of the n² term greatly outstrips that of the n term.',
       levelId: 3,
     }),
     ShrimpFact.create({
       fact:
-        "Just as it takes different computers different times to run an algorithm, different languages may also yield different amounts of runtime. For example, an algorithm when implemented in C++, might take time n^2 microseconds; but when implemented in Python, it might take time 1000n^2 + 1000n microseconds. This is another reason we use big-O notation: so we can talk about an algorithm's growth rate.",
+        "Just as it takes different computers different times to run an algorithm, different languages may also yield different runtimes. An algorithm might take time n^2 microseconds when implemented in C++, but 1000n^2 + 1000n microseconds when implemented in Python. This is another reason we use big-O notation: so we can talk about an algorithm's growth rate agnostic of language.",
       levelId: 3,
     }),
     ShrimpFact.create({
@@ -326,7 +321,7 @@ async function seed() {
     }),
     ShrimpFact.create({
       fact:
-        "Big-O notation – O(n) is the formal way to express the upper bound of an algorithm's running time. Omega notation – Ω(n) – is the formal way to express the lower bound of an algorithm's running time. Theta notation – θ(n) – is the formal way to express both the lower bound and the upper bound of an algorithm's running time.",
+        "Big-O notation – O(n) – is the formal way to express the upper bound of an algorithm's running time. Omega notation – Ω(n) – is the formal way to express the lower bound of an algorithm's running time. Theta notation – θ(n) – is the formal way to express both the lower bound and the upper bound of an algorithm's running time.",
       levelId: 4,
     }),
     ShrimpFact.create({
@@ -336,7 +331,7 @@ async function seed() {
     }),
     ShrimpFact.create({
       fact:
-        'Saying that an algorithm is O(n²) doesn’t mean that it performs exactly n² operations for a given input of size n. Imagine that algorithm A performs f(n)=2n²+n+1 operations. What we do with this function is to drop its non-dominant terms (like +n and +1) and its constants (like the 2 in 2n²) to obtain its asymptotic notation O(n²). If there is an algorithm B that always performs f(n)=4n²+3n+3 operations, it will also be described as O(n²), although it performs more than twice the operations as algorithm A for any value of n.',
+        'Saying that an algorithm is O(n²) doesn’t mean that it performs exactly n² operations for a given input of size n. Imagine that Algorithm A performs f(n)=2n²+n+1 operations. With this function, we drop its non-dominant terms (like +n and +1) and its constants (like the 2 in 2n²) to obtain its asymptotic notation O(n²). If there is an Algorithm B that always performs f(n)=4n²+3n+3 operations, it will also be described as O(n²), although it performs more than twice the operations as Algorithm A for any value of n.',
       levelId: 5,
     }),
     ShrimpFact.create({
@@ -345,9 +340,15 @@ async function seed() {
       levelId: 5,
     }),
     ShrimpFact.create({
-      fact:
-        'A function that grows faster than any power of n is called superpolynomial. One that grows slower than an exponential function of the form c^n is called subexponential. An algorithm can require time that is both superpolynomial and subexponential; examples of this include the fastest algorithms known for integer factorization.',
-      levelId: 3,
+      fact: `The big-O of recursive algorithms is trickier to identify since not only do we need to determine the complexity of our algorithm, we also need to keep in mind how many times recursion happens because that would contribute toward the overall complexity. Take a look at the following code:
+        function rec1(array) {
+           // O(1) operations
+           if (array.length === 0) return;
+           array.pop();
+           return rec1(array);
+        }
+       Although our function only performs some O(1) operations, it constantly changes the input and calls itself until the size of the input array is zero. In the end, our method ends up executing n times, making the overall time complexity of O(n).`,
+      levelId: 5,
     }),
   ]);
 
