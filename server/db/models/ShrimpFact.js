@@ -1,16 +1,10 @@
-const Sequelize = require("sequelize");
-const db = require('../db')
+const Sequelize = require('sequelize');
+const db = require('../db');
 
 const ShrimpFact = db.define('shrimpFact', {
   fact: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
   },
-  value: {
-    type: Sequelize.INTEGER
-  },
-  answer: {
-    type: Sequelize.STRING
-  }
-})
+});
 
-module.exports = ShrimpFact
+module.exports = ShrimpFact;
