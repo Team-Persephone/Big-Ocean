@@ -112,6 +112,10 @@ module.exports = (io) => {
       socket.to(key).emit("broadcastMessage", {
         username: username,
         message: message
+      });
+      socket.emit("broadcastMessage", {
+        username: username,
+        message: message
       })
     });
 
