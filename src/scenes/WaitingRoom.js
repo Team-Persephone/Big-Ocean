@@ -17,7 +17,7 @@ export default class WaitingRoom extends Phaser.Scene {
 
     console.log('this is this in WaitingRoom', this)
 
-    this.add.text(200, 300, 'Ready to plunge? Click ')
+    this.add.text(200, 300, 'When you are ready to plunge, click ')
     const start = this.add.text(440, 300, '< Start >');
     start.setInteractive();
     start.on('pointerdown', () => {
