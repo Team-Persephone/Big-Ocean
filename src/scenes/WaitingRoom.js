@@ -1,4 +1,4 @@
-import Phaser, { Game } from 'phaser';
+import Phaser from 'phaser';
 
 export default class WaitingRoom extends Phaser.Scene {
   constructor(){
@@ -9,16 +9,12 @@ export default class WaitingRoom extends Phaser.Scene {
     this.socket = data.socket;
   }
 
-  preload() {
-    this.socket.emit('inWaitingRoom')
-  }
+  preload() {}
 
   create() {
 
-    console.log('this is this in WaitingRoom', this)
-
-    this.add.text(200, 300, 'When you are ready to plunge, click ')
-    const start = this.add.text(440, 300, '< Start >');
+    this.add.text(150, 300, 'When you are ready to plunge, click ')
+    const start = this.add.text(500, 300, '< Start >');
     start.setInteractive();
     start.on('pointerdown', () => {
       this.scene.launch('Mainscene');
