@@ -22,16 +22,12 @@ export default class IntroScene extends Phaser.Scene {
     
     //add gamekey to url for host to share
     function addUrl (gameKey) {
-      // console.log(window.location.href);
       const url = `${window.location.href}${gameKey}`;
       const link = scene.add.text(100, 100, url);
       link.setInteractive();
       link.on('pointerdown', () => {
         navigator.clipboard.writeText(url);
         link.setText('copied!');
-        // let s = window.open(url, '_blank')
-        // if(s && s.focus) s.focus()
-        // else if (!s) window.location.href = url
       });
     };
     //if there is a gameKey in the url, stop the waiting room because the code was already generated
@@ -39,6 +35,7 @@ export default class IntroScene extends Phaser.Scene {
       //gets gameKey from url
       const gameKey = window.location.pathname.slice(1);
       this.socket.emit('joinWaitingRoom', gameKey);
+      this.scene.launch('WaitingRoom', { socket: this.socket })
       this.scene.stop('IntroScene');
       // return;
     }
@@ -63,6 +60,7 @@ export default class IntroScene extends Phaser.Scene {
       joinGameButton.on('pointerdown', () => {
         joinGameButton.setVisible(false);
         this.socket.emit('joinWaitingRoom', key)
+        this.scene.launch('WaitingRoom', { socket: this.socket })
         this.scene.stop('IntroScene');   
       });
         
