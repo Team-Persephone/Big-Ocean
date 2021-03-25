@@ -53,6 +53,13 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("rock-sand-1", "/assets/rock-sand-1.png");
 		this.load.image("rock-sand-2", "/assets/rock-sand-2.png");
 
+		//load background
+		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
+		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
+
+
+		this.load.image("instructions", "/assets/bubble.png");
+
 		//Audio
 		this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
 	}
@@ -175,8 +182,29 @@ export default class MainScene extends Phaser.Scene {
 		// });
 
 		//connect the socket connection to IntoScene
-		this.scene.launch("ChatScene", { socket: this.socket });
+
 		this.scene.launch("IntroScene", { socket: this.socket });
+		this.scene.launch("ChatScene", { socket: this.socket });
+		// this.scene.launch("WaitingRoom", { socket: this.socket });
+		//set background
+		const map = this.make.tilemap({ key: "bigOcean" });
+		const tileset = map.addTilesetImage("big-ocean-tilesheet", "tiles");
+
+		//background layers
+		map.createStaticLayer("gradient", tileset);
+		map.createStaticLayer("stone", tileset);
+		map.createStaticLayer("stone2", tileset);
+		map.createStaticLayer("foam", tileset);
+
+		// const displayPlay = this.displayPlayButton;
+		const display = this.add.text(
+			150,
+			200,
+			"When you are ready to plunge, click "
+		);
+		const playButton = this.add.text(430, 400, "< Start", {
+			fontFamily: "menlo"
+		});
 
 		//set background
 		const map = this.make.tilemap({ key: "bigOcean" });
@@ -189,11 +217,15 @@ export default class MainScene extends Phaser.Scene {
 		map.createStaticLayer("foam", tileset);
 
 		const playButton = this.add.text(400, 500, "Play", { fontFamily: "menlo" });
+
 		playButton.setInteractive();
 		playButton.on("pointerdown", () => {
 			playButton.setVisible(false);
+			display.setVisible(false);
 			scene.state.questionsLevel1.forEach(question => {
-				scene.createClam(scene, question.x, question.y, "clam");
+        scene.createClam(scene, question.x, question.y, "clam");
+        scene.instructionsBubble.setVisible(false);
+        scene.instructionsText.setVisible(false)
 			});
 			scene.state.factsLevel1.forEach(fact => {
 				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
@@ -265,14 +297,6 @@ export default class MainScene extends Phaser.Scene {
 
 		this.decorations.create(835, 2500, "rock-brown-3").setScale(0.6).setAngle(0).refreshBody();
 
-		//	ground.create(50, 100, "rocks").setScale(0.4).refreshBody();
-		//	ground.create(500, 300, "rocks").setScale(0.3).refreshBody();
-		//  console.log(this.state, 'this.state<--');
-		// this.physics.add.collider(this.state.players, platform);
-
-
-
-		
 		this.physics.add.collider(this.playerGroup, this.decorations);
 
 		//create navigation and animation for scuba divers
@@ -304,6 +328,7 @@ export default class MainScene extends Phaser.Scene {
 				factsLevel3,
 				factsLevel4,
 				factsLevel5
+
 			} = gameInfo;
 			//this.physics.resume() ----> WHAT DOES THIS??
 
@@ -318,12 +343,29 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.questionsLevel3 = questionsLevel3;
 			scene.state.questionsLevel4 = questionsLevel4;
 			scene.state.questionsLevel5 = questionsLevel5;
-			scene.state.factsLevel1 = factsLevel1;
+      scene.state.factsLevel1 = factsLevel1;
 			scene.state.factsLevel2 = factsLevel2;
 			scene.state.factsLevel3 = factsLevel3;
 			scene.state.factsLevel4 = factsLevel4;
 			scene.state.factsLevel5 = factsLevel5;
 		});
+
+		//INSTRUCTIONS BUBBLE
+		scene.instructionsBubble = scene.add
+			.image(734, 545, "instructions")
+			.setScale(0.15);
+		scene.instructionsText = scene.add.text(700, 570, "Instructions", {
+			fill: "#ffffff",
+			fontSize: "10px",
+			fontStyle: "bold"
+		});
+
+		scene.instructionsBubble.setInteractive();
+
+		scene.instructionsBubble.on("pointerdown", () => {
+      scene.scene.launch("Instructions");
+		});
+
 		this.socket.on("currentPlayers", function ({ players, numPlayers }) {
 			scene.state.numPlayers = numPlayers;
 			Object.keys(players).forEach(function (id) {

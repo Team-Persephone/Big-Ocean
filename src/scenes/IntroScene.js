@@ -11,15 +11,15 @@ export default class IntroScene extends Phaser.Scene {
 
 	// THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
 	preload() {
-		this.load.image("tiles", "/assets/ocean-tilesheet.png");
-		this.load.tilemapTiledJSON("tilemap", "/assets/big-ocean-level1.json");
+		this.load.image("blue", "/assets/background/babyGotBlue.png");
 	}
 
-  // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
+  // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
   create() {
     const scene = this
     let key;
-    
+    this.scene.launch("IntroScene", { socket: this.socket });
+    this.add.image(0, 0, "blue").setScale(2)
     //add gamekey to url for host to share
     function addUrl (gameKey) {
       const url = `${window.location.href}${gameKey}`;
@@ -40,7 +40,7 @@ export default class IntroScene extends Phaser.Scene {
       // return;
     }
     //OTHERWISE THIS:
-    // add button to creat game to scene
+    // add button to create game to scene
     const createGameButton = this.add.text(600, 500, 'Create new game', { fontFamily: 'menlo' });
     createGameButton.setInteractive();
     createGameButton.on('pointerdown', () => {
@@ -48,7 +48,7 @@ export default class IntroScene extends Phaser.Scene {
       joinGameButton.setVisible(true)
       this.socket.emit('createGame')
     });
-    
+
     this.socket.on('gameCreated', gameKey => {
       key = gameKey
       addUrl(gameKey)
@@ -62,7 +62,8 @@ export default class IntroScene extends Phaser.Scene {
 		joinGameButton.on("pointerdown", () => {
 			joinGameButton.setVisible(false);
 			this.socket.emit("joinWaitingRoom", key);
-			// setTimeout(() => this.socket.emit("startCountdown", 10), 1000)
+      // setTimeout(() => this.socket.emit("startCountdown", 10), 1000)
+      this.scene.launch("WaitingRoom")
 			this.scene.stop("IntroScene");
 		});
 	}
