@@ -28,7 +28,7 @@ const broadcastMessage = (username, message) => {
   const messageDisplay = document.createElement("div");
   messageDisplay.className = "bubble";
   const newMessage = document.createElement("p");
-  newMessage.innerHTML = `<strong>${username}:</strong> &nbsp${message}`;
+  newMessage.innerHTML = `<strong>${username}:</strong> &nbsp;${message}`;
   messageDisplay.appendChild(newMessage);
   console.log(messageDisplay)
   chatContainer.appendChild(messageDisplay)
@@ -106,14 +106,15 @@ export default class ChatScene extends Phaser.Scene {
 console.log('button clicked!')
       if (memoInput.value) {
 
-        console.log(scene.state.key)
+       // console.log(scene.state.key)
         scene.socket.emit(
           "submitMemo",
           scene.state.key,
           scene.state.players[this.socket.id].avatar || "Anonymous",
           memoInput.value
         );
-        console.log('scene in main', scene)
+        //console.log('scene in main', scene)
+        console.log(memoInput.value, 'memovalue <---')
         memoInput.value = "";
       }
     }

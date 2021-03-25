@@ -13,7 +13,7 @@ body {
 }
 
 .chat-box {
-  background: linear-gradient(0deg, #1E2C3D 00%, #3E364E 100%);
+  background: linear-gradient(0deg, #213b5a 00%, #050b57 100%);
   margin: 100px auto;
   max-width: 500px;
   height: 650px;
@@ -65,10 +65,15 @@ p {
   /* margin-bottom: 10px; */
   color: rgba(255, 255, 255, 0.7);
   word-wrap: break-word;
-  font-size: 10px;
+  font-family: 'Helvetica Neue';
+  font-size: .5em;
   margin-top: 30px;
   /* opacity: 0; */
 }
+
+/* .bubble.mine {
+  background-color: red;
+} */
 
 .bubble:after {
   border-radius: 20px / 5px;
@@ -122,7 +127,7 @@ p {
 .chat-header span {
   font-size: 12px;
   position: absolute;
-  margin: 47px -50px;
+  margin: 47px -70px;
   font-style: italic;
 }
 
@@ -132,24 +137,27 @@ p {
   display: inline-block;
   border-radius: 100%;
   background: #DFDFEF;
-  margin: 0 10px;
+  margin: 0 15px;
   background-size: cover;
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
   cursor: pointer
 }
 
-.user-profile:nth-child(1) {
-  background: green
+
+.user-profile:nth-child(5) {
+  background: rgb(54, 252, 136);
+  /* border-left: .3em solid;
+  border-color: rgb(54, 252, 136); */
 }
 
 .user-profile:nth-child(3) {
-  background: pink
+  background: rgb(255, 177, 238)
   /* background-image: url(http://orig15.deviantart.net/8172/f/2016/079/7/2/natsu_xabused_reader_fire_within_the_heart_p1_by_minnibellsnow-d9vv2cy.jpg); */
 }
 
-.user-profile:nth-child(5) {
-  background: purple;
+.user-profile:nth-child(1) {
+  background: rgb(163, 124, 253);
 }
 
 
