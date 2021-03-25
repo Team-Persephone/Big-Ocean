@@ -13,8 +13,8 @@ export default class WaitingRoom extends Phaser.Scene {
 
   create() {
 
-    this.add.text(150, 300, 'When you are ready to plunge, click ')
-    const start = this.add.text(500, 300, '< Start >');
+    this.add.text(150, 200, 'When you are ready to plunge, click ')
+    const start = this.add.text(500, 200, '< Start >');
     start.setInteractive();
     start.on('pointerdown', () => {
       this.scene.launch('Mainscene');

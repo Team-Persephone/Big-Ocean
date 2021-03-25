@@ -26,9 +26,10 @@ export default class MainScene extends Phaser.Scene {
       }
     );
 
-    // our background scene is loaded
-    this.load.image('tiles', '/assets/ocean-tilesheet.png');
-    this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
+    
+    //load background
+    this.load.image('tiles', '/assets/background/big-ocean-tilesheet.png');
+    this.load.tilemapTiledJSON('bigOcean', '/assets/background/big-ocean.json');
 
     //Audio
     this.load.audio('music', ['/audio/Waiting_Room.mp3']);
@@ -36,13 +37,13 @@ export default class MainScene extends Phaser.Scene {
 
   //helper function to create avatar for player
   createPlayer (scene, player) {
-    scene.scubaDiver = new Scuba(this, 100, 200, `${player.avatar}`).setScale(0.2);
+    scene.scubaDiver = new Scuba(this, 100, 350, `${player.avatar}`).setScale(0.2);
     scene.scubaDiver.setAngle(-45);
     scene.scubaDiver.faceRight = true;
     //scuba can't leave the screne
     scene.scubaDiver.body.collideWorldBounds = true;
     scene.cameras.main.startFollow(scene.scubaDiver);
-    
+    //create animation
     this.createAnimations(player.avatar)
 
   }
@@ -88,22 +89,24 @@ export default class MainScene extends Phaser.Scene {
     this.scene.launch('ChatScene', { socket: this.socket });
     this.scene.launch('IntroScene', { socket: this.socket });
 
-    // create scene from tilemap
-    const map = this.make.tilemap({ key: 'tilemap' });
-    const tileset = map.addTilesetImage('ocean-scene', 'tiles');
+    //set background
+    const map = this.make.tilemap({ key: 'bigOcean' });
+    const tileset = map.addTilesetImage('big-ocean-tilesheet', 'tiles')
     
-    map.createStaticLayer('water', tileset);
-    map.createStaticLayer('rocklevel1', tileset);
-    map.createStaticLayer('rocklevel2', tileset);
-    map.createStaticLayer('seeweed', tileset);
-    this.physics.world.setBounds(0, 0, 800, 1200);
+    //background layers
+    map.createStaticLayer('gradient', tileset);
+    map.createStaticLayer('stone', tileset);
+    map.createStaticLayer('stone2', tileset);
+    map.createStaticLayer('foam', tileset);
+
+    this.physics.world.setBounds(0, 320, 1088, 4800);
     //makes friends visibel
     scene.playerFriends = this.physics.add.group();
 
     //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
     //set up camera
-    this.cameras.main.setBounds(0, 0, 800, 1200)
+    this.cameras.main.setBounds(0, 0, 1088, 4800)
     //Volume - add volume sound bar for display here
 
     // this.createPlayer(gameInfo.players[socketId])
