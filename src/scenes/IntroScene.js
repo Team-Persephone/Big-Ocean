@@ -1,19 +1,19 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 export default class IntroScene extends Phaser.Scene {
-  constructor() {
-    super('IntroScene');
-  }
-  //get scoket data as props from MainRoom
-  init(data) {
-    this.socket = data.socket;
-  }
+	constructor() {
+		super("IntroScene");
+	}
+	//get scoket data as props from MainRoom
+	init(data) {
+		this.socket = data.socket;
+	}
 
-   // THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
-  preload() {
-    this.load.image('tiles', '/assets/ocean-tilesheet.png');
-    this.load.tilemapTiledJSON('tilemap', '/assets/big-ocean-level1.json');
-  }
+	// THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
+	preload() {
+		this.load.image("tiles", "/assets/ocean-tilesheet.png");
+		this.load.tilemapTiledJSON("tilemap", "/assets/big-ocean-level1.json");
+	}
 
   // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
   create() {
@@ -54,22 +54,20 @@ export default class IntroScene extends Phaser.Scene {
       addUrl(gameKey)
     })
 
-      const joinGameButton = this.add.text( 600, 500, 'join your friends!', { fontFamily: 'menlo' });
-      joinGameButton.setVisible(false)
-      joinGameButton.setInteractive();
-      joinGameButton.on('pointerdown', () => {
-        joinGameButton.setVisible(false);
-        this.socket.emit('joinWaitingRoom', key)
-        this.scene.launch('WaitingRoom', { socket: this.socket })
-        this.scene.stop('IntroScene');   
-      });
-        
-}
-  
-  update() {
+		const joinGameButton = this.add.text(600, 500, "join your friends!", {
+			fontFamily: "menlo"
+		});
+		joinGameButton.setVisible(false);
+		joinGameButton.setInteractive();
+		joinGameButton.on("pointerdown", () => {
+			joinGameButton.setVisible(false);
+			this.socket.emit("joinWaitingRoom", key);
+			setTimeout(() => this.socket.emit("startCountdown", 10), 1000)
+			this.scene.stop("IntroScene");
+		});
+	}
 
-
-  }
+	update() {}
 }
 
 // server: when socket connection is made, (aka, when someone lands on the intro) write a function to create a unique code and emit that code back to the frontend

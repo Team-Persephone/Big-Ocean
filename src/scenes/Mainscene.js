@@ -110,9 +110,30 @@ createAnimationsClam(object) {
 
     //launch the socket connection
     this.socket = io();
+    
+    const sleep = async delay => {
+			return new Promise(resolve => setTimeout(() => resolve(true), delay));
+		};
+
+		this.socket.on("startedCountdown", async seconds => {
+			const currentTimer = this.add.text(300, 200, `${seconds}`);
+
+			while (seconds > 0) {
+				console.log(seconds)
+        currentTimer.setText(`${seconds}`);
+        // await sleep(1000);
+				await sleep(0);
+				seconds--;
+      }
+      currentTimer.destroy();
+
+      this.scubaDiver.setWaiting(false)
+		});
+
     //connect the socket connection to IntoScene
-    this.scene.launch('ChatScene', { socket: this.socket });
-    this.scene.launch('IntroScene', { socket: this.socket });
+    this.scene.launch("WaitingRoom", { socket: this.socket });
+		this.scene.launch("ChatScene", { socket: this.socket });
+		this.scene.launch("IntroScene", { socket: this.socket });
 
     //set background
     const map = this.make.tilemap({ key: 'bigOcean' });
@@ -161,17 +182,19 @@ createAnimationsClam(object) {
 
 		//create navigation and animation for scuba divers
 		//this.cursors = this.input.keyboard.createCursorKeys();
+
 		this.cursors = this.input.keyboard.addKeys({
 			up: Phaser.Input.Keyboard.KeyCodes.UP,
 			down: Phaser.Input.Keyboard.KeyCodes.DOWN,
 			left: Phaser.Input.Keyboard.KeyCodes.LEFT,
 			right: Phaser.Input.Keyboard.KeyCodes.RIGHT
 		});
-    
+  
     //Volume - add volume sound bar for display here
 
     // this.createPlayer(gameInfo.players[socketId])
 this.socket.on("setState", function (gameInfo) {
+
 			const {
 				key,
 				players,
@@ -193,6 +216,7 @@ this.socket.on("setState", function (gameInfo) {
 			scene.state.avatars = avatars;
 			scene.state.score = score;
 			scene.state.level = level;
+
 			scene.state.questionsLevel1 = questionsLevel1;
 			scene.state.questionsLevel2 = questionsLevel2;
 			scene.state.questionsLevel3 = questionsLevel3;
@@ -222,7 +246,6 @@ this.socket.on("setState", function (gameInfo) {
 				if (friend.playerId === playerFriend.playerId) {
 					const previousX = playerFriend.x;
 					const previousY = playerFriend.y;
-
 
           const previousAngle = playerFriend.angle;
           const previousFaceRight = playerFriend.faceRight;

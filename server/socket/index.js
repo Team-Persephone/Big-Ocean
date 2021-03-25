@@ -41,6 +41,7 @@ module.exports = io => {
 				avatars: ["scubaGreen", "scubaPink", "scubaPurple"],
 				score: {},
 				level: 1,
+        
 				questionsLevel1: [],
 				questionsLevel2: [],
 				questionsLevel3: [],
@@ -51,8 +52,6 @@ module.exports = io => {
 			};
 
 			const questions = await PearlQuest.findAll();
-
-			// console.log(questions);
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 700);
