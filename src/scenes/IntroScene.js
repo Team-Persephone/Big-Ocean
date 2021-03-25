@@ -54,7 +54,7 @@ export default class IntroScene extends Phaser.Scene {
       addUrl(gameKey)
     })
 
-		const joinGameButton = this.add.text(600, 500, "join your friends!", {
+		const joinGameButton = this.add.text(600, 500, "join game!", {
 			fontFamily: "menlo"
 		});
 		joinGameButton.setVisible(false);

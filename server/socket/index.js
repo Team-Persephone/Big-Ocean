@@ -47,11 +47,15 @@ module.exports = io => {
 				questionsLevel3: [],
 				questionsLevel4: [],
 				questionsLevel5: [],
-				facts: []
-				// taskPositions: {},
+				factsLevel1: [],
+        factsLevel2: [],
+				factsLevel3: [],
+				factsLevel4: [],
+				factsLevel5: []
 			};
 
 			const questions = await PearlQuest.findAll();
+      const facts = await ShrimpFact.findAll();
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 700);
@@ -83,7 +87,33 @@ module.exports = io => {
 
 			console.log(activeGames[key].questionsLevel5);
 
-			// console.log(questionsObj);
+      facts.forEach(fact => {
+				let x = Math.ceil(Math.random() * 700);
+				let y = Math.ceil(Math.random() * 500);
+				let factObj = {
+					fact: fact.fact,
+					isRead: false, //can multpile people read same fact???
+					x,
+					y
+				};
+				if (fact.levelId === 1) {
+					activeGames[key].factsLevel1.push(factObj);
+				}
+				if (fact.levelId === 2) {
+					activeGames[key].factsLevel2.push(factObj);
+				}
+				if (fact.levelId === 3) {
+					activeGames[key].factsLevel3.push(factObj);
+				}
+				if (fact.levelId === 4) {
+					activeGames[key].factsLevel4.push(factObj);
+				}
+				if (fact.levelId === 5) {
+					activeGames[key].factsLevel5.push(factObj);
+				}
+			});
+
+			console.log(activeGames[key].factsLevel1);
 			socket.emit("gameCreated", key);
 		});
 

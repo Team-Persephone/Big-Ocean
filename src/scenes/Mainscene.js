@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Scuba from "../entities/Scuba";
 import Clam from "../entities/Clam";
+import Shrimp from "../entities/Shrimp";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -31,6 +32,11 @@ export default class MainScene extends Phaser.Scene {
 			frameHeight: 860
 		});
 
+    this.load.spritesheet("shrimp", "/assets/shrimp-animation.png", {
+      frameWidth: 820,
+      frameHeight: 500
+    } );
+
     //load background
     this.load.image('tiles', '/assets/background/big-ocean-tilesheet.png');
     this.load.tilemapTiledJSON('bigOcean', '/assets/background/big-ocean.json');
@@ -60,7 +66,11 @@ export default class MainScene extends Phaser.Scene {
 		console.log(scene.clam);
 		this.createAnimationsClam("clam");
 	}
-
+  createShrimp(scene, x, y, file) {
+		scene.shrimp = new Shrimp(this, x, y, file).setScale(0.04);
+		console.log(scene.shrimp);
+		this.createAnimationsClam("shrimp");
+	}
   // helper function to add animation to avatars
   createAnimations(avatar) {
     this.anims.create({
@@ -144,25 +154,25 @@ createAnimationsClam(object) {
     map.createStaticLayer('stone2', tileset);
     map.createStaticLayer('foam', tileset);
     
-    	const playButton = this.add.text(400, 500, "Play", { fontFamily: "menlo" });
+    const playButton = this.add.text(400, 500, "Play", { fontFamily: "menlo" });
 		playButton.setInteractive();
 		playButton.on("pointerdown", () => {
 			playButton.setVisible(false);
 			scene.state.questionsLevel1.forEach(question => {
 				scene.createClam(scene, question.x, question.y, "clam");
 			});
+      scene.state.factsLevel1.forEach(fact => {
+        scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+      })
 		});
-
+    //set boundries to the game world
     this.physics.world.setBounds(0, 320, 1088, 4800);
     //makes friends visibel
     scene.playerFriends = this.physics.add.group();
-
     //create navigation and animation for scuba divers
     this.cursors = this.input.keyboard.createCursorKeys();
     //set up camera
     this.cameras.main.setBounds(0, 0, 1088, 4800)
-    
-    
     //add rock
     this.decorations = this.physics.add.staticGroup();
 
