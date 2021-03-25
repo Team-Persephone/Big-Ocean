@@ -111,27 +111,26 @@ createAnimationsClam(object) {
     //launch the socket connection
     this.socket = io();
     
-    const sleep = async delay => {
-			return new Promise(resolve => setTimeout(() => resolve(true), delay));
-		};
+    // const sleep = async delay => {
+		// 	return new Promise(resolve => setTimeout(() => resolve(true), delay));
+		// };
 
-		this.socket.on("startedCountdown", async seconds => {
-			const currentTimer = this.add.text(300, 200, `${seconds}`);
+		// this.socket.on("startedCountdown", async seconds => {
+		// 	const currentTimer = this.add.text(300, 200, `${seconds}`);
 
-			while (seconds > 0) {
-				console.log(seconds)
-        currentTimer.setText(`${seconds}`);
-        // await sleep(1000);
-				await sleep(0);
-				seconds--;
-      }
-      currentTimer.destroy();
+		// 	while (seconds > 0) {
+		// 		console.log(seconds)
+    //     currentTimer.setText(`${seconds}`);
+    //     // await sleep(1000);
+		// 		await sleep(0);
+		// 		seconds--;
+    //   }
+    //   currentTimer.destroy();
 
-      this.scubaDiver.setWaiting(false)
-		});
+    //   this.scubaDiver.setWaiting(false)
+		// });
 
     //connect the socket connection to IntoScene
-    this.scene.launch("WaitingRoom", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
 		this.scene.launch("IntroScene", { socket: this.socket });
 
