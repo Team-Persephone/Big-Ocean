@@ -99,8 +99,9 @@ export default class MainScene extends Phaser.Scene {
 
 			while (seconds > 0) {
 				console.log(seconds)
-				currentTimer.setText(`${seconds}`);
-				await sleep(1000);
+        currentTimer.setText(`${seconds}`);
+        // await sleep(1000);
+				await sleep(0);
 				seconds--;
       }
       currentTimer.destroy();
