@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Scuba from "../entities/Scuba";
 import Clam from "../entities/Clam";
+import Shrimp from "../entities/Shrimp";
 
 export default class MainScene extends Phaser.Scene {
 	constructor() {
@@ -32,12 +33,17 @@ export default class MainScene extends Phaser.Scene {
 			frameWidth: 990,
 			frameHeight: 860
 		});
+		this.load.spritesheet("shrimp", "/assets/shrimp.png", {
+			frameWidth: 1000,
+			frameHeight: 1090
+		});
 
 		//load background
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
 		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
 
 		//rocks-Textures
+
 		this.load.image("rock-brown-1", "/assets/rock-brown-1.png");
 		this.load.image("rock-brown-2", "/assets/rock-brown-2.png");
 		this.load.image("rock-brown-3", "/assets/rock-brown-3.png");
@@ -70,8 +76,13 @@ export default class MainScene extends Phaser.Scene {
 
 	createClam(scene, x, y, file) {
 		scene.clam = new Clam(this, x, y, file).setScale(0.07);
-		console.log(scene.clam);
 		this.createAnimationsClam("clam");
+		this.createOverlap(scene, scene.scubaDiver, scene.clam);
+	}
+	createShrimp(scene, x, y, file) {
+		scene.shrimp = new Shrimp(this, x, y, file).setScale(0.07);
+		this.createAnimationsShrimp("shrimp");
+		this.createOverlap(scene, scene.scubaDiver, scene.shrimp);
 	}
 
 	// helper function to add animation to avatars
@@ -97,6 +108,24 @@ export default class MainScene extends Phaser.Scene {
 			frameRate: 1,
 			repeat: -1
 		});
+	}
+
+	createAnimationsShrimp(object) {
+		this.anims.create({
+			key: "shrimpmove",
+			frames: this.anims.generateFrameNumbers(object, {
+				start: 0,
+				end: 2
+			}),
+			frameRate: 1,
+			repeat: -1
+		});
+	}
+
+	createOverlap(scene, scubaDiver, object) {
+		scene.physics.add.overlap(scubaDiver, object, () =>
+			object.setTint(0xbdef83)
+		);
 	}
 
 	//helper function to add other players to scene
@@ -166,7 +195,20 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.questionsLevel1.forEach(question => {
 				scene.createClam(scene, question.x, question.y, "clam");
 			});
+			scene.state.factsLevel1.forEach(fact => {
+				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+			});
 		});
+		//set boundries to the game world
+		this.physics.world.setBounds(0, 320, 1088, 4800);
+		//makes friends visibel
+		scene.playerFriends = this.physics.add.group();
+		//create navigation and animation for scuba divers
+		this.cursors = this.input.keyboard.createCursorKeys();
+		//set up camera
+		this.cameras.main.setBounds(0, 0, 1088, 4800);
+		//add rock
+		this.decorations = this.physics.add.staticGroup();
 
 		this.physics.world.setBounds(0, 320, 1088, 4800);
 		//makes friends visibel
@@ -223,6 +265,10 @@ export default class MainScene extends Phaser.Scene {
 
 		this.decorations.create(835, 2500, "rock-brown-3").setScale(0.6).setAngle(0).refreshBody();
 
+		//	ground.create(50, 100, "rocks").setScale(0.4).refreshBody();
+		//	ground.create(500, 300, "rocks").setScale(0.3).refreshBody();
+		//  console.log(this.state, 'this.state<--');
+		// this.physics.add.collider(this.state.players, platform);
 
 
 
@@ -253,23 +299,30 @@ export default class MainScene extends Phaser.Scene {
 				questionsLevel3,
 				questionsLevel4,
 				questionsLevel5,
-				facts
+				factsLevel1,
+				factsLevel2,
+				factsLevel3,
+				factsLevel4,
+				factsLevel5
 			} = gameInfo;
 			//this.physics.resume() ----> WHAT DOES THIS??
 
 			//set state to gameInfo
 			scene.state.key = key;
-			scene.state.players = players;
+			scene.state.players5 = players;
 			scene.state.avatars = avatars;
 			scene.state.score = score;
 			scene.state.level = level;
-
 			scene.state.questionsLevel1 = questionsLevel1;
 			scene.state.questionsLevel2 = questionsLevel2;
 			scene.state.questionsLevel3 = questionsLevel3;
 			scene.state.questionsLevel4 = questionsLevel4;
 			scene.state.questionsLevel5 = questionsLevel5;
-			scene.state.facts = facts;
+			scene.state.factsLevel1 = factsLevel1;
+			scene.state.factsLevel2 = factsLevel2;
+			scene.state.factsLevel3 = factsLevel3;
+			scene.state.factsLevel4 = factsLevel4;
+			scene.state.factsLevel5 = factsLevel5;
 		});
 		this.socket.on("currentPlayers", function ({ players, numPlayers }) {
 			scene.state.numPlayers = numPlayers;
