@@ -31,11 +31,13 @@ export default class MainScene extends Phaser.Scene {
 			frameHeight: 860
 		});
 
-    
     //load background
     this.load.image('tiles', '/assets/background/big-ocean-tilesheet.png');
     this.load.tilemapTiledJSON('bigOcean', '/assets/background/big-ocean.json');
 
+      //rocks-Textures
+		this.load.image("rocks", "/assets/rocks.png");
+      
     //Audio
     this.load.audio('music', ['/audio/Waiting_Room.mp3']);
   }
@@ -50,7 +52,7 @@ export default class MainScene extends Phaser.Scene {
     scene.cameras.main.startFollow(scene.scubaDiver);
     //create animation
     this.createAnimations(player.avatar)
-
+       // this.physics.add.collider(scene.scubaDiver, this.decorations);
   }
 
 	createClam(scene, x, y, file) {
@@ -139,6 +141,33 @@ createAnimationsClam(object) {
     this.cursors = this.input.keyboard.createCursorKeys();
     //set up camera
     this.cameras.main.setBounds(0, 0, 1088, 4800)
+    
+    
+    //add rock
+    this.decorations = this.physics.add.staticGroup();
+
+    //this.physics.arcade.checkCollision.down = false;
+    this.platform = this.add.sprite(100, 100, "rocks").setScale(0.2);
+    this.decorations.add(this.platform)
+
+	  //  this.physics.add.existing(platform, true);
+    //  platform.body.immovable = true;
+     
+	//	ground.create(50, 100, "rocks").setScale(0.4).refreshBody();
+	//	ground.create(500, 300, "rocks").setScale(0.3).refreshBody();
+  //  console.log(this.state, 'this.state<--');
+   // this.physics.add.collider(this.state.players, platform);
+
+
+		//create navigation and animation for scuba divers
+		//this.cursors = this.input.keyboard.createCursorKeys();
+		this.cursors = this.input.keyboard.addKeys({
+			up: Phaser.Input.Keyboard.KeyCodes.UP,
+			down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+			left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+			right: Phaser.Input.Keyboard.KeyCodes.RIGHT
+		});
+    
     //Volume - add volume sound bar for display here
 
     // this.createPlayer(gameInfo.players[socketId])
@@ -171,7 +200,6 @@ this.socket.on("setState", function (gameInfo) {
 			scene.state.questionsLevel5 = questionsLevel5;
 			scene.state.facts = facts;
 
-			// console.log("state -->", scene.state);
 		});
     this.socket.on('currentPlayers', function({ players, numPlayers }) {
       scene.state.numPlayers = numPlayers;
@@ -194,6 +222,7 @@ this.socket.on("setState", function (gameInfo) {
 				if (friend.playerId === playerFriend.playerId) {
 					const previousX = playerFriend.x;
 					const previousY = playerFriend.y;
+
 
           const previousAngle = playerFriend.angle;
           const previousFaceRight = playerFriend.faceRight;
@@ -220,7 +249,7 @@ this.socket.on("setState", function (gameInfo) {
 		const scene = this;
 		//update the movement
 		if (this.scubaDiver) {
-			this.scubaDiver.update(this.cursors);
+			this.scubaDiver.update(this.cursors);		
 		}
 	}
 }
