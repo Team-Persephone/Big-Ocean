@@ -8,11 +8,18 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		this.scene = scene;
 		this.scene.add.existing(this);
 		this.scene.physics.world.enable(this);
+		this.waiting = true;
+	}
+
+	setWaiting(wait){
+		this.waiting = wait;
 	}
 
 	updateMovement(cursors) {
 		//move down
-		if (cursors.down.isDown) {
+		const waiting = this.waiting;
+
+		if (!waiting && cursors.down.isDown) {
 			if (this.faceRight) {
 				this.setAngle(45);
 			} else if (!this.faceRight) {
@@ -29,7 +36,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			});
 		}
 		//move up
-		else if (cursors.up.isDown) {
+		else if (!waiting && cursors.up.isDown) {
 			if (this.faceRight) {
 				this.setAngle(-45);
 			} else if (!this.faceRight) {
