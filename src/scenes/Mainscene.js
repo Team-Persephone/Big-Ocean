@@ -57,7 +57,6 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
 		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
 
-
 		this.load.image("instructions", "/assets/bubble.png");
 
 		//Audio
@@ -76,9 +75,9 @@ export default class MainScene extends Phaser.Scene {
 		this.createAnimations(player.avatar);
 		//add to physics group for collision detection
 		this.playerGroup.add(scene.scubaDiver);
-				//scuba can't leave the screne
-				scene.scubaDiver.body.collideWorldBounds = true;
-				scene.cameras.main.startFollow(scene.scubaDiver);
+		//scuba can't leave the screne
+		scene.scubaDiver.body.collideWorldBounds = true;
+		scene.cameras.main.startFollow(scene.scubaDiver);
 	}
 
 	createClam(scene, x, y, file) {
@@ -185,7 +184,7 @@ export default class MainScene extends Phaser.Scene {
 
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
-		// this.scene.launch("WaitingRoom", { socket: this.socket });
+
 		//set background
 		const map = this.make.tilemap({ key: "bigOcean" });
 		const tileset = map.addTilesetImage("big-ocean-tilesheet", "tiles");
@@ -198,34 +197,22 @@ export default class MainScene extends Phaser.Scene {
 
 		// const displayPlay = this.displayPlayButton;
 		const display = this.add.text(
-			150,
-			200,
-			"When you are ready to plunge, click "
+			170,
+			590,
+			"When yOu are ready tO plunge, click"
 		);
-		const playButton = this.add.text(430, 400, "< Start", {
+		const playButton = this.add.text(520, 590, "< start >", {
 			fontFamily: "menlo"
 		});
-
-		//set background
-		const map = this.make.tilemap({ key: "bigOcean" });
-		const tileset = map.addTilesetImage("big-ocean-tilesheet", "tiles");
-
-		//background layers
-		map.createStaticLayer("gradient", tileset);
-		map.createStaticLayer("stone", tileset);
-		map.createStaticLayer("stone2", tileset);
-		map.createStaticLayer("foam", tileset);
-
-		const playButton = this.add.text(400, 500, "Play", { fontFamily: "menlo" });
 
 		playButton.setInteractive();
 		playButton.on("pointerdown", () => {
 			playButton.setVisible(false);
 			display.setVisible(false);
 			scene.state.questionsLevel1.forEach(question => {
-        scene.createClam(scene, question.x, question.y, "clam");
-        scene.instructionsBubble.setVisible(false);
-        scene.instructionsText.setVisible(false)
+				scene.createClam(scene, question.x, question.y, "clam");
+				scene.instructionsBubble.setVisible(false);
+				scene.instructionsText.setVisible(false);
 			});
 			scene.state.factsLevel1.forEach(fact => {
 				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
@@ -257,45 +244,140 @@ export default class MainScene extends Phaser.Scene {
 		//add rocks
 		this.decorations = this.physics.add.staticGroup();
 
-		this.platform = this.add.sprite(60, 550, "rock-sand-1").setScale(0.2).setAngle(30);
+		this.platform = this.add
+			.sprite(60, 550, "rock-sand-1")
+			.setScale(0.2)
+			.setAngle(30);
 		this.decorations.add(this.platform);
 
-		this.decorations.create(25, 500, "rock-sand-1").setScale(0.28).setAngle(20).refreshBody();
-		this.decorations.create(135, 550, "rock-sand-2").setScale(0.25).refreshBody();
-		
-		this.decorations.create(600, 650, "rock-sand-2").setScale(0.2).setAngle(-50).refreshBody();
-		this.decorations.create(500, 900, "rock-sand-1").setScale(0.15).refreshBody();
-		
-		this.decorations.create(1000, 860, "rock-sand-1").setScale(0.4).refreshBody();
-		this.decorations.create(935, 780, "rock-sand-2").setScale(0.3).setAngle(-130).refreshBody();
-		
-		this.decorations.create(20, 900, "rock-brown-2").setScale(0.35).setAngle(90).refreshBody();
-		this.decorations.create(100, 910, "rock-sand-2").setScale(0.3).refreshBody();
-		this.decorations.create(170, 870, "rock-sand-1").setScale(0.2).refreshBody();
+		this.decorations
+			.create(25, 500, "rock-sand-1")
+			.setScale(0.28)
+			.setAngle(20)
+			.refreshBody();
+		this.decorations
+			.create(135, 550, "rock-sand-2")
+			.setScale(0.25)
+			.refreshBody();
 
-		this.decorations.create(1050, 1360, "rock-brown-2").setScale(0.6).setAngle(-90).refreshBody();
-		this.decorations.create(835, 1180, "rock-sand-2").setScale(0.3).setAngle(0).refreshBody();
-		this.decorations.create(1035, 1500, "rock-brown-1").setScale(0.5).setAngle(-90).refreshBody();
-		this.decorations.create(760, 1470, "rock-brown-3").setScale(0.2).refreshBody();
+		this.decorations
+			.create(600, 650, "rock-sand-2")
+			.setScale(0.2)
+			.setAngle(-50)
+			.refreshBody();
+		this.decorations
+			.create(500, 900, "rock-sand-1")
+			.setScale(0.15)
+			.refreshBody();
 
-		this.decorations.create(350, 1300, "rock-brown-3").setScale(0.5).refreshBody();
+		this.decorations
+			.create(1000, 860, "rock-sand-1")
+			.setScale(0.4)
+			.refreshBody();
+		this.decorations
+			.create(935, 780, "rock-sand-2")
+			.setScale(0.3)
+			.setAngle(-130)
+			.refreshBody();
 
-		this.decorations.create(150, 1500, "rock-brown-2").setScale(0.3).refreshBody();
-		this.decorations.create(330, 1520, "rock-brown-1").setScale(0.2).refreshBody();
-		this.decorations.create(250, 1550, "rock-gray-3").setScale(0.4).refreshBody();
-		this.decorations.create(500, 1700, "rock-brown-1").setScale(0.3).refreshBody();
-		this.decorations.create(370, 1600, "rock-gray-1").setScale(0.35).refreshBody();
+		this.decorations
+			.create(20, 900, "rock-brown-2")
+			.setScale(0.35)
+			.setAngle(90)
+			.refreshBody();
+		this.decorations
+			.create(100, 910, "rock-sand-2")
+			.setScale(0.3)
+			.refreshBody();
+		this.decorations
+			.create(170, 870, "rock-sand-1")
+			.setScale(0.2)
+			.refreshBody();
 
-		this.decorations.create(900, 2000, "rock-brown-3").setScale(0.4).setAngle(-50).refreshBody();
-		this.decorations.create(835, 2100, "rock-gray-1").setScale(0.2).setAngle(-120).refreshBody();
+		this.decorations
+			.create(1050, 1360, "rock-brown-2")
+			.setScale(0.6)
+			.setAngle(-90)
+			.refreshBody();
+		this.decorations
+			.create(835, 1180, "rock-sand-2")
+			.setScale(0.3)
+			.setAngle(0)
+			.refreshBody();
+		this.decorations
+			.create(1035, 1500, "rock-brown-1")
+			.setScale(0.5)
+			.setAngle(-90)
+			.refreshBody();
+		this.decorations
+			.create(760, 1470, "rock-brown-3")
+			.setScale(0.2)
+			.refreshBody();
 
-		this.decorations.create(435, 2150, "rock-gray-1").setScale(0.25).setAngle(120).refreshBody();
-		this.decorations.create(505, 2100, "rock-gray-2").setScale(0.3).setAngle(20).refreshBody();
-		this.decorations.create(475, 2200, "rock-brown-1").setScale(0.35).setAngle(0).refreshBody();
+		this.decorations
+			.create(350, 1300, "rock-brown-3")
+			.setScale(0.5)
+			.refreshBody();
 
-		this.decorations.create(100, 1800, "rock-gray-3").setScale(0.55).setAngle(-90).refreshBody();
+		this.decorations
+			.create(150, 1500, "rock-brown-2")
+			.setScale(0.3)
+			.refreshBody();
+		this.decorations
+			.create(330, 1520, "rock-brown-1")
+			.setScale(0.2)
+			.refreshBody();
+		this.decorations
+			.create(250, 1550, "rock-gray-3")
+			.setScale(0.4)
+			.refreshBody();
+		this.decorations
+			.create(500, 1700, "rock-brown-1")
+			.setScale(0.3)
+			.refreshBody();
+		this.decorations
+			.create(370, 1600, "rock-gray-1")
+			.setScale(0.35)
+			.refreshBody();
 
-		this.decorations.create(835, 2500, "rock-brown-3").setScale(0.6).setAngle(0).refreshBody();
+		this.decorations
+			.create(900, 2000, "rock-brown-3")
+			.setScale(0.4)
+			.setAngle(-50)
+			.refreshBody();
+		this.decorations
+			.create(835, 2100, "rock-gray-1")
+			.setScale(0.2)
+			.setAngle(-120)
+			.refreshBody();
+
+		this.decorations
+			.create(435, 2150, "rock-gray-1")
+			.setScale(0.25)
+			.setAngle(120)
+			.refreshBody();
+		this.decorations
+			.create(505, 2100, "rock-gray-2")
+			.setScale(0.3)
+			.setAngle(20)
+			.refreshBody();
+		this.decorations
+			.create(475, 2200, "rock-brown-1")
+			.setScale(0.35)
+			.setAngle(0)
+			.refreshBody();
+
+		this.decorations
+			.create(100, 1800, "rock-gray-3")
+			.setScale(0.55)
+			.setAngle(-90)
+			.refreshBody();
+
+		this.decorations
+			.create(835, 2500, "rock-brown-3")
+			.setScale(0.6)
+			.setAngle(0)
+			.refreshBody();
 
 		this.physics.add.collider(this.playerGroup, this.decorations);
 
@@ -328,7 +410,6 @@ export default class MainScene extends Phaser.Scene {
 				factsLevel3,
 				factsLevel4,
 				factsLevel5
-
 			} = gameInfo;
 			//this.physics.resume() ----> WHAT DOES THIS??
 
@@ -343,7 +424,7 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.questionsLevel3 = questionsLevel3;
 			scene.state.questionsLevel4 = questionsLevel4;
 			scene.state.questionsLevel5 = questionsLevel5;
-      scene.state.factsLevel1 = factsLevel1;
+			scene.state.factsLevel1 = factsLevel1;
 			scene.state.factsLevel2 = factsLevel2;
 			scene.state.factsLevel3 = factsLevel3;
 			scene.state.factsLevel4 = factsLevel4;
@@ -363,7 +444,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.instructionsBubble.setInteractive();
 
 		scene.instructionsBubble.on("pointerdown", () => {
-      scene.scene.launch("Instructions");
+			scene.scene.launch("Instructions");
 		});
 
 		this.socket.on("currentPlayers", function ({ players, numPlayers }) {
