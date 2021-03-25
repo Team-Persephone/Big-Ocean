@@ -16,6 +16,17 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	updateMovement(cursors) {
+
+		this.anims.play("swim", true);
+		
+		let movementObject = {
+			key: this.scene.state.key,
+			x: this.scene.scubaDiver.x,
+			y: this.scene.scubaDiver.y,
+			angle: this.scene.scubaDiver.angle,
+			faceRight: this.faceRight
+		}
+		
 		//move down
 		const waiting = this.waiting;
 
@@ -25,15 +36,8 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			} else if (!this.faceRight) {
 				this.setAngle(-45);
 			}
-			this.anims.play("swim", true);
 			this.setVelocityY(50);
-			this.scene.socket.emit("playerMovement", {
-				key: this.scene.state.key,
-				x: this.scene.scubaDiver.x,
-				y: this.scene.scubaDiver.y,
-				angle: this.scene.scubaDiver.angle,
-				faceRight: this.faceRight
-			});
+			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move up
 		else if (!waiting && cursors.up.isDown) {
@@ -42,15 +46,8 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			} else if (!this.faceRight) {
 				this.setAngle(45);
 			}
-			this.anims.play("swim", true);
 			this.setVelocityY(-50);
-			this.scene.socket.emit("playerMovement", {
-				key: this.scene.state.key,
-				x: this.scene.scubaDiver.x,
-				y: this.scene.scubaDiver.y,
-				angle: this.scene.scubaDiver.angle,
-				faceRight: this.faceRight
-			});
+			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move left
 		else if (cursors.left.isDown) {
@@ -58,15 +55,8 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 				this.flipX = !this.flipX;
 				this.faceRight = false;
 			}
-			this.anims.play("swim", true);
 			this.setVelocityX(-50);
-			this.scene.socket.emit("playerMovement", {
-				key: this.scene.state.key,
-				x: this.scene.scubaDiver.x,
-				y: this.scene.scubaDiver.y,
-				angle: this.scene.scubaDiver.angle,
-				faceRight: this.faceRight
-			});
+			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move right
 		else if (cursors.right.isDown) {
@@ -74,25 +64,14 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 				this.flipX = !this.flipX;
 				this.faceRight = true;
 			 }
-			this.anims.play("swim", true);
 			this.setVelocityX(50);
-			this.scene.socket.emit("playerMovement", {
-				key: this.scene.state.key,
-				x: this.scene.scubaDiver.x,
-				y: this.scene.scubaDiver.y,
-				angle: this.scene.scubaDiver.angle,
-				faceRight: this.faceRight
-			});
-		} else {
+			this.scene.socket.emit("playerMovement", movementObject);
+		} 
+		//no movement
+		else {
 			this.setVelocityX(0);
 			this.setVelocityY(0);
-			this.scene.socket.emit("playerMovement", {
-				key: this.scene.state.key,
-				x: this.scene.scubaDiver.x,
-				y: this.scene.scubaDiver.y,
-				angle: this.scene.scubaDiver.angle,
-				faceRight: this.faceRight
-			});
+			this.scene.socket.emit("playerMovement", movementObject);
 			this.angle = 0;
 		}
 	}

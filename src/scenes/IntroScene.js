@@ -15,51 +15,44 @@ export default class IntroScene extends Phaser.Scene {
 		this.load.tilemapTiledJSON("tilemap", "/assets/big-ocean-level1.json");
 	}
 
-	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
-	create() {
-		const scene = this;
-		let key;
-
-		// const logo = scene.add.text(100, 100, "One-Big-Ocean", {fontSize: 50})
-		//add gamekey to url for host to share
-		function addUrl(gameKey) {
-			// console.log(window.location.href);
-			const url = `${window.location.href}${gameKey}`;
-			const link = scene.add.text(600, 300, url);
-			link.setInteractive();
-			link.on("pointerdown", () => {
-				navigator.clipboard.writeText(url);
-				link.setText("copied!");
-				// let s = window.open(url, '_blank')
-				// if(s && s.focus) s.focus()
-				// else if (!s) window.location.href = url
-			});
-		}
-
-		//if there is a gameKey in the url, stop the waiting room because the code was already generated
-		if (window.location.pathname.length > 1) {
-			//gets gameKey from url
-			const gameKey = window.location.pathname.slice(1);
-			this.socket.emit("joinWaitingRoom", gameKey);
-			this.scene.stop("IntroScene");
-			// return;
-		}
-		//OTHERWISE THIS:
-		// add button to creat game to scene
-		const createGameButton = this.add.text(600, 500, "Create new game", {
-			fontFamily: "menlo"
-		});
-		createGameButton.setInteractive();
-		createGameButton.on("pointerdown", () => {
-			createGameButton.setVisible(false);
-			joinGameButton.setVisible(true);
-			this.socket.emit("createGame");
-		});
-
-		this.socket.on("gameCreated", gameKey => {
-			key = gameKey;
-			addUrl(gameKey);
-		});
+  // THIS IS PHASER CREATE FUNCTION TO CREATE SCENE 
+  create() {
+    const scene = this
+    let key;
+    
+    //add gamekey to url for host to share
+    function addUrl (gameKey) {
+      const url = `${window.location.href}${gameKey}`;
+      const link = scene.add.text(100, 100, url);
+      link.setInteractive();
+      link.on('pointerdown', () => {
+        navigator.clipboard.writeText(url);
+        link.setText('copied!');
+      });
+    };
+    //if there is a gameKey in the url, stop the waiting room because the code was already generated
+    if (window.location.pathname.length > 1) {
+      //gets gameKey from url
+      const gameKey = window.location.pathname.slice(1);
+      this.socket.emit('joinWaitingRoom', gameKey);
+      this.scene.launch('WaitingRoom', { socket: this.socket })
+      this.scene.stop('IntroScene');
+      // return;
+    }
+    //OTHERWISE THIS:
+    // add button to creat game to scene
+    const createGameButton = this.add.text(600, 500, 'Create new game', { fontFamily: 'menlo' });
+    createGameButton.setInteractive();
+    createGameButton.on('pointerdown', () => {
+      createGameButton.setVisible(false);
+      joinGameButton.setVisible(true)
+      this.socket.emit('createGame')
+    });
+    
+    this.socket.on('gameCreated', gameKey => {
+      key = gameKey
+      addUrl(gameKey)
+    })
 
 		const joinGameButton = this.add.text(600, 500, "join your friends!", {
 			fontFamily: "menlo"
