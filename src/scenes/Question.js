@@ -9,13 +9,16 @@ export default class Question extends Phaser.Scene {
 		this.socket = data.socket;
 	}
 
-	preload() {}
+	preload() {
+		this.load.image('blue', '/assets/background/babyGotBlue.png')
+	}
 
 	create() {
-		this.questionPopUp = scene.add.graphics();
-
-		this.questionPopUp.lineStyle(5, 0xff00ff, 1.0);
-		this.questionPopUp.fillStyle(0xffffff, 1.0);
+		console.log('clam was clicked')
+		this.add.image(200, 200, 'blue');
+		// this.questionPopUp = this.scene.add.graphics();
+		// this.questionPopUp.lineStyle(5, 0xff00ff, 1.0);
+		// this.questionPopUp.fillStyle(0xffffff, 1.0);
 	}
 
 	update() {}

@@ -86,8 +86,6 @@ module.exports = io => {
 				}
 			});
 
-			console.log(activeGames[key].questionsLevel5);
-
 			facts.forEach(fact => {
 				let x = Math.ceil(Math.random() * 1000);
 				let y = Math.ceil(Math.random() * 600);
@@ -115,7 +113,6 @@ module.exports = io => {
 				}
 			});
 
-			console.log(activeGames[key].factsLevel1);
 			socket.emit("gameCreated", key);
 		});
 
@@ -129,7 +126,6 @@ module.exports = io => {
 				position: {
 					x: 100,
 					y: 100,
-
 					angle: 0
 					//   faceRight: false,
 				},

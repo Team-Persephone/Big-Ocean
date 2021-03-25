@@ -13,6 +13,7 @@ import IntroScene from './scenes/IntroScene';
 import WaitingRoom from './scenes/WaitingRoom';
 import ChatScene from './scenes/ChatScene'
 import Instructions from './scenes/Instructions';
+import Question from './scenes/Question';
 
 class Game extends Phaser.Game {
   constructor() {
@@ -22,7 +23,8 @@ class Game extends Phaser.Game {
     this.scene.add('IntroScene', IntroScene);
     this.scene.add('WaitingRoom', WaitingRoom);
     this.scene.add('ChatScene', ChatScene);
-    this.scene.add('Instructions', Instructions)
+    this.scene.add('Instructions', Instructions);
+    this.scene.add('Question', Question);
     this.scene.start('MainScene');
   }
 }

@@ -129,11 +129,15 @@ export default class MainScene extends Phaser.Scene {
 	}
 
 	createOverlap(scene, scubaDiver, object) {
-		scene.physics.add.overlap(scubaDiver, object, () =>
-			object.setTint(0xbdef83)
-		);
+    const clam = object;
+    console.log('clam before change--->', clam)
+		scene.physics.add.overlap(scubaDiver, clam, this.overlapFunction(clam));
 	}
 
+  overlapFunction (object) {
+    object.setTint(0xbdef83).setInteractive();
+    console.log('object', object)
+  }
 	//helper function to add other players to scene
 	addFriends(scene, player) {
 		const playerFriend = scene.add
@@ -151,7 +155,6 @@ export default class MainScene extends Phaser.Scene {
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
 	create() {
 		const scene = this;
-		console.log("this is phaser.world", this);
 		this.music = this.sound.add("music", {
 			volume: 0.5,
 			loop: true
@@ -496,5 +499,12 @@ export default class MainScene extends Phaser.Scene {
 		if (this.scubaDiver) {
 			this.scubaDiver.update(this.cursors);
 		}
+    if(this.clam && this.clam.isActive) {
+      console.log('we are here!!!!!')
+      this.clam.on("pointerdown", () => {
+        console.log('scene in on pointdown--->', scene)
+        this.scene.launch("Question")
+      });
+    }
 	}
 }
