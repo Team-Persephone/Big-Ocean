@@ -1,5 +1,4 @@
-
-const { PearlQuest, ShrimpFact, Level } = require('../db/models');
+const { PearlQuest, ShrimpFact, Level } = require("../db/models");
 
 const activeGames = {};
 
@@ -14,58 +13,80 @@ const activeGames = {};
     numPlayers: 0
     score: { socket.id: playerScore = 0},
     level: 1,
-    questionsLevel1: [{question: '', options: [], answer: '', positionX: 0, positionY: 0}],
-    questionsLevel2: [{question: '', options: [], answer: '', positionX: 0, positionY: 0}],
-    questionsLevel3: [{question: '', options: [], answer: '', positionX: 0, positionY: 0}],
-    questionsLevel4: [{question: '', options: [], answer: '', positionX: 0, positionY: 0}],
-    questionsLevel5: [{question: '', options: [], answer: '', positionX: 0, positionY: 0}],
+    questionsLevel1: [{question: '', options: [], answer: '', x: 0, y: 0}],
+    questionsLevel2: [{question: '', options: [], answer: '', x: 0, y: 0}],
+    questionsLevel3: [{question: '', options: [], answer: '', x: 0, y: 0}],
+    questionsLevel4: [{question: '', options: [], answer: '', x: 0, y: 0}],
+    questionsLevel5: [{question: '', options: [], answer: '', x: 0, y: 0}],
     facts: []
     //
   }*/
 
-module.exports = (io) => {
-  io.on("connection", async (socket) => {
-    console.log(
-      `A socket connection to the server has been made: ${socket.id}`
-    );
+module.exports = io => {
+	io.on("connection", async socket => {
+		console.log(
+			`A socket connection to the server has been made: ${socket.id}`
+		);
 
-    //socket listen on createGame
-    socket.on('createGame', async function () {
-      let key = codeGenerator();
-      while (Object.keys(activeGames).includes(key)) {
-        key = codeGenerator();
-      }
-      activeGames[key] = {
-        key,
-        players: {},
-        numPlayers: 0,
-        avatars: ['scubaGreen', 'scubaPink', 'scubaPurple'],
-        score: {},
-        level: 1,
-        questions: [],
-        facts: [],
-        // taskPositions: {},
-      };
+		//socket listen on createGame
+		socket.on("createGame", async function () {
+			let key = codeGenerator();
+			while (Object.keys(activeGames).includes(key)) {
+				key = codeGenerator();
+			}
+			activeGames[key] = {
+				key,
+				players: {},
+				numPlayers: 0,
+				avatars: ["scubaGreen", "scubaPink", "scubaPurple"],
+				score: {},
+				level: 1,
+				questionsLevel1: [],
+				questionsLevel2: [],
+				questionsLevel3: [],
+				questionsLevel4: [],
+				questionsLevel5: [],
+				facts: []
+				// taskPositions: {},
+			};
 
-      const questions = await PearlQuest.findAll();
+			const questions = await PearlQuest.findAll();
 
-      // console.log(questions);
+			// console.log(questions);
 
-      let questionsObj = questions.forEach((question) => {
-        let x = Math.ceil(Math.random() * 700);
-        let y = Math.ceil(Math.random() * 500);
-        return {
-          question: question.question,
-          options: question.options,
-          answer: question.answer,
-          postionX: x,
-          positionY: y,
-        };
-      });
+			questions.forEach(question => {
+				let x = Math.ceil(Math.random() * 700);
+				let y = Math.ceil(Math.random() * 500);
+				let questionObj = {
+					question: question.question,
+					options: question.options,
+					answer: question.answer,
+					isResolved: false,
+					x,
+					y
+				};
+				if (question.levelId === 1) {
+					activeGames[key].questionsLevel1.push(questionObj);
+				}
+				if (question.levelId === 2) {
+					activeGames[key].questionsLevel2.push(questionObj);
+				}
+				if (question.levelId === 3) {
+					activeGames[key].questionsLevel3.push(questionObj);
+				}
+				if (question.levelId === 4) {
+					activeGames[key].questionsLevel4.push(questionObj);
+				}
+				if (question.levelId === 5) {
+					activeGames[key].questionsLevel5.push(questionObj);
+				}
+			});
 
-      console.log(questionsObj);
-      socket.emit("gameCreated", key);
-    });
+			console.log(activeGames[key].questionsLevel5);
+
+			// console.log(questionsObj);
+			socket.emit("gameCreated", key);
+		});
 
     //socket listen on plaery joinGame
 
@@ -133,7 +154,6 @@ module.exports = (io) => {
     });
   });
 });
-
 
 function codeGenerator() {
   let code = "";

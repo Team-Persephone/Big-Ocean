@@ -1,5 +1,6 @@
-import Phaser from 'phaser';
-import Scuba from '../entities/Scuba';
+import Phaser from "phaser";
+import Scuba from "../entities/Scuba";
+import Clam from "../entities/Clam";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -25,6 +26,10 @@ export default class MainScene extends Phaser.Scene {
         frameHeight: 420,
       }
     );
+    this.load.spritesheet("clam", "/assets/clam.png", {
+			frameWidth: 990,
+			frameHeight: 860
+		});
 
     
     //load background
@@ -48,6 +53,12 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
+	createClam(scene, x, y, file) {
+		scene.clam = new Clam(this, x, y, file).setScale(0.07);
+		console.log(scene.clam);
+		this.createAnimationsClam("clam");
+	}
+
   // helper function to add animation to avatars
   createAnimations(avatar) {
     this.anims.create({
@@ -60,6 +71,18 @@ export default class MainScene extends Phaser.Scene {
       repeat: -1,
     });
   }
+
+createAnimationsClam(object) {
+		this.anims.create({
+			key: "openclose",
+			frames: this.anims.generateFrameNumbers(object, {
+				start: 0,
+				end: 2
+			}),
+			frameRate: 1,
+			repeat: -1
+		});
+	}
 
   //helper function to add other players to scene
   addFriends(scene, player) {
@@ -98,6 +121,15 @@ export default class MainScene extends Phaser.Scene {
     map.createStaticLayer('stone', tileset);
     map.createStaticLayer('stone2', tileset);
     map.createStaticLayer('foam', tileset);
+    
+    	const playButton = this.add.text(400, 500, "Play", { fontFamily: "menlo" });
+		playButton.setInteractive();
+		playButton.on("pointerdown", () => {
+			playButton.setVisible(false);
+			scene.state.questionsLevel1.forEach(question => {
+				scene.createClam(scene, question.x, question.y, "clam");
+			});
+		});
 
     this.physics.world.setBounds(0, 320, 1088, 4800);
     //makes friends visibel
@@ -110,19 +142,37 @@ export default class MainScene extends Phaser.Scene {
     //Volume - add volume sound bar for display here
 
     // this.createPlayer(gameInfo.players[socketId])
-    this.socket.on('setState', function(gameInfo){
-      const { key, players, avatars, score, level, questions, facts } = gameInfo;
-      //this.physics.resume() ----> WHAT DOES THIS??
-      //set state to gameInfo
-      scene.state.key = key;
-      scene.state.players = players;
-      scene.state.avatars = avatars;
-      scene.state.score = score;
-      scene.state.level = level;
-      scene.state.questions = questions;
-      scene.state.facts = facts;
-    })
+this.socket.on("setState", function (gameInfo) {
+			const {
+				key,
+				players,
+				avatars,
+				score,
+				level,
+				questionsLevel1,
+				questionsLevel2,
+				questionsLevel3,
+				questionsLevel4,
+				questionsLevel5,
+				facts
+			} = gameInfo;
+			//this.physics.resume() ----> WHAT DOES THIS??
 
+			//set state to gameInfo
+			scene.state.key = key;
+			scene.state.players = players;
+			scene.state.avatars = avatars;
+			scene.state.score = score;
+			scene.state.level = level;
+			scene.state.questionsLevel1 = questionsLevel1;
+			scene.state.questionsLevel2 = questionsLevel2;
+			scene.state.questionsLevel3 = questionsLevel3;
+			scene.state.questionsLevel4 = questionsLevel4;
+			scene.state.questionsLevel5 = questionsLevel5;
+			scene.state.facts = facts;
+
+			// console.log("state -->", scene.state);
+		});
     this.socket.on('currentPlayers', function({ players, numPlayers }) {
       scene.state.numPlayers = numPlayers;
       Object.keys(players).forEach( function(id){
@@ -142,8 +192,9 @@ export default class MainScene extends Phaser.Scene {
     this.socket.on("friendMoved", function (friend) {
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
 				if (friend.playerId === playerFriend.playerId) {
-          const previousX = playerFriend.x;
+					const previousX = playerFriend.x;
 					const previousY = playerFriend.y;
+
           const previousAngle = playerFriend.angle;
           const previousFaceRight = playerFriend.faceRight;
 
@@ -163,14 +214,13 @@ export default class MainScene extends Phaser.Scene {
 				}
 			});
 		});
-  }
+	}
 
-  update() {
-    const scene = this;
-    //update the movement
-    if(this.scubaDiver) {
-      this.scubaDiver.update(this.cursors);
-    }
-
-  }
+	update() {
+		const scene = this;
+		//update the movement
+		if (this.scubaDiver) {
+			this.scubaDiver.update(this.cursors);
+		}
+	}
 }
