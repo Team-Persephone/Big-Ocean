@@ -177,24 +177,50 @@ export default class MainScene extends Phaser.Scene {
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
 
-		// const sleep = async delay => {
-		// 	return new Promise(resolve => setTimeout(() => resolve(true), delay));
-		// };
+		const sleep = async delay => {
+			return new Promise(resolve => setTimeout(() => resolve(true), delay));
+		};
+		let waitingForHost;
 
-		// this.socket.on("startedCountdown", async seconds => {
-		// 	const currentTimer = this.add.text(300, 200, `${seconds}`);
+		this.socket.on("startedCountdown", async seconds => {
+			//INSTRUCTIONS BUBBLE
+			scene.instructionsBubble = scene.add
+				.image(734, 545, "instructions")
+				.setScale(0.15)
+				.setScrollFactor(0);
 
-		// 	while (seconds > 0) {
-		// 		console.log(seconds)
-		//     currentTimer.setText(`${seconds}`);
-		//     // await sleep(1000);
-		// 		await sleep(0);
-		// 		seconds--;
-		//   }
-		//   currentTimer.destroy();
+			scene.instructionsBubble.setInteractive();
 
-		//   this.scubaDiver.setWaiting(false)
-		// });
+			scene.instructionsBubble.on("pointerdown", () => {
+				this.scene.launch("Instructions", { showReturnText: true });
+			});
+
+			if (waitingForHost) waitingForHost.destroy();
+
+			this.scene.stop("Instructions");
+
+			const currentTimer = this.add.text(300, 200, `${seconds}`, {
+				fontSize: 50
+			});
+
+			while (seconds > 0) {
+				console.log(seconds);
+				currentTimer.setText(`${seconds}`);
+				await sleep(1000);
+				seconds--;
+			}
+			this.scubaDiver.waiting = false;
+			currentTimer.setText('Go!');
+			await sleep(1000)
+			currentTimer.destroy();
+			//add clams and shrimps to game
+			scene.state.questionsLevel1.forEach(question => {
+				scene.createClam(scene, question.x, question.y, "clam");
+			});
+			scene.state.factsLevel1.forEach(fact => {
+				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+			});
+		});
 
 
 		//set background
@@ -208,45 +234,36 @@ export default class MainScene extends Phaser.Scene {
 		map.createStaticLayer("foam", tileset);
 
 		// const displayPlay = this.displayPlayButton;
-		const display = this.add.text(
-			170,
-			590,
-			"When yOu are ready tO plunge, click"
-		);
-		const playButton = this.add.text(520, 590, "< start >", {
-			fontFamily: "menlo"
-		});
 
-		playButton.setInteractive();
-		playButton.on("pointerdown", () => {
-			playButton.setVisible(false);
-			display.setVisible(false);
-			scene.state.questionsLevel1.forEach(question => {
-				scene.createClam(scene, question, "clam");
-				scene.instructionsBubble.setVisible(false);
-				scene.instructionsText.setVisible(false);
+		if (window.location.pathname.length <= 1) {
+			const display = this.add.text(
+				170,
+				590,
+				"When yOu are ready tO plunge, click"
+			);
+			const playButton = this.add.text(520, 590, "< start >", {
+				fontFamily: "menlo"
 			});
-			scene.state.factsLevel1.forEach(fact => {
-				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+
+			playButton.setInteractive();
+			playButton.on("pointerdown", () => {
+				playButton.setVisible(false);
+				display.setVisible(false);
+				this.socket.emit("startCountdown", 5);
 			});
-		});
+		} else {
+			waitingForHost = this.add.text(
+				170,
+				590,
+				"Waiting for host to start game"
+			);
+		}
+
 		//set boundries to the game world
 		this.physics.world.setBounds(0, 320, 1088, 4800);
 		//makes friends visibel
 		scene.playerFriends = this.physics.add.group();
-		//create navigation and animation for scuba divers
-		this.cursors = this.input.keyboard.createCursorKeys();
-		//set up camera
-		this.cameras.main.setBounds(0, 0, 1088, 4800);
-		//add rock
-		this.decorations = this.physics.add.staticGroup();
 
-		this.physics.world.setBounds(0, 320, 1088, 4800);
-		//makes friends visibel
-		scene.playerFriends = this.physics.add.group();
-
-		//create navigation and animation for scuba divers
-		this.cursors = this.input.keyboard.createCursorKeys();
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
@@ -441,22 +458,6 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.factsLevel3 = factsLevel3;
 			scene.state.factsLevel4 = factsLevel4;
 			scene.state.factsLevel5 = factsLevel5;
-		});
-
-		//INSTRUCTIONS BUBBLE
-		scene.instructionsBubble = scene.add
-			.image(734, 545, "instructions")
-			.setScale(0.15);
-		scene.instructionsText = scene.add.text(700, 570, "Instructions", {
-			fill: "#ffffff",
-			fontSize: "10px",
-			fontStyle: "bold"
-		});
-
-		scene.instructionsBubble.setInteractive();
-
-		scene.instructionsBubble.on("pointerdown", () => {
-			scene.scene.launch("Instructions");
 		});
 
 		this.socket.on("currentPlayers", function ({ players, numPlayers }) {

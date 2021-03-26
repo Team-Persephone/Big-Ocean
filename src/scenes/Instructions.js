@@ -5,48 +5,58 @@ export default class Instructions extends Phaser.Scene {
     super("Instructions");
   }
 
+  init(data) {
+		this.showReturnText = data.showReturnText;
+	}
+
   preload() {
-    this.load.image("blue", "assets/backgrounds/babyGotBlue.png");
-    // this.load.image("dark", "assets/dark.png");
+
   }
 
   async create() {
     const scene = this;
 
-    scene.graphics = scene.add.image(400, 300, "blue");
-
-    scene.add.text(125, 83, "Instructions", {
+    scene.add.text(275, 10, "instructiOns", {
       fill: "#00ff00",
+      backgroundColor: "#1abeff",
       fontSize: "34px",
       fontStyle: "bold",
     });
 
-    scene.returnText = scene.add.text(148, 494, "Go Back", {
-      fill: "#000000",
-      fontSize: "15px",
+    scene.returnText = scene.add.text(650, 270, "gO back", {
+      fill: "#ffffff",
+      fontSize: "17px",
       fontStyle: "bold",
     });
 
+    scene.returnText.visible = false;
+    if (this.showReturnText) scene.returnText.visible = true;
+
     scene.returnText.setInteractive();
+
     scene.returnText.on("pointerover", () => {
+      scene.returnText.setStyle({ fill: '#0f0'});
     });
     scene.returnText.on("pointerout", () => {
+      scene.returnText.setStyle({ fill: '#fff'});
     });
+
     scene.returnText.on("pointerdown", () => {
       scene.scene.stop("Instructions");
     });
 
 
     scene.add.text(
-      155,
-      140,
-      "1. navigate yOur surrOundings + lOcate preciOus clams, whOse pearls cOntain ancient queries On big-O nOtatiOn.  \n\nanswer cOrrectly + be awarded the pearl. \n\n\n\n-Walk up to the red highlighted item. \n\n\n-answer incOrrectly, + be fOrced back tO the Ocean surface, faced with the lOnely sOjOurn back dOwn.",
+      50,
+      50,
+      "\n\n1. navigate yOur surrOundings + lOcate preciOus clams, whOse pearls cOntain ancient queries On big-O nOtatiOn. \n\n \n 2. dOn’t fOrget tO keep an eye On the clOck. \n \n 3. need help? apprOach a shrimp fOr a hint. \n \n 4. finish with the mOst pOints, and win the title of “mighty O.” \n \n 5. ready tO play? click the buttOn belOw tO cOntinue.\n \n ",
       {
         fill: "#00ff00",
-        fontSize: "15px",
+        backgroundColor: "#1abeff",
+        fontSize: "17px",
         fontStyle: "bold",
         align: "left",
-        wordWrap: { width: 240, height: 445, useAdvancedWrap: true },
+        wordWrap: { width: 700, height: 445, useAdvancedWrap: true },
       }
     );
   }
