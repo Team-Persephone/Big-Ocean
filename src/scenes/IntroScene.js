@@ -63,10 +63,9 @@ export default class IntroScene extends Phaser.Scene {
 		joinGameButton.setVisible(false);
 		joinGameButton.setInteractive();
 		joinGameButton.on("pointerdown", () => {
-
-			this.scene.launch("Instructions")
-
 			joinGameButton.setVisible(false);
+		
+			this.scene.launch("Instructions")
 			this.socket.emit("joinWaitingRoom", key);
 			this.scene.launch("WaitingRoom");
 			this.scene.stop("IntroScene");

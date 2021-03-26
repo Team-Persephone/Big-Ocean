@@ -202,6 +202,13 @@ export default class MainScene extends Phaser.Scene {
 			currentTimer.setText('Go!');
 			await sleep(1000)
 			currentTimer.destroy();
+			//add clams and shrimps to game
+			scene.state.questionsLevel1.forEach(question => {
+				scene.createClam(scene, question.x, question.y, "clam");
+			});
+			scene.state.factsLevel1.forEach(fact => {
+				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+			});
 		});
 
 		//connect the socket connection to IntoScene
@@ -235,15 +242,7 @@ export default class MainScene extends Phaser.Scene {
 			playButton.on("pointerdown", () => {
 				playButton.setVisible(false);
 				display.setVisible(false);
-				scene.state.questionsLevel1.forEach(question => {
-					scene.createClam(scene, question.x, question.y, "clam");
-				});
-
-				this.socket.emit("startCountdown", 5);
-
-				scene.state.factsLevel1.forEach(fact => {
-					scene.createShrimp(scene, fact.x, fact.y, "shrimp");
-				});
+				this.socket.emit("startCountdown", 1);
 			});
 		} else {
 			waitingForHost = this.add.text(
