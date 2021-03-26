@@ -144,10 +144,6 @@ export default class MainScene extends Phaser.Scene {
 		clam.overlapTriggered = true;
 	}
 
-  // overlapFunction (object) {
-  //   console.log('object', object)
-  // }
-	//helper function to add other players to scene
 	addFriends(scene, player) {
 		const playerFriend = scene.add
 			.sprite(
@@ -173,7 +169,6 @@ export default class MainScene extends Phaser.Scene {
 		//launch the socket connection
 		this.socket = io();
 		//connect the socket connection to IntoScene
-
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
 
@@ -204,18 +199,17 @@ export default class MainScene extends Phaser.Scene {
 			});
 
 			while (seconds > 0) {
-				console.log(seconds);
 				currentTimer.setText(`${seconds}`);
 				await sleep(1000);
 				seconds--;
 			}
 			this.scubaDiver.waiting = false;
-			currentTimer.setText('Go!');
+			currentTimer.setText('gO!');
 			await sleep(1000)
 			currentTimer.destroy();
 			//add clams and shrimps to game
 			scene.state.questionsLevel1.forEach(question => {
-				scene.createClam(scene, question.x, question.y, "clam");
+				scene.createClam(scene, question, "clam");
 			});
 			scene.state.factsLevel1.forEach(fact => {
 				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
