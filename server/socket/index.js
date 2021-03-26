@@ -145,6 +145,11 @@ module.exports = io => {
 
 			socket.emit("setState", gameInfo);
 
+			socket.on("startCountdown", (seconds) => {
+				socket.to(gameKey).emit("startedCountdown", seconds)
+				socket.emit("startedCountdown", seconds)
+			})
+
 			//send current players info
 			socket.emit("currentPlayers", {
 				players: gameInfo.players,

@@ -5,17 +5,18 @@ export default class Instructions extends Phaser.Scene {
     super("Instructions");
   }
 
+  init(data) {
+		this.showReturnText = data.showReturnText;
+	}
+
   preload() {
-    this.load.image("blue", "assets/backgrounds/babyGotBlue.png");
-    // this.load.image("dark", "assets/dark.png");
+
   }
 
   async create() {
     const scene = this;
 
-    scene.graphics = scene.add.image(400, 300, "blue");
-
-    scene.add.text(125, 83, "Instructions", {
+    scene.add.text(275, 10, "Instructions", {
       fill: "#00ff00",
       fontSize: "34px",
       fontStyle: "bold",
@@ -26,6 +27,9 @@ export default class Instructions extends Phaser.Scene {
       fontSize: "15px",
       fontStyle: "bold",
     });
+
+    scene.returnText.visible = false;
+    if (this.showReturnText) scene.returnText.visible = true;
 
     scene.returnText.setInteractive();
     scene.returnText.on("pointerover", () => {
@@ -38,8 +42,8 @@ export default class Instructions extends Phaser.Scene {
 
 
     scene.add.text(
-      155,
-      140,
+      50,
+      50,
       "1. navigate yOur surrOundings + lOcate preciOus clams, whOse pearls cOntain ancient queries On big-O nOtatiOn.  \n\nanswer cOrrectly + be awarded the pearl. \n\n\n\n-Walk up to the red highlighted item. \n\n\n-answer incOrrectly, + be fOrced back tO the Ocean surface, faced with the lOnely sOjOurn back dOwn.",
       {
         fill: "#00ff00",
