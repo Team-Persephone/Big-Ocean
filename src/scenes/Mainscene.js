@@ -131,19 +131,18 @@ export default class MainScene extends Phaser.Scene {
 		const { x, y, question, options, answer } = info;
 		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
 		scene.createAnimationsClam("clam");
-		scene.clam.info = { question, options, answer };
-		scene.clam.overlapTriggered = false;
-		scene.clam.overlapCollider = scene.physics.add.overlap(
-			scene.scubaDiver,
-			scene.clam,
-			scene.isOverlapping,
-			null,
-			scene
-		);
+		scene.clam.info = {question, options, answer}
+		scene.clam.overlapTriggered= false;
+    	scene.clam.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.clam, scene.isOverlappingQuestion, null, scene)
 	}
-	createShrimp(scene, x, y, file) {
+	createShrimp(scene, info, file) {
+		const { x, y, fact, isRead } = info;
+		console.log('fact in shrimp', info);
 		scene.shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
 		scene.createAnimationsShrimp("shrimp");
+		scene.shrimp.info = { fact, isRead};
+		scene.shrimp.overlapTriggered = false;
+		scene.shrimp.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.shrimp, scene.isOverlappingFact, null, scene)
 	}
 
 	// helper function to add animation to avatars
@@ -184,8 +183,8 @@ export default class MainScene extends Phaser.Scene {
 	}
 	// in here scubadiver and clam are variables passed in from add.overlap
 	//scubadiver and clam do not have to be connected to scene in this callback function
-	isOverlapping(scubaDiver, clam) {
-		if (clam.overlapTriggered) {
+	isOverlappingQuestion(scubaDiver, clam) {
+		if(clam.overlapTriggered){
 			this.physics.world.removeCollider(clam.overlapCollider);
 		}
 		clam.setTint(0xbdef83);
@@ -193,9 +192,22 @@ export default class MainScene extends Phaser.Scene {
 		clam.on("pointerdown", () => {
 			this.scene.launch("Question", { info: clam.info });
 			clam.disableInteractive();
-		});
-		console.log("overlapping!");
+
+		})
 		clam.overlapTriggered = true;
+	}
+
+	isOverlappingFact(scubaDiver, shrimp) {
+		if(shrimp.overlapTriggered){
+			this.physics.world.removeCollider(shrimp.overlapCollider);
+		}
+		shrimp.setTint(0xbdef83);
+		shrimp.setInteractive();
+		shrimp.on("pointerdown", () => {
+			this.scene.launch("Facts", { info: shrimp.info })
+			shrimp.disableInteractive();
+		})
+		shrimp.overlapTriggered = true;
 	}
 
 	addFriends(scene, player) {
@@ -239,9 +251,7 @@ export default class MainScene extends Phaser.Scene {
 				.setScrollFactor(0);
 
 			scene.instructionsBubble.setInteractive();
-
 			scene.showInstructions = false;
-
 			scene.instructionsBubble.on("pointerdown", () => {
 				if (!scene.showInstructions) {
 					scene.showInstructions = !scene.showInstructions;
@@ -255,7 +265,6 @@ export default class MainScene extends Phaser.Scene {
 			if (waitingForHost) waitingForHost.destroy();
 
 			this.scene.stop("Instructions");
-
 			const currentTimer = this.add.text(300, 200, `${seconds}`, {
 				fontSize: 50
 			});
@@ -274,7 +283,7 @@ export default class MainScene extends Phaser.Scene {
 				scene.createClam(scene, question, "clam");
 			});
 			scene.state.factsLevel1.forEach(fact => {
-				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+				scene.createShrimp(scene, fact, "shrimp");
 			});
 		});
 
