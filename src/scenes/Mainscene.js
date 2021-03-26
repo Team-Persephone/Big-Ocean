@@ -65,30 +65,30 @@ export default class MainScene extends Phaser.Scene {
 
 	//helper function to create avatar for player
 	createPlayer(scene, player) {
-		scene.scubaDiver = new Scuba(this, 100, 350, `${player.avatar}`).setScale(
-			0.2
-		);
+		scene.scubaDiver = new Scuba(scene, 100, 350, `${player.avatar}`).setScale(0.2);
 		scene.scubaDiver.setAngle(-45);
 		scene.scubaDiver.faceRight = true;
 
 		//create animation
-		this.createAnimations(player.avatar);
+		scene.createAnimations(player.avatar);
 		//add to physics group for collision detection
-		this.playerGroup.add(scene.scubaDiver);
+		scene.playerGroup.add(scene.scubaDiver);
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
 	}
 
-	createClam(scene, x, y, file) {
-		scene.clam = new Clam(this, x, y, file).setScale(0.07);
-		this.createAnimationsClam("clam");
-		this.createOverlap(scene, scene.scubaDiver, scene.clam);
+	createClam(scene, info, file) {
+		const { x, y, question, options, answer} = info
+		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
+		scene.createAnimationsClam("clam");
+		scene.clam.info = {question, options, answer}
+		scene.clam.overlapTriggered= false;
+    	scene.clam.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.clam, scene.isOverlapping, null, scene)
 	}
 	createShrimp(scene, x, y, file) {
-		scene.shrimp = new Shrimp(this, x, y, file).setScale(0.07);
-		this.createAnimationsShrimp("shrimp");
-		this.createOverlap(scene, scene.scubaDiver, scene.shrimp);
+		scene.shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
+		scene.createAnimationsShrimp("shrimp");
 	}
 
 	// helper function to add animation to avatars
@@ -127,17 +127,26 @@ export default class MainScene extends Phaser.Scene {
 			repeat: -1
 		});
 	}
+	// in here scubadiver and clam are variables passed in from add.overlap 
+	//scubadiver and clam do not have to be connected to scene in this callback function
+	isOverlapping(scubaDiver, clam) {
+		if(clam.overlapTriggered){
+			this.physics.world.removeCollider(clam.overlapCollider)
+		}
+		clam.setTint(0xbdef83);
+		clam.setInteractive();
+		clam.on("pointerdown", () => {
+			this.scene.launch("Question", { info: clam.info })
+			clam.disableInteractive();
 
-	createOverlap(scene, scubaDiver, object) {
-    const clam = object;
-    console.log('clam before change--->', clam)
-		scene.physics.add.overlap(scubaDiver, clam, this.overlapFunction(clam));
+		})
+		console.log('overlapping!')
+		clam.overlapTriggered = true;
 	}
 
-  overlapFunction (object) {
-    object.setTint(0xbdef83).setInteractive();
-    console.log('object', object)
-  }
+  // overlapFunction (object) {
+  //   console.log('object', object)
+  // }
 	//helper function to add other players to scene
 	addFriends(scene, player) {
 		const playerFriend = scene.add
@@ -163,6 +172,10 @@ export default class MainScene extends Phaser.Scene {
 
 		//launch the socket connection
 		this.socket = io();
+		//connect the socket connection to IntoScene
+
+		this.scene.launch("IntroScene", { socket: this.socket });
+		this.scene.launch("ChatScene", { socket: this.socket });
 
 		// const sleep = async delay => {
 		// 	return new Promise(resolve => setTimeout(() => resolve(true), delay));
@@ -183,10 +196,6 @@ export default class MainScene extends Phaser.Scene {
 		//   this.scubaDiver.setWaiting(false)
 		// });
 
-		//connect the socket connection to IntoScene
-
-		this.scene.launch("IntroScene", { socket: this.socket });
-		this.scene.launch("ChatScene", { socket: this.socket });
 
 		//set background
 		const map = this.make.tilemap({ key: "bigOcean" });
@@ -213,7 +222,7 @@ export default class MainScene extends Phaser.Scene {
 			playButton.setVisible(false);
 			display.setVisible(false);
 			scene.state.questionsLevel1.forEach(question => {
-				scene.createClam(scene, question.x, question.y, "clam");
+				scene.createClam(scene, question, "clam");
 				scene.instructionsBubble.setVisible(false);
 				scene.instructionsText.setVisible(false);
 			});
@@ -499,12 +508,5 @@ export default class MainScene extends Phaser.Scene {
 		if (this.scubaDiver) {
 			this.scubaDiver.update(this.cursors);
 		}
-    if(this.clam && this.clam.isActive) {
-      console.log('we are here!!!!!')
-      this.clam.on("pointerdown", () => {
-        console.log('scene in on pointdown--->', scene)
-        this.scene.launch("Question")
-      });
-    }
 	}
 }
