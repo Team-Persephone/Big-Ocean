@@ -1,4 +1,3 @@
-import init from "connect-session-sequelize";
 import Phaser from "phaser";
 
 export default class Question extends Phaser.Scene {
@@ -12,14 +11,31 @@ export default class Question extends Phaser.Scene {
 
 	preload() {}
 
+	isCorrect(answer) {
+		if(answer === this.info.answer) {
+			console.log('right answer!!!!')
+		} else { 
+			console.log('you are so wrong!')
+		}
+		this.scene.stop("Question");
+	}
 	create() {
+		const info = this.info
+		const scene = this;
 		console.log('you clicked me!')
-		this.questionBox = this.add.graphics();
-		this.questionBox.lineStyle(2, 0x3DABF3, 1);	
-		this.questionBox.fillStyle(0x3DABF3, 1.0);
-		this.questionBox.fillRoundedRect(32, 32, 300, 200, 32)
-		// this.add.text(0, 0, `${this.info.question}`)
-
+		this.add.text(50, 50, `${info.question}`, {
+		fill: "#00ff00",
+        backgroundColor: "#1abeff",
+        fontSize: "17px",
+        fontStyle: "bold",
+        align: "left",
+        wordWrap: { width: 700, height: 445, useAdvancedWrap: true },
+      })
+		let x = 50;
+	  	info.options.forEach(option => {
+			  scene.add.text(x, 100, `${option}`).setInteractive().on("pointerdown", () => {this.isCorrect(option) })
+			  x += 200;
+		  })
 	}
 
 	update() {}
