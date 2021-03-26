@@ -172,11 +172,6 @@ export default class MainScene extends Phaser.Scene {
 				.image(734, 545, "instructions")
 				.setScale(0.15)
 				.setScrollFactor(0);
-			// scene.instructionsText = scene.add.text(700, 570, "Instructions", {
-			// 	fill: "#ffffff",
-			// 	fontSize: "10px",
-			// 	fontStyle: "bold",
-			// }).setScrollFactor(0);
 
 			scene.instructionsBubble.setInteractive();
 
@@ -242,7 +237,7 @@ export default class MainScene extends Phaser.Scene {
 			playButton.on("pointerdown", () => {
 				playButton.setVisible(false);
 				display.setVisible(false);
-				this.socket.emit("startCountdown", 1);
+				this.socket.emit("startCountdown", 5);
 			});
 		} else {
 			waitingForHost = this.add.text(
