@@ -33,7 +33,13 @@ export default class Question extends Phaser.Scene {
       })
 		let x = 50;
 	  	info.options.forEach(option => {
-			  scene.add.text(x, 100, `${option}`).setInteractive().on("pointerdown", () => {this.isCorrect(option) })
+			  scene.add.text(x, 100, `${option}`, {
+				fill: "#00ff00",
+				fontSize: "17px",
+				fontStyle: "bold",
+				align: "left",
+				wordWrap: { width: 700, height: 445, useAdvancedWrap: true },
+			  }).setInteractive().on("pointerdown", () => {this.isCorrect(option) })
 			  x += 200;
 		  })
 	}
