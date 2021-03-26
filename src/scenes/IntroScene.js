@@ -64,7 +64,7 @@ export default class IntroScene extends Phaser.Scene {
 		joinGameButton.on("pointerdown", () => {
 			joinGameButton.setVisible(false);
 			this.socket.emit("joinWaitingRoom", key);
-			// setTimeout(() => this.socket.emit("startCountdown", 10), 1000)
+			setTimeout(() => this.socket.emit("startCountdown", 10), 1000)
 			this.scene.launch("WaitingRoom");
 			this.scene.stop("IntroScene");
 		});

@@ -222,21 +222,9 @@ export default class MainScene extends Phaser.Scene {
 		this.physics.world.setBounds(0, 320, 1088, 4800);
 		//makes friends visibel
 		scene.playerFriends = this.physics.add.group();
-		//create navigation and animation for scuba divers
-		this.cursors = this.input.keyboard.createCursorKeys();
-		//set up camera
-		this.cameras.main.setBounds(0, 0, 1088, 4800);
-		//add rock
-		this.decorations = this.physics.add.staticGroup();
 
-		this.physics.world.setBounds(0, 320, 1088, 4800);
-		//makes friends visibel
-		scene.playerFriends = this.physics.add.group();
-
-		//create navigation and animation for scuba divers
-		this.cursors = this.input.keyboard.createCursorKeys();
 		//set up camera
-		this.cameras.main.setBounds(0, 0, 1088, 4800);
+    this.cameras.main.setBounds(0, 0, 1088, 4800);
 
 		//add the playerGroup of scubaDivers to collider
 		this.playerGroup = this.physics.add.group();
