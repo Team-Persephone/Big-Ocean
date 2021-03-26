@@ -12,6 +12,36 @@ export default class MainScene extends Phaser.Scene {
 
 	// THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
 	preload() {
+		//LOAD
+		const progressBar = this.add.graphics();
+		const progressBox = this.add.graphics();
+		 progressBox.fillStyle(0x222222, 0.8);
+		 progressBox.fillRect(240, 270, 320, 50);
+		 const width = this.cameras.main.width;
+		 const height = this.cameras.main.height;
+		 const loadingText = this.make.text({
+			 x: width / 2,
+			 y: height / 2 - 50,
+			 text: "suiting up...",
+			 style: {
+				 font: "20px monospace",
+				 fill: "#1abeff",
+			 },
+		 });
+		 loadingText.setOrigin(0.5, 0.5);
+
+		 //% amounts
+		 const percentText = this.make.text({
+			 x: width / 2,
+			 y: height / 2 - 5,
+			 text: "0%",
+			 style: {
+				 font: "18px monospace",
+				 fill: "#ffffff",
+			 },
+		 });
+		 percentText.setOrigin(0.5, 0.5);
+
 		// all avatars are loaded
 		this.load.spritesheet("scubaPink", "/assets/scuba_divers/scubaPink.png", {
 			frameWidth: 820,
@@ -61,6 +91,23 @@ export default class MainScene extends Phaser.Scene {
 
 		//Audio
 		this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
+
+
+    //LOAD ON
+    this.load.on("progress", function (value) {
+      percentText.setText(parseInt(value * 100) + "%");
+      progressBar.clear();
+      progressBar.fillStyle(0x1abeff, 1);
+      progressBar.fillRect(250, 280, 300 * value, 30);
+    });
+
+    this.load.on("complete", function () {
+      progressBar.destroy();
+      progressBox.destroy();
+      loadingText.destroy();
+      percentText.destroy();
+    });
+
 	}
 
 	//helper function to create avatar for player
