@@ -212,7 +212,8 @@ export default class MainScene extends Phaser.Scene {
 		clam.on("pointerdown", () => {
 			this.scene.launch("Question", {
 				info: clam.info,
-				scubaDiver: scubaDiver
+				scubaDiver: scubaDiver,
+				level: this.state.level
 			});
 			this.startTimer(10, clam, scubaDiver);
 		});
@@ -231,6 +232,7 @@ export default class MainScene extends Phaser.Scene {
 			shrimp.on("pointerdown", () => {
 				this.scene.launch("Facts", { info: shrimp.info });
 				this.startTimer(7, shrimp, scubaDiver, "Facts");
+				scubaDiver.score = scubaDiver.score + (this.state.level /  2); //does not do devition cause float...
 				shrimp.isRead = true;
 			});
 		}

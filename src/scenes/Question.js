@@ -8,6 +8,7 @@ export default class Question extends Phaser.Scene {
 	init(data) {
 		this.info = data.info;
 		this.scubaDiver = data.scubaDiver;
+		this.level = data.level;
 	}
 
 	preload() {}
@@ -16,6 +17,8 @@ export default class Question extends Phaser.Scene {
 		if (answer === this.info.answer) {
 			console.log("right answer!!!!");
 			this.scubaDiver.frozen = false;
+			this.scubaDiver.score = this.scubaDiver.score + this.level
+			console.log('after score', this.scubaDiver.score) //score is working here, does nit show though
 			this.info.isResolved = true;
 		} else {
 			console.log("you are so wrong!");
