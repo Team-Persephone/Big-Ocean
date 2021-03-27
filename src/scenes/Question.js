@@ -7,6 +7,7 @@ export default class Question extends Phaser.Scene {
 
 	init(data) {
 		this.info = data.info;
+		this.scubaDiver = data.scubaDiver;
 	}
 
 	preload() {}
@@ -14,6 +15,8 @@ export default class Question extends Phaser.Scene {
 	isCorrect(answer) {
 		if (answer === this.info.answer) {
 			console.log("right answer!!!!");
+			this.scubaDiver.frozen = false;
+			this.info.isResolved = true;
 		} else {
 			console.log("you are so wrong!");
 		}

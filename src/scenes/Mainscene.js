@@ -93,21 +93,24 @@ export default class MainScene extends Phaser.Scene {
 		this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
 
 
-    //LOAD ON
-    this.load.on("progress", function (value) {
-      percentText.setText(parseInt(value * 100) + "%");
-      progressBar.clear();
-      progressBar.fillStyle(0x1abeff, 1);
-      progressBar.fillRect(250, 280, 300 * value, 30);
-    });
+		//LOAD ON
+		this.load.on("progress", function (value) {
+		percentText.setText(parseInt(value * 100) + "%");
+		progressBar.clear();
+		progressBar.fillStyle(0x1abeff, 1);
+		progressBar.fillRect(250, 280, 300 * value, 30);
+		});
 
-    this.load.on("complete", function () {
-      progressBar.destroy();
-      progressBox.destroy();
-      loadingText.destroy();
-      percentText.destroy();
-    });
-
+		this.load.on("complete", function () {
+		progressBar.destroy();
+		progressBox.destroy();
+		loadingText.destroy();
+		percentText.destroy();
+		});
+	}
+	//take on functin for rocks
+	createRock (scene, rockName, x, y, scale = 1, angle = 0) {
+		scene.decorations.create(x, y, rockName).setScale(scale).setAngle(angle).refreshBody()
 	}
 
 	//helper function to create avatar for player
@@ -119,7 +122,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.scubaDiver.faceRight = true;
 
 		//create animation
-		scene.createAnimations(player.avatar);
+		scene.createAnimations(`${player.avatar}`);
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
 		//scuba can't leave the screne
@@ -128,76 +131,104 @@ export default class MainScene extends Phaser.Scene {
 	}
 
 	createClam(scene, info, file) {
-		const { x, y, question, options, answer } = info;
+		const { x, y, question, options, answer, isResolved } = info;
 		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
-		scene.createAnimationsClam("clam");
-		scene.clam.info = { question, options, answer };
-		scene.clam.overlapTriggered = false;
-		scene.clam.overlapCollider = scene.physics.add.overlap(
-			scene.scubaDiver,
-			scene.clam,
-			scene.isOverlapping,
-			null,
-			scene
-		);
+		scene.createAnimations("clam");
+		scene.clam.info = {question, options, answer, isResolved}
+		scene.clam.overlapTriggered= false;
+    	scene.clam.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.clam, scene.isOverlappingQuestion, null, scene)
 	}
-	createShrimp(scene, x, y, file) {
+	createShrimp(scene, info, file) {
+		const { x, y, fact, isRead } = info;
 		scene.shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
-		scene.createAnimationsShrimp("shrimp");
+		scene.createAnimations("shrimp")
+		scene.shrimp.info = { fact, isRead};
+		scene.shrimp.overlapTriggered = false;
+		scene.shrimp.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.shrimp, scene.isOverlappingFact, null, scene)
 	}
 
 	// helper function to add animation to avatars
-	createAnimations(avatar) {
-		this.anims.create({
-			key: "swim",
-			frames: this.anims.generateFrameNumbers(avatar, {
-				start: 5,
-				end: 9
-			}),
-			frameRate: 5,
-			repeat: -1
-		});
+	createAnimations(sprite) {
+		switch (sprite) {
+			case "shrimp": this.anims.create({
+				key: "shrimpmove",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 0,
+					end: 2
+				}),
+				frameRate: 1,
+				repeat: -1
+			});
+			case "clam": this.anims.create({
+				key: "openclose",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 0,
+					end: 2
+				}),
+				frameRate: 1,
+				repeat: -1
+			});
+			default: this.anims.create({
+				key: "swim",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 5,
+					end: 9
+				}),
+				frameRate: 5,
+				repeat: -1
+			});
+		}
 	}
 
-	createAnimationsClam(object) {
-		this.anims.create({
-			key: "openclose",
-			frames: this.anims.generateFrameNumbers(object, {
-				start: 0,
-				end: 2
-			}),
-			frameRate: 1,
-			repeat: -1
-		});
-	}
-
-	createAnimationsShrimp(object) {
-		this.anims.create({
-			key: "shrimpmove",
-			frames: this.anims.generateFrameNumbers(object, {
-				start: 0,
-				end: 2
-			}),
-			frameRate: 1,
-			repeat: -1
-		});
-	}
 	// in here scubadiver and clam are variables passed in from add.overlap
 	//scubadiver and clam do not have to be connected to scene in this callback function
-	isOverlapping(scubaDiver, clam) {
-		if (clam.overlapTriggered) {
+	isOverlappingQuestion(scubaDiver, clam) {
+		console.log('overlaptriggeret at start', clam.overlapTriggered)
+		if(clam.overlapTriggered){
 			this.physics.world.removeCollider(clam.overlapCollider);
+			clam.setTint(0xbdef83);
 		}
-		clam.setTint(0xbdef83);
 		clam.setInteractive();
 		clam.on("pointerdown", () => {
-			this.scene.launch("Question", { info: clam.info });
-			clam.disableInteractive();
-		});
-		console.log("overlapping!");
-		clam.overlapTriggered = true;
+			this.scene.launch("Question", { info: clam.info, scubaDiver: scubaDiver });
+			this.startTimer(10, clam, scubaDiver);
+		})
+		clam.overlapTriggered = !clam.overlapTriggered;
+		console.log('is this resolved?', clam.info.isResolved)
+		console.log('overlaptriggeret at end', clam.overlapTriggered)
 	}
 
+	isOverlappingFact(scubaDiver, shrimp) {
+		if(shrimp.overlapTriggered){
+			this.physics.world.removeCollider(shrimp.overlapCollider);
+			shrimp.setTint(0xbdef83);
+		}
+		if(!shrimp.isRead){
+			shrimp.setInteractive();
+			shrimp.on("pointerdown", () => {
+				this.scene.launch("Facts", { info: shrimp.info })
+				this.startTimer(5, shrimp, scubaDiver, "Facts");
+				shrimp.isRead = true;
+			})
+		}
+		shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
+	}
+	// const timer = this.add.text(50, 50, "")
+
+	async startTimer(time, animal, scuba, view = null) {
+		scuba.frozen = true;
+		while (time > 0) {
+			//timer.setText(`${time}`)
+			await this.sleep(1000);
+			time--;
+		}
+		if(view){
+			this.scene.stop(view)
+		}
+		scuba.frozen = false;
+		animal.disableInteractive()
+	}
+	
 	addFriends(scene, player) {
 		const playerFriend = scene.add
 			.sprite(
@@ -210,6 +241,10 @@ export default class MainScene extends Phaser.Scene {
 		playerFriend.playerId = player.playerId;
 		scene.playerFriends.add(playerFriend);
 	}
+
+	async sleep (delay) {
+		return new Promise(resolve => setTimeout(() => resolve(true), delay));
+	};
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
 	create() {
@@ -226,11 +261,7 @@ export default class MainScene extends Phaser.Scene {
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
 
-		const sleep = async delay => {
-			return new Promise(resolve => setTimeout(() => resolve(true), delay));
-		};
 		let waitingForHost;
-
 		this.socket.on("startedCountdown", async seconds => {
 			//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
@@ -239,9 +270,7 @@ export default class MainScene extends Phaser.Scene {
 				.setScrollFactor(0);
 
 			scene.instructionsBubble.setInteractive();
-
 			scene.showInstructions = false;
-
 			scene.instructionsBubble.on("pointerdown", () => {
 				if (!scene.showInstructions) {
 					scene.showInstructions = !scene.showInstructions;
@@ -255,26 +284,25 @@ export default class MainScene extends Phaser.Scene {
 			if (waitingForHost) waitingForHost.destroy();
 
 			this.scene.stop("Instructions");
-
 			const currentTimer = this.add.text(300, 200, `${seconds}`, {
 				fontSize: 50
 			});
 
 			while (seconds > 0) {
 				currentTimer.setText(`${seconds}`);
-				await sleep(1000);
+				await this.sleep(1000);
 				seconds--;
 			}
 			this.scubaDiver.waiting = false;
 			currentTimer.setText("gO!");
-			await sleep(1000);
+			await this.sleep(1000);
 			currentTimer.destroy();
 			//add clams and shrimps to game
 			scene.state.questionsLevel1.forEach(question => {
 				scene.createClam(scene, question, "clam");
 			});
 			scene.state.factsLevel1.forEach(fact => {
-				scene.createShrimp(scene, fact.x, fact.y, "shrimp");
+				scene.createShrimp(scene, fact, "shrimp");
 			});
 		});
 
@@ -327,141 +355,39 @@ export default class MainScene extends Phaser.Scene {
 
 		//add rocks
 		this.decorations = this.physics.add.staticGroup();
-
+		
 		this.platform = this.add
 			.sprite(60, 550, "rock-sand-1")
 			.setScale(0.2)
 			.setAngle(30);
 		this.decorations.add(this.platform);
-
-		this.decorations
-			.create(25, 500, "rock-sand-1")
-			.setScale(0.28)
-			.setAngle(20)
-			.refreshBody();
-		this.decorations
-			.create(135, 550, "rock-sand-2")
-			.setScale(0.25)
-			.refreshBody();
-
-		this.decorations
-			.create(600, 650, "rock-sand-2")
-			.setScale(0.2)
-			.setAngle(-50)
-			.refreshBody();
-		this.decorations
-			.create(500, 900, "rock-sand-1")
-			.setScale(0.15)
-			.refreshBody();
-
-		this.decorations
-			.create(1000, 860, "rock-sand-1")
-			.setScale(0.4)
-			.refreshBody();
-		this.decorations
-			.create(935, 780, "rock-sand-2")
-			.setScale(0.3)
-			.setAngle(-130)
-			.refreshBody();
-
-		this.decorations
-			.create(20, 900, "rock-brown-2")
-			.setScale(0.35)
-			.setAngle(90)
-			.refreshBody();
-		this.decorations
-			.create(100, 910, "rock-sand-2")
-			.setScale(0.3)
-			.refreshBody();
-		this.decorations
-			.create(170, 870, "rock-sand-1")
-			.setScale(0.2)
-			.refreshBody();
-
-		this.decorations
-			.create(1050, 1360, "rock-brown-2")
-			.setScale(0.6)
-			.setAngle(-90)
-			.refreshBody();
-		this.decorations
-			.create(835, 1180, "rock-sand-2")
-			.setScale(0.3)
-			.setAngle(0)
-			.refreshBody();
-		this.decorations
-			.create(1035, 1500, "rock-brown-1")
-			.setScale(0.5)
-			.setAngle(-90)
-			.refreshBody();
-		this.decorations
-			.create(760, 1470, "rock-brown-3")
-			.setScale(0.2)
-			.refreshBody();
-
-		this.decorations
-			.create(350, 1300, "rock-brown-3")
-			.setScale(0.5)
-			.refreshBody();
-
-		this.decorations
-			.create(150, 1500, "rock-brown-2")
-			.setScale(0.3)
-			.refreshBody();
-		this.decorations
-			.create(330, 1520, "rock-brown-1")
-			.setScale(0.2)
-			.refreshBody();
-		this.decorations
-			.create(250, 1550, "rock-gray-3")
-			.setScale(0.4)
-			.refreshBody();
-		this.decorations
-			.create(500, 1700, "rock-brown-1")
-			.setScale(0.3)
-			.refreshBody();
-		this.decorations
-			.create(370, 1600, "rock-gray-1")
-			.setScale(0.35)
-			.refreshBody();
-
-		this.decorations
-			.create(900, 2000, "rock-brown-3")
-			.setScale(0.4)
-			.setAngle(-50)
-			.refreshBody();
-		this.decorations
-			.create(835, 2100, "rock-gray-1")
-			.setScale(0.2)
-			.setAngle(-120)
-			.refreshBody();
-
-		this.decorations
-			.create(435, 2150, "rock-gray-1")
-			.setScale(0.25)
-			.setAngle(120)
-			.refreshBody();
-		this.decorations
-			.create(505, 2100, "rock-gray-2")
-			.setScale(0.3)
-			.setAngle(20)
-			.refreshBody();
-		this.decorations
-			.create(475, 2200, "rock-brown-1")
-			.setScale(0.35)
-			.setAngle(0)
-			.refreshBody();
-
-		this.decorations
-			.create(100, 1800, "rock-gray-3")
-			.setScale(0.55)
-			.setAngle(-90)
-			.refreshBody();
-
-		this.decorations
-			.create(835, 2500, "rock-brown-3")
-			.setScale(0.6)
-			.setAngle(0)
-			.refreshBody();
+		//create rocks
+		this.createRock(this, "rock-sand-1", 25, 500, 0.28, 20);
+		this.createRock(this, "rock-sand-2", 135, 550, 0.25);
+		this.createRock(this, "rock-sand-2", 600, 650, 0.2, -50);
+		this.createRock(this, "rock-sand-1", 500, 900, 0.15);
+		this.createRock(this, "rock-sand-1", 1000, 860, 0.4);
+		this.createRock(this, "rock-sand-2", 935, 780, 0.3, -130);
+		this.createRock(this, "rock-brown-2", 20, 900, 0.35, 90);
+		this.createRock(this, "rock-sand-2", 100, 910, 0.3);
+		this.createRock(this, "rock-sand-1", 170, 870, 0.2);
+		this.createRock(this, "rock-brown-2", 1050, 1360, 0.6, -90);	
+		this.createRock(this, "rock-sand-2", 835, 1180, 0.3, 0);
+		this.createRock(this, "rock-brown-1", 1035, 1500, 0.5, -90);
+		this.createRock(this, "rock-brown-3", 760, 1470, 0.2);
+		this.createRock(this, "rock-brown-3", 350, 1300, 0.5);
+		this.createRock(this, "rock-brown-2", 150, 1500, 0.3);
+		this.createRock(this, "rock-brown-1", 330, 1520, 0.2);
+		this.createRock(this, "rock-gray-3", 250, 1550, 0.4);
+		this.createRock(this, "rock-brown-1", 500, 1700, 0.3);
+		this.createRock(this, "rock-gray-1", 370, 1600, 0.35);
+		this.createRock(this, "rock-brown-3", 900, 2000, 0.4, -50);
+		this.createRock(this, "rock-gray-1", 835, 2100, 0.2, -120);
+		this.createRock(this, "rock-gray-1", 435, 2150, 0.25, 120);
+		this.createRock(this, "rock-gray-2", 505, 2100, 0.3, 20);
+		this.createRock(this, "rock-brown-1", 475, 2200, 0.35, 0);
+		this.createRock(this, "rock-gray-3", 100, 1800, 0.55, -90);
+		this.createRock(this, "rock-brown-3", 835, 2500, 0.6, 0);
 
 		this.physics.add.collider(this.playerGroup, this.decorations);
 

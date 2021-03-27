@@ -95,6 +95,7 @@ module.exports = io => {
 					x,
 					y
 				};
+				
 				if (fact.levelId === 1) {
 					factObj.y = factObj.y + 400;
 					activeGames[key].factsLevel1.push(factObj);
@@ -158,9 +159,6 @@ module.exports = io => {
 			});
 
 			socket.on("submitMemo", async function (key, username, message) {
-				console.log("key", key);
-				console.log("userColor", username);
-				console.log("message", message);
 				socket.to(key).emit("broadcastMessage", {
 					username: username,
 					message: message

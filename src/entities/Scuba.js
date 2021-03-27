@@ -9,6 +9,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		this.scene.add.existing(this);
 		this.scene.physics.world.enable(this);
 		this.waiting = true;
+		this.frozen = false;
 	}
 
 	updateMovement(cursors) {
@@ -24,8 +25,9 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 
 		//move down
 		const waiting = this.waiting;
+		const frozen = this.frozen;
 
-		if (!waiting && cursors.down.isDown) {
+		if (!waiting && !frozen && cursors.down.isDown) {
 			if (this.faceRight) {
 				this.setAngle(45);
 			} else if (!this.faceRight) {
@@ -35,7 +37,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move up
-		else if (!waiting && cursors.up.isDown) {
+		else if (!waiting && !frozen && cursors.up.isDown) {
 			if (this.faceRight) {
 				this.setAngle(-45);
 			} else if (!this.faceRight) {
@@ -45,7 +47,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move left
-		else if (cursors.left.isDown) {
+		else if (!frozen && cursors.left.isDown) {
 			if (this.faceRight) {
 				this.flipX = !this.flipX;
 				this.faceRight = false;
@@ -54,7 +56,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			this.scene.socket.emit("playerMovement", movementObject);
 		}
 		//move right
-		else if (cursors.right.isDown) {
+		else if (!frozen && cursors.right.isDown) {
 			if (!this.faceRight) {
 				this.flipX = !this.flipX;
 				this.faceRight = true;
