@@ -23,7 +23,7 @@ export default class IntroScene extends Phaser.Scene {
 		//add gamekey to url for host to share
 		function addUrl(gameKey) {
 			const url = `${window.location.href}${gameKey}`;
-			const msg = `Invite your friends:\n\n${url}`
+			const msg = `invite yOur friends:\n\n${url}`;
 			const link = scene.add.text(100, 100, msg);
 			link.setInteractive();
 			link.on("pointerdown", () => {
@@ -42,7 +42,7 @@ export default class IntroScene extends Phaser.Scene {
 		}
 		//OTHERWISE THIS:
 		// add button to create game to scene
-		const createGameButton = this.add.text(600, 500, "Create new game", {
+		const createGameButton = this.add.text(600, 500, "create new game", {
 			fontFamily: "menlo"
 		});
 		createGameButton.setInteractive();
@@ -57,15 +57,15 @@ export default class IntroScene extends Phaser.Scene {
 			addUrl(gameKey);
 		});
 
-		const joinGameButton = this.add.text(600, 500, "join game!", {
+		const joinGameButton = this.add.text(600, 500, "jOin game!", {
 			fontFamily: "menlo"
 		});
 		joinGameButton.setVisible(false);
 		joinGameButton.setInteractive();
 		joinGameButton.on("pointerdown", () => {
 			joinGameButton.setVisible(false);
-		
-			this.scene.launch("Instructions")
+
+			this.scene.launch("Instructions");
 			this.socket.emit("joinWaitingRoom", key);
 			this.scene.launch("WaitingRoom");
 			this.scene.stop("IntroScene");
