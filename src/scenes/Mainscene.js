@@ -122,7 +122,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.scubaDiver.faceRight = true;
 
 		//create animation
-		scene.createAnimations(player.avatar);
+		scene.createAnimations(`${player.avatar}`);
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
 		//scuba can't leave the screne
@@ -131,58 +131,55 @@ export default class MainScene extends Phaser.Scene {
 	}
 
 	createClam(scene, info, file) {
-		const { x, y, question, options, answer } = info;
+		const { x, y, question, options, answer, isResolved } = info;
 		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
-		scene.createAnimationsClam("clam");
-		scene.clam.info = {question, options, answer}
+		scene.createAnimations("clam");
+		scene.clam.info = {question, options, answer, isResolved}
 		scene.clam.overlapTriggered= false;
     	scene.clam.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.clam, scene.isOverlappingQuestion, null, scene)
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
 		scene.shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
-		scene.createAnimationsShrimp("shrimp");
+		scene.createAnimations("shrimp")
 		scene.shrimp.info = { fact, isRead};
 		scene.shrimp.overlapTriggered = false;
 		scene.shrimp.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.shrimp, scene.isOverlappingFact, null, scene)
 	}
 
 	// helper function to add animation to avatars
-	createAnimations(avatar) {
-		this.anims.create({
-			key: "swim",
-			frames: this.anims.generateFrameNumbers(avatar, {
-				start: 5,
-				end: 9
-			}),
-			frameRate: 5,
-			repeat: -1
-		});
+	createAnimations(sprite) {
+		switch (sprite) {
+			case "shrimp": this.anims.create({
+				key: "shrimpmove",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 0,
+					end: 2
+				}),
+				frameRate: 1,
+				repeat: -1
+			});
+			case "clam": this.anims.create({
+				key: "openclose",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 0,
+					end: 2
+				}),
+				frameRate: 1,
+				repeat: -1
+			});
+			default: this.anims.create({
+				key: "swim",
+				frames: this.anims.generateFrameNumbers(sprite, {
+					start: 5,
+					end: 9
+				}),
+				frameRate: 5,
+				repeat: -1
+			});
+		}
 	}
 
-	createAnimationsClam(object) {
-		this.anims.create({
-			key: "openclose",
-			frames: this.anims.generateFrameNumbers(object, {
-				start: 0,
-				end: 2
-			}),
-			frameRate: 1,
-			repeat: -1
-		});
-	}
-
-	createAnimationsShrimp(object) {
-		this.anims.create({
-			key: "shrimpmove",
-			frames: this.anims.generateFrameNumbers(object, {
-				start: 0,
-				end: 2
-			}),
-			frameRate: 1,
-			repeat: -1
-		});
-	}
 	// in here scubadiver and clam are variables passed in from add.overlap
 	//scubadiver and clam do not have to be connected to scene in this callback function
 	isOverlappingQuestion(scubaDiver, clam) {
@@ -194,12 +191,10 @@ export default class MainScene extends Phaser.Scene {
 		clam.setInteractive();
 		clam.on("pointerdown", () => {
 			this.scene.launch("Question", { info: clam.info, scubaDiver: scubaDiver });
-			clam.disableInteractive();
-			this.startTimer(10, scubaDiver);
-			clam.clearTint();
-			clam.anims.pause()
+			this.startTimer(10, clam, scubaDiver);
 		})
 		clam.overlapTriggered = !clam.overlapTriggered;
+		console.log('is this resolved?', clam.info.isResolved)
 		console.log('overlaptriggeret at end', clam.overlapTriggered)
 	}
 
@@ -208,25 +203,30 @@ export default class MainScene extends Phaser.Scene {
 			this.physics.world.removeCollider(shrimp.overlapCollider);
 			shrimp.setTint(0xbdef83);
 		}
-		shrimp.setInteractive();
-		shrimp.on("pointerdown", () => {
-			this.scene.launch("Facts", { info: shrimp.info })
-			this.startTimer(5, scubaDiver, "Facts");
-			shrimp.disableInteractive();
-		})
-		shrimp.overlapTriggered = true;
+		if(!shrimp.isRead){
+			shrimp.setInteractive();
+			shrimp.on("pointerdown", () => {
+				this.scene.launch("Facts", { info: shrimp.info })
+				this.startTimer(5, shrimp, scubaDiver, "Facts");
+				shrimp.isRead = true;
+			})
+		}
+		shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 	}
+	// const timer = this.add.text(50, 50, "")
 
-	async startTimer(time, scuba, view = null) {
+	async startTimer(time, animal, scuba, view = null) {
 		scuba.frozen = true;
 		while (time > 0) {
+			//timer.setText(`${time}`)
 			await this.sleep(1000);
 			time--;
 		}
-		scuba.frozen = false;
 		if(view){
 			this.scene.stop(view)
 		}
+		scuba.frozen = false;
+		animal.disableInteractive()
 	}
 	
 	addFriends(scene, player) {

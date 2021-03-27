@@ -16,6 +16,7 @@ export default class Question extends Phaser.Scene {
 		if (answer === this.info.answer) {
 			console.log("right answer!!!!");
 			this.scubaDiver.frozen = false;
+			this.info.isResolved = true;
 		} else {
 			console.log("you are so wrong!");
 		}
