@@ -13,8 +13,7 @@ export default class Facts extends Phaser.Scene {
 
 	create() {
 		const info = this.info
-		const scene = this;
-		console.log('you clicked me!')
+        console.log('yey clicked!')
 		this.add.text(50, 50, `${info.fact}`, {
 		fill: "#00ff00",
         backgroundColor: "#1abeff",
