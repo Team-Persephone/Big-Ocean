@@ -14,9 +14,11 @@ body {
 
 .chat-box {
   background: linear-gradient(0deg, #213b5a 00%, #050b57 100%);
-  margin: 100px auto;
-  max-width: 500px;
-  height: 650px;
+  margin: 0;
+  max-width: 400px;
+  min-width: 400px;
+  height: 600px;
+  margin-top: 13px;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   /*border : 1px solid #000;*/
   overflow: hidden;
@@ -27,8 +29,8 @@ body {
 .chat-container {
   position: absolute;
   padding: 0px 0px 0px 11px;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 300px;
   overflow: scroll;
   /* transform: translateX(100%);
   opacity: 0;
@@ -54,7 +56,7 @@ p {
 .bubble {
   /* float: left; */
   width: auto;
-  max-width: 92%;
+  max-width: 85%;
   position: relative;
   clear: both;
   background: #95c2fd;
@@ -71,9 +73,16 @@ p {
   /* opacity: 0; */
 }
 
-/* .bubble.mine {
-  background-color: red;
-} */
+.bubble-alt {
+  float: right;
+}
+
+.bubble-alt:after {
+  left: auto;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  transform: rotateZ(90deg);
+  right: -16px;
+}
 
 .bubble:after {
   border-radius: 20px / 5px;
@@ -101,12 +110,13 @@ p {
 }
 
 .chat-control {
-  padding: 1.2em;
-  margin-top: 495px;
+  padding: 0.6em;
+  margin-top: 400px;
+
 }
 
 .chat-input {
-  width: 100%;
+  width: 94%;
   border: none;
   background: rgba(0, 0, 0, 0.3);
   color: rgba(255, 255, 255, 0.3);
@@ -164,4 +174,10 @@ p {
 .user-profile.active {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
+}
+
+#gameChat {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

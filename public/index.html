@@ -7,10 +7,9 @@
 </head>
 <body>
   <link href="assets/css/game.css" rel="stylesheet">
+  <div id='gameChat'>
     <div id='big-ocean'>
     </div>
-
-   <br />
 
     <div class="chat-box">
       <div class="chat-header">
@@ -28,7 +27,7 @@
             <p>Chat Here!</p>
           </div>
           <span class="datestamp">May 20, 2016, 4:16 PM</span>
-        
+
           <!-- <div class="bubble mine">
             <p>Chat Here!</p>
           </div>
@@ -37,13 +36,12 @@
       </div>
 
       <div class="chat-control">
-        <input type="text" id="chat-input" name="chat-input" />
-        <!-- <textarea type="text" id="chat-input" name="chat-input">&nbsp;</textarea> -->
-        <button id="submit-memo-btn">Send</button>
+        <input class="chat-input" type="text" placeholder="enter your message" />
       </div>
 
 
     </div>
+  </div>
     <script src='/socket.io/socket.io.js'></script>
     <script src='/bundle.js' charset="utf-8"></script>
 

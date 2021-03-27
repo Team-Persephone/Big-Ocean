@@ -2,24 +2,10 @@
 import phaser from 'phaser';
 
 
-const memoInput = document.getElementById("chat-input");
-const submitMemoBtn = document.getElementById("submit-memo-btn");
+const memoInput = document.getElementsByClassName("chat-input")[0];
 const chatContainer = document.getElementById("playerChatId")
 
 const NUM_MESSAGES = 10;
-// const inputMessage = document.getElementById('inputMessage');
-// const messages = document.getElementById('messages');
-
-// window.addEventListener('keydown', event => {
-//   if (event.which === 13) {
-//    sendMessage();
-//   }
-//   if (event.which === 32) {
-//     if (document.activeElement === inputMessage) {
-//       inputMessage.value = inputMessage.value + ' ';
-//     }
-//   }
-// });
 
 const broadcastMessage = (username, message) => {
   //check the size of children for messagedisplay
@@ -56,24 +42,14 @@ export default class ChatScene extends Phaser.Scene {
   create() {
     const scene = this;
 
-    //chat event listeners
-    submitMemoBtn.addEventListener("click", () => {
-      scene.submitMemo(scene);
+    //chat event listeners on enter key
+    memoInput.addEventListener("keydown", (e) => {
+      if(!e) e = window.event;
+      // e.preventDefault();
+      if(e.keyCode === 13) scene.submitMemo(scene);
     });
 
-  //  const broadcastMessage = (username, message) =>{
-  //     //check the size of children for messagedisplay
-  //     if (messageDisplay.childNodes.length === NUM_MESSAGES) {
-  //       //cap the num of messages at NUM_MESSAGES
-  //       messageDisplay.removeChild(messageDisplay.firstChild);
-  //     }
-  //     const newMessage = document.createElement("p");
-  //     newMessage.innerHTML = `<p><strong>${username}:</strong> &nbsp${message}</p>`;
-  //     messageDisplay.appendChild(newMessage);
-  //   };
-
     //create navigation and animation for scuba divers
-
     this.socket.on('setState', function(gameInfo){
       const { key, players, avatars, score, level, questions, facts } = gameInfo;
       //this.physics.resume() ----> WHAT DOES THIS??
@@ -89,7 +65,6 @@ export default class ChatScene extends Phaser.Scene {
     })
     console.log('state', scene.state)
     this.socket.on('broadcastMessage', function ({username, message}){
-      console.log('username in bc', username)
       broadcastMessage(username, message)
     })
 
