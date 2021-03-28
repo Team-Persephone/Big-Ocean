@@ -134,17 +134,10 @@ module.exports = io => {
 				score: 0
 			};
 
-			socket.on("inWaitingRoom", async function () {});
-
 			gameInfo.numPlayer = Object.keys(gameInfo.players).length;
 			//send state info
 
 			socket.emit("setState", gameInfo);
-
-			socket.on("startCountdown", seconds => {
-				socket.to(gameKey).emit("startedCountdown", seconds);
-				socket.emit("startedCountdown", seconds);
-			});
 
 			//send current players info
 			socket.emit("currentPlayers", {
@@ -154,30 +147,37 @@ module.exports = io => {
 			//send new player info
 			socket.to(gameKey).emit("newPlayer", {
 				newPlayer: gameInfo.players[socket.id],
-				score: gameInfo.players[socket.id].score,
 				numPlayers: gameInfo.numPlayers
 			});
+		});
 
-			socket.on("submitMemo", async function (key, username, message) {
-				socket.to(key).emit("broadcastMessage", {
-					username: username,
-					message: message
-				});
-				socket.emit("broadcastMessage", {
-					username: username,
-					message: message
-				});
-			});
+		socket.on("startCountdown", ({ seconds, key }) => {
+			io.to(key).emit("startedCountdown", seconds);
+		});
 
-			//Player Movement
-			socket.on("playerMovement", async function (data) {
-				const { x, y, angle, faceRight, key } = data;
-				activeGames[key].players[socket.id].position.x = x;
-				activeGames[key].players[socket.id].position.y = y;
-				activeGames[key].players[socket.id].position.angle = angle;
-				activeGames[key].players[socket.id].position.faceRight = faceRight;
-				socket.to(key).emit("friendMoved", activeGames[key].players[socket.id]);
+		socket.on("submitMemo", async function (key, username, message) {
+			io.to(key).emit("broadcastMessage", {
+				username: username,
+				message: message
 			});
+		});
+
+		//Player Movement
+		socket.on("playerMovement", async function (data) {
+			const { x, y, angle, faceRight, key, playerId } = data;
+			activeGames[key].players[playerId].position.x = x;
+			activeGames[key].players[playerId].position.y = y;
+			activeGames[key].players[playerId].position.angle = angle;
+			activeGames[key].players[playerId].position.faceRight = faceRight;
+			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
+		});
+
+		socket.on("Scored", async function ({ key, playerId, score }) {
+			console.log("key -->", key);
+			console.log("playerId -->", playerId);
+			console.log("score -->", score);
+			activeGames[key].players[playerId].score = score;
+			socket.to(key).emit("someoneScored", activeGames[key].players[playerId]);
 		});
 	});
 

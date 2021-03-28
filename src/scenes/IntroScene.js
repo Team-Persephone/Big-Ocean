@@ -20,23 +20,14 @@ export default class IntroScene extends Phaser.Scene {
 		let key;
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.add.image(0, 0, "blue").setScale(2);
-		//add gamekey to url for host to share
-		function addUrl(gameKey) {
-			const url = `${window.location.href}${gameKey}`;
-			const msg = `invite yOur friends:\n\n${url}`;
-			const link = scene.add.text(100, 100, msg);
-			link.setInteractive();
-			link.on("pointerdown", () => {
-				navigator.clipboard.writeText(url);
-				link.setText("copied!");
-			});
-		}
+		this.scene.launch("Instructions");
+
 		//if there is a gameKey in the url, stop the waiting room because the code was already generated
 		if (window.location.pathname.length > 1) {
 			//gets gameKey from url
-			const gameKey = window.location.pathname.slice(1);
-			this.socket.emit("joinWaitingRoom", gameKey);
-			this.scene.launch("WaitingRoom", { socket: this.socket });
+			key = window.location.pathname.slice(1);
+			this.socket.emit("joinWaitingRoom", key);
+			this.scene.launch("Instructions");
 			this.scene.stop("IntroScene");
 			// return;
 		}
@@ -48,28 +39,25 @@ export default class IntroScene extends Phaser.Scene {
 		createGameButton.setInteractive();
 		createGameButton.on("pointerdown", () => {
 			createGameButton.setVisible(false);
-			joinGameButton.setVisible(true);
+			// joinGameButton.setVisible(true);
 			this.socket.emit("createGame");
 		});
 
-		this.socket.on("gameCreated", gameKey => {
-			key = gameKey;
-			addUrl(gameKey);
-		});
-
-		const joinGameButton = this.add.text(600, 500, "jOin game!", {
-			fontFamily: "menlo"
-		});
-		joinGameButton.setVisible(false);
-		joinGameButton.setInteractive();
-		joinGameButton.on("pointerdown", () => {
-			joinGameButton.setVisible(false);
-
-			this.scene.launch("Instructions");
+		this.socket.on("gameCreated", key => {
 			this.socket.emit("joinWaitingRoom", key);
-			this.scene.launch("WaitingRoom");
 			this.scene.stop("IntroScene");
+			this.scene.stop("Instructions");
 		});
+
+		// 	const joinGameButton = this.add.text(600, 500, "jOin game!", {
+		// 		fontFamily: "menlo"
+		// 	});
+		// 	joinGameButton.setVisible(false);
+		// 	joinGameButton.setInteractive();
+		// 	joinGameButton.on("pointerdown", () => {
+		// 		joinGameButton.setVisible(false);
+
+		// 	});
 	}
 
 	update() {}
