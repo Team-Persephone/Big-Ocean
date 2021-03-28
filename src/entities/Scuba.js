@@ -12,6 +12,20 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		this.frozen = false;
 	}
 
+	tweenPosition(x,y){
+		this.scene.tweens.add({
+			targets: this,
+			x,
+			y,
+			ease: "Linear", // 'Cubic', 'Elastic', 'Bounce', 'Back'
+			duration: 1000,
+			repeat: 0, // -1: infinity
+			yoyo: false
+		})
+	}
+
+	// setPosition
+
 	updateMovement(cursors) {
 		this.anims.play("swim", true);
 
@@ -20,7 +34,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			x: this.scene.scubaDiver.x,
 			y: this.scene.scubaDiver.y,
 			angle: this.scene.scubaDiver.angle,
-			faceRight: this.faceRight
+			faceRight: this.faceRight,
 		};
 
 		//move down
