@@ -15,32 +15,32 @@ export default class MainScene extends Phaser.Scene {
 		//LOAD
 		const progressBar = this.add.graphics();
 		const progressBox = this.add.graphics();
-		 progressBox.fillStyle(0x222222, 0.8);
-		 progressBox.fillRect(240, 270, 320, 50);
-		 const width = this.cameras.main.width;
-		 const height = this.cameras.main.height;
-		 const loadingText = this.make.text({
-			 x: width / 2,
-			 y: height / 2 - 50,
-			 text: "suiting up...",
-			 style: {
-				 font: "20px monospace",
-				 fill: "#1abeff",
-			 },
-		 });
-		 loadingText.setOrigin(0.5, 0.5);
+		progressBox.fillStyle(0x222222, 0.8);
+		progressBox.fillRect(240, 270, 320, 50);
+		const width = this.cameras.main.width;
+		const height = this.cameras.main.height;
+		const loadingText = this.make.text({
+			x: width / 2,
+			y: height / 2 - 50,
+			text: "suiting up...",
+			style: {
+				font: "20px monospace",
+				fill: "#1abeff"
+			}
+		});
+		loadingText.setOrigin(0.5, 0.5);
 
-		 //% amounts
-		 const percentText = this.make.text({
-			 x: width / 2,
-			 y: height / 2 - 5,
-			 text: "0%",
-			 style: {
-				 font: "18px monospace",
-				 fill: "#ffffff",
-			 },
-		 });
-		 percentText.setOrigin(0.5, 0.5);
+		//% amounts
+		const percentText = this.make.text({
+			x: width / 2,
+			y: height / 2 - 5,
+			text: "0%",
+			style: {
+				font: "18px monospace",
+				fill: "#ffffff"
+			}
+		});
+		percentText.setOrigin(0.5, 0.5);
 
 		// all avatars are loaded
 		this.load.spritesheet("scubaPink", "/assets/scuba_divers/scubaPink.png", {
@@ -92,25 +92,28 @@ export default class MainScene extends Phaser.Scene {
 		//Audio
 		this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
 
-
 		//LOAD ON
 		this.load.on("progress", function (value) {
-		percentText.setText(parseInt(value * 100) + "%");
-		progressBar.clear();
-		progressBar.fillStyle(0x1abeff, 1);
-		progressBar.fillRect(250, 280, 300 * value, 30);
+			percentText.setText(parseInt(value * 100) + "%");
+			progressBar.clear();
+			progressBar.fillStyle(0x1abeff, 1);
+			progressBar.fillRect(250, 280, 300 * value, 30);
 		});
 
 		this.load.on("complete", function () {
-		progressBar.destroy();
-		progressBox.destroy();
-		loadingText.destroy();
-		percentText.destroy();
+			progressBar.destroy();
+			progressBox.destroy();
+			loadingText.destroy();
+			percentText.destroy();
 		});
 	}
 	//take on functin for rocks
-	createRock (scene, rockName, x, y, scale = 1, angle = 0) {
-		scene.decorations.create(x, y, rockName).setScale(scale).setAngle(angle).refreshBody()
+	createRock(scene, rockName, x, y, scale = 1, angle = 0) {
+		scene.decorations
+			.create(x, y, rockName)
+			.setScale(scale)
+			.setAngle(angle)
+			.refreshBody();
 	}
 
 	//helper function to create avatar for player
@@ -128,88 +131,110 @@ export default class MainScene extends Phaser.Scene {
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
+		scene.scubaDiver.score = player.score;
+		scene.scubaDiver.avatar = player.avatar;
 	}
 
 	createClam(scene, info, file) {
 		const { x, y, question, options, answer, isResolved } = info;
 		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("clam");
-		scene.clam.info = {question, options, answer, isResolved}
-		scene.clam.overlapTriggered= false;
-    	scene.clam.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.clam, scene.isOverlappingQuestion, null, scene)
+		scene.clam.info = { question, options, answer, isResolved };
+		scene.clam.overlapTriggered = false;
+		scene.clam.overlapCollider = scene.physics.add.overlap(
+			scene.scubaDiver,
+			scene.clam,
+			scene.isOverlappingQuestion,
+			null,
+			scene
+		);
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
 		scene.shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
-		scene.createAnimations("shrimp")
-		scene.shrimp.info = { fact, isRead};
+		scene.createAnimations("shrimp");
+		scene.shrimp.info = { fact, isRead };
 		scene.shrimp.overlapTriggered = false;
-		scene.shrimp.overlapCollider = scene.physics.add.overlap(scene.scubaDiver, scene.shrimp, scene.isOverlappingFact, null, scene)
+		scene.shrimp.overlapCollider = scene.physics.add.overlap(
+			scene.scubaDiver,
+			scene.shrimp,
+			scene.isOverlappingFact,
+			null,
+			scene
+		);
 	}
 
 	// helper function to add animation to avatars
 	createAnimations(sprite) {
 		switch (sprite) {
-			case "shrimp": this.anims.create({
-				key: "shrimpmove",
-				frames: this.anims.generateFrameNumbers(sprite, {
-					start: 0,
-					end: 2
-				}),
-				frameRate: 1,
-				repeat: -1
-			});
-			case "clam": this.anims.create({
-				key: "openclose",
-				frames: this.anims.generateFrameNumbers(sprite, {
-					start: 0,
-					end: 2
-				}),
-				frameRate: 1,
-				repeat: -1
-			});
-			default: this.anims.create({
-				key: "swim",
-				frames: this.anims.generateFrameNumbers(sprite, {
-					start: 5,
-					end: 9
-				}),
-				frameRate: 5,
-				repeat: -1
-			});
+			case "shrimp":
+				this.anims.create({
+					key: "shrimpmove",
+					frames: this.anims.generateFrameNumbers(sprite, {
+						start: 0,
+						end: 2
+					}),
+					frameRate: 1,
+					repeat: -1
+				});
+			case "clam":
+				this.anims.create({
+					key: "openclose",
+					frames: this.anims.generateFrameNumbers(sprite, {
+						start: 0,
+						end: 2
+					}),
+					frameRate: 1,
+					repeat: -1
+				});
+			default:
+				this.anims.create({
+					key: "swim",
+					frames: this.anims.generateFrameNumbers(sprite, {
+						start: 5,
+						end: 9
+					}),
+					frameRate: 5,
+					repeat: -1
+				});
 		}
 	}
 
 	// in here scubadiver and clam are variables passed in from add.overlap
 	//scubadiver and clam do not have to be connected to scene in this callback function
 	isOverlappingQuestion(scubaDiver, clam) {
-		console.log('overlaptriggeret at start', clam.overlapTriggered)
-		if(clam.overlapTriggered){
+		console.log("overlaptriggeret at start", clam.overlapTriggered);
+		if (clam.overlapTriggered) {
 			this.physics.world.removeCollider(clam.overlapCollider);
-			clam.setTint(0xbdef83);
+			clam.setTint(0xcbc3e3);
 		}
 		clam.setInteractive();
 		clam.on("pointerdown", () => {
-			this.scene.launch("Question", { info: clam.info, scubaDiver: scubaDiver });
+			this.scene.launch("Question", {
+				info: clam.info,
+				scubaDiver: scubaDiver,
+				level: this.state.level
+			});
 			this.startTimer(10, clam, scubaDiver);
-		})
+		});
 		clam.overlapTriggered = !clam.overlapTriggered;
-		console.log('is this resolved?', clam.info.isResolved)
-		console.log('overlaptriggeret at end', clam.overlapTriggered)
+		console.log("is this resolved?", clam.info.isResolved);
+		console.log("overlaptriggeret at end", clam.overlapTriggered);
 	}
 
 	isOverlappingFact(scubaDiver, shrimp) {
-		if(shrimp.overlapTriggered){
+		if (shrimp.overlapTriggered) {
 			this.physics.world.removeCollider(shrimp.overlapCollider);
 			shrimp.setTint(0xbdef83);
 		}
-		if(!shrimp.isRead){
+		if (!shrimp.isRead) {
 			shrimp.setInteractive();
 			shrimp.on("pointerdown", () => {
-				this.scene.launch("Facts", { info: shrimp.info })
-				this.startTimer(5, shrimp, scubaDiver, "Facts");
+				this.scene.launch("Facts", { info: shrimp.info });
+				this.startTimer(7, shrimp, scubaDiver, "Facts");
+				scubaDiver.score = scubaDiver.score + (this.state.level /  2); //does not do devition cause float...
 				shrimp.isRead = true;
-			})
+			});
 		}
 		shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 	}
@@ -222,14 +247,14 @@ export default class MainScene extends Phaser.Scene {
 			await this.sleep(1000);
 			time--;
 		}
-		if(view){
-			this.scene.stop(view)
+		if (view) {
+			this.scene.stop(view);
 		}
 		scuba.frozen = false;
-		animal.disableInteractive()
+		animal.disableInteractive();
 	}
-	
-	addFriends(scene, player) {
+
+	addFriends(scene, player, score) {
 		const playerFriend = scene.add
 			.sprite(
 				player.position.x + 40,
@@ -239,12 +264,13 @@ export default class MainScene extends Phaser.Scene {
 			.setScale(0.2);
 		playerFriend.faceRight = true;
 		playerFriend.playerId = player.playerId;
+		playerFriend.socre = score;
 		scene.playerFriends.add(playerFriend);
 	}
 
-	async sleep (delay) {
+	async sleep(delay) {
 		return new Promise(resolve => setTimeout(() => resolve(true), delay));
-	};
+	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
 	create() {
@@ -294,9 +320,15 @@ export default class MainScene extends Phaser.Scene {
 				seconds--;
 			}
 			this.scubaDiver.waiting = false;
-			currentTimer.setText("gO!");
+			currentTimer.setText("swim!");
 			await this.sleep(1000);
 			currentTimer.destroy();
+
+			this.add
+				.text(50, 50, `${scene.scubaDiver.avatar}: ${scene.scubaDiver.score}`, {
+					fontSize: 20
+				})
+				.setScrollFactor(0);
 			//add clams and shrimps to game
 			scene.state.questionsLevel1.forEach(question => {
 				scene.createClam(scene, question, "clam");
@@ -338,7 +370,7 @@ export default class MainScene extends Phaser.Scene {
 			waitingForHost = this.add.text(
 				170,
 				590,
-				"Waiting for host to start game"
+				"waiting fOr hOst tO start game..."
 			);
 		}
 
@@ -355,7 +387,7 @@ export default class MainScene extends Phaser.Scene {
 
 		//add rocks
 		this.decorations = this.physics.add.staticGroup();
-		
+
 		this.platform = this.add
 			.sprite(60, 550, "rock-sand-1")
 			.setScale(0.2)
@@ -371,7 +403,7 @@ export default class MainScene extends Phaser.Scene {
 		this.createRock(this, "rock-brown-2", 20, 900, 0.35, 90);
 		this.createRock(this, "rock-sand-2", 100, 910, 0.3);
 		this.createRock(this, "rock-sand-1", 170, 870, 0.2);
-		this.createRock(this, "rock-brown-2", 1050, 1360, 0.6, -90);	
+		this.createRock(this, "rock-brown-2", 1050, 1360, 0.6, -90);
 		this.createRock(this, "rock-sand-2", 835, 1180, 0.3, 0);
 		this.createRock(this, "rock-brown-1", 1035, 1500, 0.5, -90);
 		this.createRock(this, "rock-brown-3", 760, 1470, 0.2);
@@ -425,7 +457,7 @@ export default class MainScene extends Phaser.Scene {
 
 			//set state to gameInfo
 			scene.state.key = key;
-			scene.state.players5 = players;
+			scene.state.players = players;
 			scene.state.avatars = avatars;
 			scene.state.score = score;
 			scene.state.level = level;
@@ -452,8 +484,8 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 		//listen to add new player to scene
-		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
-			scene.addFriends(scene, newPlayer);
+		this.socket.on("newPlayer", function ({ score, newPlayer, numPlayers }) {
+			scene.addFriends(scene, newPlayer, score);
 			scene.state.numPlayers = numPlayers;
 		});
 

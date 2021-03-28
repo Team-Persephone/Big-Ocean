@@ -6,12 +6,13 @@ const activeGames = {};
 /* key: {
     players: {
     socket.id: {
-      position,
-      playerId
+      position: {x, y, angle},
+			avatar
+      playerId,
+			score
       }
     },
-    numPlayers: 0
-    score: { socket.id: playerScore = 0},
+    numPlayers: 0,
     level: 1,
     questionsLevel1: [{question: '', options: [], answer: '', x: 0, y: 0}],
     questionsLevel2: [{question: '', options: [], answer: '', x: 0, y: 0}],
@@ -39,9 +40,7 @@ module.exports = io => {
 				players: {},
 				numPlayers: 0,
 				avatars: ["scubaGreen", "scubaPink", "scubaPurple"],
-				score: {},
 				level: 1,
-
 				questionsLevel1: [],
 				questionsLevel2: [],
 				questionsLevel3: [],
@@ -95,7 +94,7 @@ module.exports = io => {
 					x,
 					y
 				};
-				
+
 				if (fact.levelId === 1) {
 					factObj.y = factObj.y + 400;
 					activeGames[key].factsLevel1.push(factObj);
@@ -131,21 +130,21 @@ module.exports = io => {
 					//   faceRight: false,
 				},
 				avatar: newAvatar,
-				playerId: socket.id
+				playerId: socket.id,
+				score: 0
 			};
 
 			socket.on("inWaitingRoom", async function () {});
 
 			gameInfo.numPlayer = Object.keys(gameInfo.players).length;
-			gameInfo.score[socket.id] = 0;
 			//send state info
 
 			socket.emit("setState", gameInfo);
 
-			socket.on("startCountdown", (seconds) => {
-				socket.to(gameKey).emit("startedCountdown", seconds)
-				socket.emit("startedCountdown", seconds)
-			})
+			socket.on("startCountdown", seconds => {
+				socket.to(gameKey).emit("startedCountdown", seconds);
+				socket.emit("startedCountdown", seconds);
+			});
 
 			//send current players info
 			socket.emit("currentPlayers", {
@@ -155,6 +154,7 @@ module.exports = io => {
 			//send new player info
 			socket.to(gameKey).emit("newPlayer", {
 				newPlayer: gameInfo.players[socket.id],
+				score: gameInfo.players[socket.id].score,
 				numPlayers: gameInfo.numPlayers
 			});
 
