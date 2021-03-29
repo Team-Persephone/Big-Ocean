@@ -240,7 +240,7 @@ export default class MainScene extends Phaser.Scene {
 			this.physics.world.removeCollider(clam.overlapCollider);
 			clam.setTint(0xcbc3e3);
 			clam.overlapTriggered = false;
-		} else {
+		} else if (!clam.isResolved) {
 
 			clam.setInteractive();
 			clam.on("pointerdown", () => {
@@ -684,7 +684,24 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 
-		this.socket.on("someoneScored", friend => {
+		this.socket.on("someoneScored", ({ friend, index, level })  => {
+			
+			if ( level === 1) {
+				scene.state.questionsLevel1[index].isResolved = true;
+			}
+			if ( level === 2) {
+				scene.state.questionsLevel2[index].isResolved = true;
+			}
+			if ( level === 3) {
+				scene.state.questionsLevel3[index].isResolved = true;
+			}
+			if ( level === 4) {
+				scene.state.questionsLevel4[index].isResolved = true;
+			}
+			if ( level === 5) {
+				scene.state.questionsLevel5[index].isResolved = true;
+			}
+
 			scores.forEach(score => {
 				score.destroy();
 			})
