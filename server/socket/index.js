@@ -174,9 +174,6 @@ module.exports = io => {
 
 		let count = 0;
 		socket.on("Scored", async function ({ key, playerId, score, answer, level }) {
-			console.log("key -->", key);
-			console.log("playerId -->", playerId);
-			console.log("score -->", score);
 			activeGames[key].players[playerId].score = score;
 			let answeredQuestion;
 			switch (level) {

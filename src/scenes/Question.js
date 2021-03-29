@@ -11,6 +11,7 @@ export default class Question extends Phaser.Scene {
 		this.level = data.level;
 		this.socket = data.socket;
 		this.key = data.key;
+		this.score = data.score;
 	}
 
 	preload() {
@@ -26,8 +27,8 @@ export default class Question extends Phaser.Scene {
 			this.correct.play();
 			this.scubaDiver.frozen = false;
 			this.scubaDiver.score = this.scubaDiver.score + this.level;
-			console.log("after score", this.scubaDiver.score); //score is working here, does nit show though
 			this.info.isResolved = true;
+			this.scubaDiver.updateScore(this.score);
 			this.socket.emit("Scored", {
 				key: this.key,
 				playerId: this.scubaDiver.playerId,
@@ -37,8 +38,6 @@ export default class Question extends Phaser.Scene {
 			});
 		} else {
 			console.log("you are so wrong!");
-			// this.scubaDiver.setPosition(0, 0)
-
 			this.scubaDiver.tweenPosition(0, 0);
 			this.surface.play();
 			this.scubaDiver.frozen = false;
@@ -52,8 +51,6 @@ export default class Question extends Phaser.Scene {
 		this.surface = this.sound.add("surface", { volume: 1.5 });
 		this.correct = this.sound.add("correct", { volume: 1 });
 
-
-		console.log("you clicked me!");
 		this.add.text(50, 50, `${info.question}`, {
 			fill: "#02075D",
 			backgroundColor: "#1abeff",
