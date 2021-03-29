@@ -124,6 +124,20 @@ export default class MainScene extends Phaser.Scene {
 			percentText.destroy();
 		});
 	}
+
+	//add gamekey to url for host to share
+	addUrl(gameKey) {
+		const url = `${window.location.href}${gameKey}`;
+		const msg = `invite yOur friends:\n\n${url}`;
+		const link = this.add.text(100, 100, msg);
+		link.setInteractive();
+		link.on("pointerdown", () => {
+			navigator.clipboard.writeText(url);
+			link.setText("copied!");
+		});
+		return link;
+	}
+
 	//take on functin for rocks
 	createRock(scene, rockName, x, y, scale = 1, angle = 0) {
 		scene.decorations
@@ -150,6 +164,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.cameras.main.startFollow(scene.scubaDiver);
 		scene.scubaDiver.score = player.score;
 		scene.scubaDiver.avatar = player.avatar;
+		scene.scubaDiver.playerId = player.playerId;
 	}
 
 	createClam(scene, info, file) {
@@ -230,7 +245,9 @@ export default class MainScene extends Phaser.Scene {
 			this.scene.launch("Question", {
 				info: clam.info,
 				scubaDiver: scubaDiver,
-				level: this.state.level
+				level: this.state.level,
+				socket: this.socket,
+				key: this.state.key
 			});
 			this.clamClick.play();
 			this.startTimer(10, clam, scubaDiver);
@@ -280,7 +297,7 @@ export default class MainScene extends Phaser.Scene {
 		this.click.stop();
 	}
 
-	addFriends(scene, player, score) {
+	addFriends(scene, player) {
 		const playerFriend = scene.add
 			.sprite(
 				player.position.x + 40,
@@ -290,12 +307,35 @@ export default class MainScene extends Phaser.Scene {
 			.setScale(0.2);
 		playerFriend.faceRight = true;
 		playerFriend.playerId = player.playerId;
-		playerFriend.socre = score;
+		playerFriend.score = player.score;
+		playerFriend.avatar = player.avatar;
 		scene.playerFriends.add(playerFriend);
 	}
 
 	async sleep(delay) {
 		return new Promise(resolve => setTimeout(() => resolve(true), delay));
+	}
+
+	yourScore(scubaDiver) {
+		this.add
+			.text(50, 50, `${scubaDiver.avatar}: ${scubaDiver.score}`, {
+				fill: "#02075D",
+				fontSize: 20
+			})
+			.setScrollFactor(0);
+	}
+
+	friendsScores(playerFriends) {
+		console.log("playerFriends --->", playerFriends);
+		let y = 70;
+		playerFriends.getChildren().forEach(friend => {
+			this.add
+				.text(50, y, `${friend.avatar}: ${friend.score}`, {
+					fontSize: 20
+				})
+				.setScrollFactor(0);
+			y += 20;
+		});
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -316,17 +356,13 @@ export default class MainScene extends Phaser.Scene {
 			rate: 0.9
 		}); //needs work with clam
 		this.infoBubble = this.sound.add("infoBubble", { volume: 6 });
-
 		//launch the socket connection
 		this.socket = io();
 		//connect the socket connection to IntoScene
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
-
-		let waitingForHost;
-		this.socket.on("startedCountdown", async seconds => {
-
-		//Volume
+    
+    		//Volume
 		this.volumeOn = this.add.image(700, 50, "volumeOn").setScrollFactor(0).setScale(.09);
 		this.volumeUp = this.add.image(750, 50, "volumeUp").setScrollFactor(0).setScale(.07);
 		this.volumeDown = this.add.image(650, 50, "volumeDown").setScrollFactor(0).setScale(.07);
@@ -379,8 +415,44 @@ export default class MainScene extends Phaser.Scene {
 			  this.sound.setMute(false);
 			}
 		  });
-  
-			//INSTRUCTIONS BUBBLE
+
+		let link;
+		this.socket.on("gameCreated", gameKey => {
+			link = this.addUrl(gameKey);
+		});
+
+		let waitingForHost;
+		this.socket.on("startedCountdown", async seconds => {
+			if (waitingForHost) waitingForHost.destroy();
+
+			this.scene.stop("Instructions");
+			const currentTimer = this.add.text(400, 200, `${seconds}`, {
+				fontSize: 50
+			});
+
+			while (seconds > 0) {
+				currentTimer.setText(`${seconds}`);
+				this.countdown.play();
+				await this.sleep(1000);
+				seconds--;
+			}
+			this.scubaDiver.waiting = false;
+			currentTimer.setText("swim!");
+			await this.sleep(1000);
+			this.countdown.stop();
+			currentTimer.destroy();
+			this.yourScore(scene.scubaDiver);
+			this.friendsScores(scene.playerFriends);
+
+			//add clams and shrimps to game
+			scene.state.questionsLevel1.forEach(question => {
+				scene.createClam(scene, question, "clam");
+			});
+			scene.state.factsLevel1.forEach(fact => {
+				scene.createShrimp(scene, fact, "shrimp");
+			});
+
+	//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
 				.image(734, 545, "instructions")
 				.setScale(0.15)
@@ -399,42 +471,9 @@ export default class MainScene extends Phaser.Scene {
 					scene.scene.stop("Instructions");
 				}
 			});
-
-			if (waitingForHost) waitingForHost.destroy();
-
-			this.scene.stop("Instructions");
-			const currentTimer = this.add.text(300, 200, `${seconds}`, {
-				fontSize: 50
-			});
-
-			while (seconds > 0) {
-				currentTimer.setText(`${seconds}`);
-				this.countdown.play();
-				await this.sleep(1000);
-				seconds--;
-			}
-			this.scubaDiver.waiting = false;
-			currentTimer.setText("swim!");
-			await this.sleep(1000);
-			this.countdown.stop();
-			currentTimer.destroy();
-
-			this.add
-				.text(50, 50, `${scene.scubaDiver.avatar}: ${scene.scubaDiver.score}`, {
-					fontSize: 20
-				})
-				.setScrollFactor(0);
-			//add clams and shrimps to game
-			scene.state.questionsLevel1.forEach(question => {
-				scene.createClam(scene, question, "clam");
-			});
-			scene.state.factsLevel1.forEach(fact => {
-				scene.createShrimp(scene, fact, "shrimp");
-			});
-
-
 			
 		});
+      
 
 		//set background
 		const map = this.make.tilemap({ key: "bigOcean" });
@@ -462,7 +501,11 @@ export default class MainScene extends Phaser.Scene {
 			playButton.on("pointerdown", () => {
 				playButton.setVisible(false);
 				display.setVisible(false);
-				this.socket.emit("startCountdown", 5);
+				link.destroy();
+				this.socket.emit("startCountdown", {
+					seconds: 5,
+					key: this.state.key
+				});
 			});
 		} else {
 			waitingForHost = this.add.text(
@@ -536,12 +579,12 @@ export default class MainScene extends Phaser.Scene {
 		//Volume - add volume sound bar for display here
 
 		// this.createPlayer(gameInfo.players[socketId])
-		this.socket.on("setState", function (gameInfo) {
-			const {
+		this.socket.on(
+			"setState",
+			function ({
 				key,
 				players,
 				avatars,
-				score,
 				level,
 				questionsLevel1,
 				questionsLevel2,
@@ -553,26 +596,44 @@ export default class MainScene extends Phaser.Scene {
 				factsLevel3,
 				factsLevel4,
 				factsLevel5
-			} = gameInfo;
-			//this.physics.resume() ----> WHAT DOES THIS??
+			}) {
+				scene.state = {
+					key,
+					players,
+					avatars,
+					level,
+					questionsLevel1,
+					questionsLevel2,
+					questionsLevel3,
+					questionsLevel4,
+					questionsLevel5,
+					factsLevel1,
+					factsLevel2,
+					factsLevel3,
+					factsLevel4,
+					factsLevel5
+				};
+				//this.physics.resume() ----> WHAT DOES THIS??
 
-			//set state to gameInfo
-			scene.state.key = key;
-			scene.state.players = players;
-			scene.state.avatars = avatars;
-			scene.state.score = score;
-			scene.state.level = level;
-			scene.state.questionsLevel1 = questionsLevel1;
-			scene.state.questionsLevel2 = questionsLevel2;
-			scene.state.questionsLevel3 = questionsLevel3;
-			scene.state.questionsLevel4 = questionsLevel4;
-			scene.state.questionsLevel5 = questionsLevel5;
-			scene.state.factsLevel1 = factsLevel1;
-			scene.state.factsLevel2 = factsLevel2;
-			scene.state.factsLevel3 = factsLevel3;
-			scene.state.factsLevel4 = factsLevel4;
-			scene.state.factsLevel5 = factsLevel5;
-		});
+				//INSTRUCTIONS BUBBLE
+				scene.instructionsBubble = scene.add
+					.image(734, 545, "instructions")
+					.setScale(0.15)
+					.setScrollFactor(0);
+
+				scene.instructionsBubble.setInteractive();
+				scene.showInstructions = false;
+				scene.instructionsBubble.on("pointerdown", () => {
+					if (!scene.showInstructions) {
+						scene.showInstructions = !scene.showInstructions;
+						scene.scene.launch("Instructions");
+					} else if (scene.showInstructions) {
+						scene.showInstructions = !scene.showInstructions;
+						scene.scene.stop("Instructions");
+					}
+				});
+			}
+		);
 
 		this.socket.on("currentPlayers", function ({ players, numPlayers }) {
 			scene.state.numPlayers = numPlayers;
@@ -585,8 +646,8 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 		//listen to add new player to scene
-		this.socket.on("newPlayer", function ({ score, newPlayer, numPlayers }) {
-			scene.addFriends(scene, newPlayer, score);
+		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
+			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
 
@@ -614,6 +675,17 @@ export default class MainScene extends Phaser.Scene {
 					}
 				}
 			});
+		});
+
+		this.socket.on("friendScored", friend => {
+			scene.playerFriends.getChildren().forEach(function (playerFriend) {
+				if (friend.playerId === playerFriend.playerId) {
+					playerFriend.score = friend.score;
+				}
+			});
+
+			//NOT WORKING!
+			this.friendsScores(scene.playerFriends);
 		});
 	}
 

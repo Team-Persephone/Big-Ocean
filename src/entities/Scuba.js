@@ -12,7 +12,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		this.frozen = false;
 	}
 
-	tweenPosition(x,y){
+	tweenPosition(x, y) {
 		this.scene.tweens.add({
 			targets: this,
 			x,
@@ -21,7 +21,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			duration: 1000,
 			repeat: 0, // -1: infinity
 			yoyo: false
-		})
+		});
 	}
 
 	// setPosition
@@ -35,6 +35,7 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 			y: this.scene.scubaDiver.y,
 			angle: this.scene.scubaDiver.angle,
 			faceRight: this.faceRight,
+			playerId: this.scene.scubaDiver.playerId
 		};
 
 		//move down
