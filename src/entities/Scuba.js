@@ -24,7 +24,10 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		});
 	}
 
-	// setPosition
+	updateScore(score){
+		if(score )
+			score.setText(`${this.avatar}: ${this.score}`)
+	}
 
 	updateMovement(cursors) {
 		this.anims.play("swim", true);

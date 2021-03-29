@@ -239,43 +239,52 @@ export default class MainScene extends Phaser.Scene {
 		if (clam.overlapTriggered) {
 			this.physics.world.removeCollider(clam.overlapCollider);
 			clam.setTint(0xcbc3e3);
-		}
-		clam.setInteractive();
-		clam.on("pointerdown", () => {
-			this.scene.launch("Question", {
-				info: clam.info,
-				scubaDiver: scubaDiver,
-				level: this.state.level,
-				socket: this.socket,
-				key: this.state.key
+			clam.overlapTriggered = false;
+		} else {
+
+			clam.setInteractive();
+			clam.on("pointerdown", () => {
+				this.scene.launch("Question", {
+					info: clam.info,
+					scubaDiver: scubaDiver,
+					level: this.state.level,
+					socket: this.socket,
+					key: this.state.key,
+					score: this.score,
+				});
+				this.clamClick.play();
+				this.startTimer(10, clam, scubaDiver);
+				//	this.click.play();
 			});
-			this.clamClick.play();
-			this.startTimer(10, clam, scubaDiver);
-			//	this.click.play();
-		});
-		clam.overlapTriggered = !clam.overlapTriggered;
-		console.log("is this resolved?", clam.info.isResolved);
-		console.log("overlaptriggeret at end", clam.overlapTriggered);
+			clam.overlapTriggered = !clam.overlapTriggered;
+			console.log("is this resolved?", clam.info.isResolved);
+			console.log("overlaptriggeret at end", clam.overlapTriggered);
+		}
 	}
 
 	isOverlappingFact(scubaDiver, shrimp) {
 		if (shrimp.overlapTriggered) {
 			this.physics.world.removeCollider(shrimp.overlapCollider);
 			shrimp.setTint(0xbdef83);
+			shrimp.overlapTriggered = false;
+		} else {
+			if (!shrimp.isRead) {
+				shrimp.setInteractive();
+				shrimp.on("pointerdown", () => {
+					this.scene.launch("Facts", { info: shrimp.info });
+					this.shrimpClick.play();
+					this.startTimer(7, shrimp, scubaDiver, "Facts");
+					//if fixing clam click count can remove below line
+					this.click.play();
+					//update score
+					this.scubaDiver.score = Number((this.scubaDiver.score + this.state.level/2).toFixed(1))
+					this.scubaDiver.updateScore(this.score);
+					this.socket.emit('Scored', {key: this.state.key, playerId: this.scubaDiver.playerId, score: this.scubaDiver.score})
+					shrimp.isRead = true;
+				});
+			}
+			shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 		}
-		if (!shrimp.isRead) {
-			shrimp.setInteractive();
-			shrimp.on("pointerdown", () => {
-				this.scene.launch("Facts", { info: shrimp.info });
-				this.shrimpClick.play();
-				this.startTimer(7, shrimp, scubaDiver, "Facts");
-				//if fixing clam click count can remove below line
-				this.click.play();
-				scubaDiver.score = scubaDiver.score + this.state.level / 2; //does not do devition cause float...
-				shrimp.isRead = true;
-			});
-		}
-		shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 	}
 	// const timer = this.add.text(50, 50, "")
 
@@ -316,26 +325,18 @@ export default class MainScene extends Phaser.Scene {
 		return new Promise(resolve => setTimeout(() => resolve(true), delay));
 	}
 
-	yourScore(scubaDiver) {
-		this.add
-			.text(50, 50, `${scubaDiver.avatar}: ${scubaDiver.score}`, {
-				fill: "#02075D",
-				fontSize: 20
-			})
-			.setScrollFactor(0);
-	}
-
 	friendsScores(playerFriends) {
-		console.log("playerFriends --->", playerFriends);
 		let y = 70;
+		let scores = [];
 		playerFriends.getChildren().forEach(friend => {
-			this.add
+			scores.push(this.add
 				.text(50, y, `${friend.avatar}: ${friend.score}`, {
 					fontSize: 20
 				})
-				.setScrollFactor(0);
+				.setScrollFactor(0));
 			y += 20;
 		});
+		return scores;
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -421,7 +422,8 @@ export default class MainScene extends Phaser.Scene {
 			link = this.addUrl(gameKey);
 		});
 
-		let waitingForHost;
+		let waitingForHost, scores;
+		
 		this.socket.on("startedCountdown", async seconds => {
 			if (waitingForHost) waitingForHost.destroy();
 
@@ -441,8 +443,13 @@ export default class MainScene extends Phaser.Scene {
 			await this.sleep(1000);
 			this.countdown.stop();
 			currentTimer.destroy();
-			this.yourScore(scene.scubaDiver);
-			this.friendsScores(scene.playerFriends);
+			this.score = this.add
+			.text(50, 50, `${this.scubaDiver.avatar}: ${this.scubaDiver.score}`, {
+				fill: "#02075D",
+				fontSize: 20
+			})
+			.setScrollFactor(0);
+			scores = this.friendsScores(scene.playerFriends);
 
 			//add clams and shrimps to game
 			scene.state.questionsLevel1.forEach(question => {
@@ -486,7 +493,6 @@ export default class MainScene extends Phaser.Scene {
 		map.createStaticLayer("foam", tileset);
 
 		// const displayPlay = this.displayPlayButton;
-
 		if (window.location.pathname.length <= 1) {
 			const display = this.add.text(
 				170,
@@ -677,15 +683,16 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 
-		this.socket.on("friendScored", friend => {
+		this.socket.on("someoneScored", friend => {
+			scores.forEach(score => {
+				score.destroy();
+			})
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
 				if (friend.playerId === playerFriend.playerId) {
 					playerFriend.score = friend.score;
 				}
 			});
-
-			//NOT WORKING!
-			this.friendsScores(scene.playerFriends);
+			scores = this.friendsScores(scene.playerFriends);
 		});
 	}
 

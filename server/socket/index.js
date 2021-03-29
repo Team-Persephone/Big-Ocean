@@ -173,9 +173,6 @@ module.exports = io => {
 		});
 
 		socket.on("Scored", async function ({ key, playerId, score }) {
-			console.log("key -->", key);
-			console.log("playerId -->", playerId);
-			console.log("score -->", score);
 			activeGames[key].players[playerId].score = score;
 			socket.to(key).emit("someoneScored", activeGames[key].players[playerId]);
 		});
