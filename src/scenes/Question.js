@@ -11,11 +11,17 @@ export default class Question extends Phaser.Scene {
 		this.level = data.level;
 	}
 
-	preload() {}
+	preload() {
+		//return to surface sound
+		this.load.audio("surface", "/audio/water-surface.mp3");
+		//correct clam sound
+		this.load.audio("correct", "/audio/correct.mp3");
+	}
 
 	isCorrect(answer) {
 		if (answer === this.info.answer) {
 			console.log("right answer!!!!");
+			this.correct.play();
 			this.scubaDiver.frozen = false;
 			this.scubaDiver.score = this.scubaDiver.score + this.level;
 			console.log("after score", this.scubaDiver.score); //score is working here, does nit show though
@@ -23,8 +29,8 @@ export default class Question extends Phaser.Scene {
 		} else {
 			console.log("you are so wrong!");
 			// this.scubaDiver.setPosition(0, 0)
-
-			this.scubaDiver.tweenPosition(0,0)
+			this.scubaDiver.tweenPosition(0, 0);
+			this.surface.play();
 			this.scubaDiver.frozen = false;
 		}
 		this.scene.stop("Question");
@@ -32,6 +38,11 @@ export default class Question extends Phaser.Scene {
 	create() {
 		const info = this.info;
 		const scene = this;
+
+		this.surface = this.sound.add("surface", { volume: 1.5 });
+		this.correct = this.sound.add("correct", { volume: 1 });
+
+
 		console.log("you clicked me!");
 		this.add.text(50, 50, `${info.question}`, {
 			fill: "#02075D",

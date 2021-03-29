@@ -71,9 +71,9 @@ export default class MainScene extends Phaser.Scene {
 		//load background
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
 		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
+		this.load.image("instructions", "/assets/bubble.png");
 
 		//rocks-Textures
-
 		this.load.image("rock-brown-1", "/assets/rock-brown-1.png");
 		this.load.image("rock-brown-2", "/assets/rock-brown-2.png");
 		this.load.image("rock-brown-3", "/assets/rock-brown-3.png");
@@ -83,14 +83,31 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("rock-sand-1", "/assets/rock-sand-1.png");
 		this.load.image("rock-sand-2", "/assets/rock-sand-2.png");
 
-		//load background
-		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
-		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
+		//Audio Images
+		this.load.image("volumeOn", "/assets/volume/volumeOn.png");
+		this.load.image("volumeOff", "/assets/volume/volumeOff.png");
+		this.load.image("volumeUp", "/assets/volume/volumeUp.png");
+		this.load.image("volumeDown", "/assets/volume/volumeDown.png");
 
-		this.load.image("instructions", "/assets/bubble.png");
-
-		//Audio
+		//Audio Sounds
+		//background bubbles
 		this.load.audio("music", ["/audio/Waiting_Room.mp3"]);
+		//click on clam
+		this.load.audio("clamClick", "/audio/clam-click.mp3");
+		//click on shrimp
+		this.load.audio("shrimpClick", "/audio/shrimpClick.mp3");
+		//collide with rock
+		this.load.audio("impact", "/audio/impact.mp3");
+		//Start game timer countdown
+		this.load.audio("countdown", "/audio/countdown.mp3");
+		// question/fact click count
+		this.load.audio("click", "/audio/click.mp3");
+		//instructions pop up
+		this.load.audio("infoBubble", "/audio/infoBubble.mp3");
+		//level timer up/lose game
+		this.load.audio("gameOver", "/audio/gameOver.mp3"); //not linked yet
+		//win game
+		this.load.audio("gameWin", "/audio/gameWin.mp3"); //not linked yet
 
 		//LOAD ON
 		this.load.on("progress", function (value) {
@@ -215,7 +232,9 @@ export default class MainScene extends Phaser.Scene {
 				scubaDiver: scubaDiver,
 				level: this.state.level
 			});
+			this.clamClick.play();
 			this.startTimer(10, clam, scubaDiver);
+			//	this.click.play();
 		});
 		clam.overlapTriggered = !clam.overlapTriggered;
 		console.log("is this resolved?", clam.info.isResolved);
@@ -231,8 +250,11 @@ export default class MainScene extends Phaser.Scene {
 			shrimp.setInteractive();
 			shrimp.on("pointerdown", () => {
 				this.scene.launch("Facts", { info: shrimp.info });
+				this.shrimpClick.play();
 				this.startTimer(7, shrimp, scubaDiver, "Facts");
-				scubaDiver.score = scubaDiver.score + (this.state.level /  2); //does not do devition cause float...
+				//if fixing clam click count can remove below line
+				this.click.play();
+				scubaDiver.score = scubaDiver.score + this.state.level / 2; //does not do devition cause float...
 				shrimp.isRead = true;
 			});
 		}
@@ -244,6 +266,9 @@ export default class MainScene extends Phaser.Scene {
 		scuba.frozen = true;
 		while (time > 0) {
 			//timer.setText(`${time}`)
+			//can add so is with clam click, but cannot stop it yet as timer
+			//continues when answer is right or wrong
+			//	this.click.play();
 			await this.sleep(1000);
 			time--;
 		}
@@ -252,6 +277,7 @@ export default class MainScene extends Phaser.Scene {
 		}
 		scuba.frozen = false;
 		animal.disableInteractive();
+		this.click.stop();
 	}
 
 	addFriends(scene, player, score) {
@@ -276,10 +302,20 @@ export default class MainScene extends Phaser.Scene {
 	create() {
 		const scene = this;
 		this.music = this.sound.add("music", {
-			volume: 0.5,
+			volume: 0.05,
 			loop: true
 		});
 		this.music.play();
+		this.clamClick = this.sound.add("clamClick", { volume: 2 });
+		this.shrimpClick = this.sound.add("shrimpClick", { volume: 0.6 });
+		this.impact = this.sound.add("impact", { volume: 2 }); //not hooked up correctly
+		this.countdown = this.sound.add("countdown", { volume: 1 });
+		this.click = this.sound.add("click", {
+			volume: 0.5,
+			loop: true,
+			rate: 0.9
+		}); //needs work with clam
+		this.infoBubble = this.sound.add("infoBubble", { volume: 6 });
 
 		//launch the socket connection
 		this.socket = io();
@@ -289,6 +325,61 @@ export default class MainScene extends Phaser.Scene {
 
 		let waitingForHost;
 		this.socket.on("startedCountdown", async seconds => {
+
+		//Volume
+		this.volumeOn = this.add.image(700, 50, "volumeOn").setScrollFactor(0).setScale(.09);
+		this.volumeUp = this.add.image(750, 50, "volumeUp").setScrollFactor(0).setScale(.07);
+		this.volumeDown = this.add.image(650, 50, "volumeDown").setScrollFactor(0).setScale(.07);
+
+		this.volumeOn.setInteractive();
+		this.volumeUp.setInteractive();
+		this.volumeDown.setInteractive();
+
+		this.volumeUp.on("pointerdown", () => {
+			this.volumeUp.setTint(0xc2c2c2);
+			let newVol = this.sound.volume + 0.1;
+			this.sound.setVolume(newVol);
+			if (this.sound.volume < 0.1) {
+				this.volumeOn.setTexture("volumeOn");
+			}
+			if (this.sound.volume >= 1.5) {
+				this.volumeUp.setTint(0x056ff1);
+				this.volumeUp.disableInteractive();
+			  } else {
+				this.volumeDown.clearTint();
+				this.volumeDown.setInteractive();
+			  } 
+		});
+		this.volumeDown.on("pointerdown", () => {
+			this.volumeDown.setTint(0xc2c2c2);
+			let newVol = this.sound.volume - 0.1;
+			this.sound.setVolume(newVol);
+			if (this.sound.volume <= 0.1) {
+			  this.volumeDown.setTint(0x056ff1);
+			  this.volumeDown.disableInteractive();
+			  this.volumeSpeaker.setTexture("volumeOff");
+			} else {
+			  this.volumeUp.clearTint();
+			  this.volumeUp.setInteractive();
+			}
+		  });
+		  this.volumeDown.on("pointerup", () => {
+			this.volumeDown.clearTint();
+		  });
+		  this.volumeUp.on("pointerup", () => {
+			this.volumeUp.clearTint();
+		  });
+
+		  this.volumeOn.on("pointerdown", () => {
+			if (this.volumeOn.texture.key === "volumeOn") {
+			  this.volumeOn.setTexture("volumeOff");
+			  this.sound.setMute(true);
+			} else {
+			  this.volumeOn.setTexture("volumeOn");
+			  this.sound.setMute(false);
+			}
+		  });
+  
 			//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
 				.image(734, 545, "instructions")
@@ -300,9 +391,11 @@ export default class MainScene extends Phaser.Scene {
 			scene.instructionsBubble.on("pointerdown", () => {
 				if (!scene.showInstructions) {
 					scene.showInstructions = !scene.showInstructions;
+					this.infoBubble.play();
 					scene.scene.launch("Instructions");
 				} else if (scene.showInstructions) {
 					scene.showInstructions = !scene.showInstructions;
+					this.infoBubble.play();
 					scene.scene.stop("Instructions");
 				}
 			});
@@ -316,12 +409,14 @@ export default class MainScene extends Phaser.Scene {
 
 			while (seconds > 0) {
 				currentTimer.setText(`${seconds}`);
+				this.countdown.play();
 				await this.sleep(1000);
 				seconds--;
 			}
 			this.scubaDiver.waiting = false;
 			currentTimer.setText("swim!");
 			await this.sleep(1000);
+			this.countdown.stop();
 			currentTimer.destroy();
 
 			this.add
@@ -336,6 +431,9 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.factsLevel1.forEach(fact => {
 				scene.createShrimp(scene, fact, "shrimp");
 			});
+
+
+			
 		});
 
 		//set background
@@ -421,7 +519,10 @@ export default class MainScene extends Phaser.Scene {
 		this.createRock(this, "rock-gray-3", 100, 1800, 0.55, -90);
 		this.createRock(this, "rock-brown-3", 835, 2500, 0.6, 0);
 
-		this.physics.add.collider(this.playerGroup, this.decorations);
+		this.physics.add.collider(this.playerGroup, this.decorations, function () {
+			console.log("inside collider with rocks, tetsing sound");
+			//this.impact.play();
+		});
 
 		//create navigation and animation for scuba divers
 		//this.cursors = this.input.keyboard.createCursorKeys();
