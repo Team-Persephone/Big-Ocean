@@ -172,51 +172,90 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-		let count = 0;
-		socket.on("Scored", async function ({ key, playerId, score, answer, level }) {
-			activeGames[key].players[playerId].score = score;
-			let answeredQuestion;
-			switch (level) {
-				case 2: activeGames[key].questionsLevel2.forEach((question, index) => {
-					if (question.answer === answer) {
-						question.isResolved = true;
-						answeredQuestion = index;
-						count++;
-					}})
-				case 3: activeGames[key].questionsLevel3.forEach((question, index) => {
-					if (question.answer === answer) {
-						question.isResolved = true;
-						answeredQuestion = index;
-						count++;
-					}})
-				case 4: activeGames[key].questionsLevel4.forEach((question, index) => {
-					if (question.answer === answer) {
-						question.isResolved = true;
-						answeredQuestion = index;
-						count++;
-					}})
-				case 5: activeGames[key].questionsLevel5.forEach((question, index) => {
-					if (question.answer === answer) {
-						question.isResolved = true;
-						answeredQuestion = index;
-						count++;
-					}})
-				default: activeGames[key].questionsLevel1.forEach((question, index) => {
-					if (question.answer === answer) {
-						question.isResolved = true;
-						answeredQuestion = index;
-						count++;
-					} 
-				})
+
+		socket.on(
+			"Scored",
+			async function ({ key, playerId, score, clamQuestion, level }) {
+				console.log("level in index", level);
+				activeGames[key].players[playerId].score = score;
+				let answeredQuestion;
+
+				let result;
+
+				if (level === 1) {
+					activeGames[key].questionsLevel1.forEach((question, index) => {
+						if (question.question === clamQuestion) {
+							question.isResolved = true;
+							answeredQuestion = index;
+						}
+					});
+					 result = activeGames[key].questionsLevel1.filter(question => {
+					return question.isResolved === true
+					})
+				}
+				if (level === 2) {
+					activeGames[key].questionsLevel2.forEach((question, index) => {
+						if (question.question === clamQuestion) {
+							question.isResolved = true;
+							answeredQuestion = index;
+						}
+					});
+					result = activeGames[key].questionsLevel2.filter(question => {
+						return question.isResolved === true
+					})
+				}
+				if (level === 3) {
+					activeGames[key].questionsLevel3.forEach((question, index) => {
+						if (question.question === clamQuestion) {
+							question.isResolved = true;
+							answeredQuestion = index;
+						}
+					});
+					result = activeGames[key].questionsLevel3.filter(question => {
+						return question.isResolved === true
+					})
+				}
+				if (level === 4) {
+					activeGames[key].questionsLevel4.forEach((question, index) => {
+						if (question.question === clamQuestion) {
+							question.isResolved = true;
+							answeredQuestion = index;
+						}
+					});
+					result = activeGames[key].questionsLevel4.filter(question => {
+						return question.isResolved === true
+					})
+				}
+				if (level === 5) {
+					activeGames[key].questionsLevel5.forEach((question, index) => {
+						if (question.question === clamQuestion) {
+							question.isResolved = true;
+							answeredQuestion = index;
+						}
+					});
+					result = activeGames[key].questionsLevel5.filter(question => {
+						return question.isResolved === true
+					})
+				}
+
+				console.log('result length', result.length, result)
+
+				if (result.length < 5) {
+					console.log("i am less than 5");
+					socket
+						.to(key)
+						.emit("someoneScored", {
+							player: activeGames[key].players[playerId],
+							index: answeredQuestion
+						});
+				} else {
+					console.log('sending next level socket')
+					activeGames[key].level++;
+					io.to(key).emit("nextLevel", activeGames[key].level);
+
+				}
 			}
-			if (count < 5 ) {
-				socket.to(key).emit("someoneScored", { player: activeGames[key].players[playerId], index: answeredQuestion });
-			} else {
-				activeGames[key].level++;
-				io.to(key).emit("nextLevel", {level: activeGames[key].level});
-				count = 0;
-			}
-		});
+		);
 	});
 
 	function codeGenerator() {

@@ -256,8 +256,7 @@ export default class MainScene extends Phaser.Scene {
 				this.startTimer(10, clam, scubaDiver);
 				//	this.click.play();
 			});
-			clam.overlapTriggered = !clam.overlapTriggered;
-			console.log("is this resolved?", clam.info.isResolved);
+			clam.overlapTriggered = true;
 			console.log("overlaptriggeret at end", clam.overlapTriggered);
 		}
 	}
@@ -432,7 +431,7 @@ export default class MainScene extends Phaser.Scene {
 		});
 
 		let waitingForHost, scores;
-		
+
 		this.socket.on("startedCountdown", async seconds => {
 			if (waitingForHost) waitingForHost.destroy();
 
@@ -527,9 +526,9 @@ export default class MainScene extends Phaser.Scene {
 		//makes friends visibel
 		scene.playerFriends = this.physics.add.group();
 
-		//set world bounds 
+		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 960);
-		
+
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
@@ -699,6 +698,7 @@ export default class MainScene extends Phaser.Scene {
 
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
+			console.log('in Mainscene', level)
 			if (scene.state.level === 2) {
 				scene.physics.world.setBounds(0, 320, 1088, 1920);
 			}
