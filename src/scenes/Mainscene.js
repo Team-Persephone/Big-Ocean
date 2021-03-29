@@ -361,11 +361,20 @@ export default class MainScene extends Phaser.Scene {
 		//connect the socket connection to IntoScene
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
-    
-    		//Volume
-		this.volumeOn = this.add.image(700, 50, "volumeOn").setScrollFactor(0).setScale(.09);
-		this.volumeUp = this.add.image(750, 50, "volumeUp").setScrollFactor(0).setScale(.07);
-		this.volumeDown = this.add.image(650, 50, "volumeDown").setScrollFactor(0).setScale(.07);
+
+		//Volume
+		this.volumeOn = this.add
+			.image(700, 50, "volumeOn")
+			.setScrollFactor(0)
+			.setScale(0.09);
+		this.volumeUp = this.add
+			.image(750, 50, "volumeUp")
+			.setScrollFactor(0)
+			.setScale(0.07);
+		this.volumeDown = this.add
+			.image(650, 50, "volumeDown")
+			.setScrollFactor(0)
+			.setScale(0.07);
 
 		this.volumeOn.setInteractive();
 		this.volumeUp.setInteractive();
@@ -381,40 +390,40 @@ export default class MainScene extends Phaser.Scene {
 			if (this.sound.volume >= 1.5) {
 				this.volumeUp.setTint(0x056ff1);
 				this.volumeUp.disableInteractive();
-			  } else {
+			} else {
 				this.volumeDown.clearTint();
 				this.volumeDown.setInteractive();
-			  } 
+			}
 		});
 		this.volumeDown.on("pointerdown", () => {
 			this.volumeDown.setTint(0xc2c2c2);
 			let newVol = this.sound.volume - 0.1;
 			this.sound.setVolume(newVol);
 			if (this.sound.volume <= 0.1) {
-			  this.volumeDown.setTint(0x056ff1);
-			  this.volumeDown.disableInteractive();
-			  this.volumeSpeaker.setTexture("volumeOff");
+				this.volumeDown.setTint(0x056ff1);
+				this.volumeDown.disableInteractive();
+				this.volumeSpeaker.setTexture("volumeOff");
 			} else {
-			  this.volumeUp.clearTint();
-			  this.volumeUp.setInteractive();
+				this.volumeUp.clearTint();
+				this.volumeUp.setInteractive();
 			}
-		  });
-		  this.volumeDown.on("pointerup", () => {
+		});
+		this.volumeDown.on("pointerup", () => {
 			this.volumeDown.clearTint();
-		  });
-		  this.volumeUp.on("pointerup", () => {
+		});
+		this.volumeUp.on("pointerup", () => {
 			this.volumeUp.clearTint();
-		  });
+		});
 
-		  this.volumeOn.on("pointerdown", () => {
+		this.volumeOn.on("pointerdown", () => {
 			if (this.volumeOn.texture.key === "volumeOn") {
-			  this.volumeOn.setTexture("volumeOff");
-			  this.sound.setMute(true);
+				this.volumeOn.setTexture("volumeOff");
+				this.sound.setMute(true);
 			} else {
-			  this.volumeOn.setTexture("volumeOn");
-			  this.sound.setMute(false);
+				this.volumeOn.setTexture("volumeOn");
+				this.sound.setMute(false);
 			}
-		  });
+		});
 
 		let link;
 		this.socket.on("gameCreated", gameKey => {
@@ -452,7 +461,7 @@ export default class MainScene extends Phaser.Scene {
 				scene.createShrimp(scene, fact, "shrimp");
 			});
 
-	//INSTRUCTIONS BUBBLE
+			//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
 				.image(734, 545, "instructions")
 				.setScale(0.15)
@@ -471,9 +480,7 @@ export default class MainScene extends Phaser.Scene {
 					scene.scene.stop("Instructions");
 				}
 			});
-			
 		});
-      
 
 		//set background
 		const map = this.make.tilemap({ key: "bigOcean" });
@@ -503,23 +510,20 @@ export default class MainScene extends Phaser.Scene {
 				display.setVisible(false);
 				link.destroy();
 				this.socket.emit("startCountdown", {
-					seconds: 5,
+					seconds: 1,
 					key: this.state.key
 				});
 			});
 		} else {
-			waitingForHost = this.add.text(
-				170,
-				590,
-				"waiting fOr hOst tO start game..."
-			);
+			waitingForHost = this.add.text(170, "waiting fOr hOst tO start game...");
 		}
 
-		//set boundries to the game world
-		this.physics.world.setBounds(0, 320, 1088, 4800);
 		//makes friends visibel
 		scene.playerFriends = this.physics.add.group();
 
+		//set world bounds 
+		this.physics.world.setBounds(0, 320, 1088, 960);
+		
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
@@ -575,8 +579,6 @@ export default class MainScene extends Phaser.Scene {
 			left: Phaser.Input.Keyboard.KeyCodes.LEFT,
 			right: Phaser.Input.Keyboard.KeyCodes.RIGHT
 		});
-
-		//Volume - add volume sound bar for display here
 
 		// this.createPlayer(gameInfo.players[socketId])
 		this.socket.on(
@@ -686,6 +688,22 @@ export default class MainScene extends Phaser.Scene {
 
 			//NOT WORKING!
 			this.friendsScores(scene.playerFriends);
+		});
+
+		this.socket.on("nextLevel", level => {
+			scene.state.level = level;
+			if (scene.state.level === 2) {
+				scene.physics.world.setBounds(0, 320, 1088, 1920);
+			}
+			if (scene.state.level === 3) {
+				scene.physics.world.setBounds(0, 320, 1088, 2880);
+			}
+			if (scene.state.level === 4) {
+				scene.physics.world.setBounds(0, 320, 1088, 3840);
+			}
+			if (scene.state.level === 5) {
+				scene.physics.world.setBounds(0, 320, 1088, 4800);
+			}
 		});
 	}
 

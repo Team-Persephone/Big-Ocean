@@ -58,7 +58,7 @@ module.exports = io => {
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 600);
+				let y = Math.ceil(Math.random() * 960);
 				let questionObj = {
 					question: question.question,
 					options: question.options,
@@ -87,7 +87,7 @@ module.exports = io => {
 
 			facts.forEach(fact => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 600);
+				let y = Math.ceil(Math.random() * 960);
 				let factObj = {
 					fact: fact.fact,
 					isRead: false, //can multpile people read same fact???
@@ -172,12 +172,53 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-		socket.on("Scored", async function ({ key, playerId, score }) {
+		let count = 0;
+		socket.on("Scored", async function ({ key, playerId, score, answer, level }) {
 			console.log("key -->", key);
 			console.log("playerId -->", playerId);
 			console.log("score -->", score);
 			activeGames[key].players[playerId].score = score;
-			socket.to(key).emit("someoneScored", activeGames[key].players[playerId]);
+			let answeredQuestion;
+			switch (level) {
+				case 2: activeGames[key].questionsLevel2.forEach((question, index) => {
+					if (question.answer === answer) {
+						question.isResolved = true;
+						answeredQuestion = index;
+						count++;
+					}})
+				case 3: activeGames[key].questionsLevel3.forEach((question, index) => {
+					if (question.answer === answer) {
+						question.isResolved = true;
+						answeredQuestion = index;
+						count++;
+					}})
+				case 4: activeGames[key].questionsLevel4.forEach((question, index) => {
+					if (question.answer === answer) {
+						question.isResolved = true;
+						answeredQuestion = index;
+						count++;
+					}})
+				case 5: activeGames[key].questionsLevel5.forEach((question, index) => {
+					if (question.answer === answer) {
+						question.isResolved = true;
+						answeredQuestion = index;
+						count++;
+					}})
+				default: activeGames[key].questionsLevel1.forEach((question, index) => {
+					if (question.answer === answer) {
+						question.isResolved = true;
+						answeredQuestion = index;
+						count++;
+					} 
+				})
+			}
+			if (count < 5 ) {
+				socket.to(key).emit("someoneScored", { player: activeGames[key].players[playerId], index: answeredQuestion });
+			} else {
+				activeGames[key].level++;
+				io.to(key).emit("nextLevel", {level: activeGames[key].level});
+				count = 0;
+			}
 		});
 	});
 

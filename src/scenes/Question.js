@@ -31,7 +31,9 @@ export default class Question extends Phaser.Scene {
 			this.socket.emit("Scored", {
 				key: this.key,
 				playerId: this.scubaDiver.playerId,
-				score: this.scubaDiver.score
+				score: this.scubaDiver.score,
+				answer: this.info.answer,
+				level: this.level
 			});
 		} else {
 			console.log("you are so wrong!");
