@@ -616,7 +616,7 @@ export default class MainScene extends Phaser.Scene {
 		}
 
 		this.physics.add.collider(this.playerGroup, this.decorations, function () {
-			console.log("inside collider with rocks, tetsing sound");
+			console.log("inside collider with rocks, testing sound");
 			//this.impact.play();
 		});
 
@@ -740,12 +740,6 @@ export default class MainScene extends Phaser.Scene {
 			scores = this.friendsScores(scene.playerFriends);
 		});
 
-		// this.socket.on("youWin", level => {
-		// 	scene.state.level = level;
-		// 	//change level to 6
-		// 	if (scene.state.level === 2) {
-		//}
-
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
 
@@ -799,8 +793,8 @@ export default class MainScene extends Phaser.Scene {
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 			if (scene.state.level === 2) {
-				console.log('you win, level 6!')
-				scene.scene.launch("WinScene")
+				console.log('you win!', scene.playerFriends, scene.scubaDiver)
+				scene.scene.launch("WinScene", { playerFriends: scene.playerFriends, scubaDiver: scene.scubaDiver })
 			}
 			
 		});
