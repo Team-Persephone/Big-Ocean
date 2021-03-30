@@ -3,6 +3,10 @@ import Scuba from "../entities/Scuba";
 import Clam from "../entities/Clam";
 import Shrimp from "../entities/Shrimp";
 
+const chatContainer = document.getElementsByClassName(
+	"chat-box chat-hidden"
+)[0];
+
 export default class MainScene extends Phaser.Scene {
 	constructor() {
 		super("MainScene");
@@ -159,6 +163,12 @@ export default class MainScene extends Phaser.Scene {
 		scene.createAnimations(`${player.avatar}`);
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
+
+		//add chat if new player created
+		if (Object.keys(scene.state.players).length > 1) {
+			chatContainer.classList.remove("chat-hidden");
+		}
+
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
@@ -231,7 +241,6 @@ export default class MainScene extends Phaser.Scene {
 				});
 		}
 	}
-
 	// in here scubadiver and clam are variables passed in from add.overlap
 	//scubadiver and clam do not have to be connected to scene in this callback function
 	isOverlappingQuestion(scubaDiver, clam) {
@@ -241,7 +250,6 @@ export default class MainScene extends Phaser.Scene {
 			clam.setTint(0xcbc3e3);
 			clam.overlapTriggered = false;
 		} else {
-
 			clam.setInteractive();
 			clam.on("pointerdown", () => {
 				this.scene.launch("Question", {
@@ -250,7 +258,7 @@ export default class MainScene extends Phaser.Scene {
 					level: this.state.level,
 					socket: this.socket,
 					key: this.state.key,
-					score: this.score,
+					score: this.score
 				});
 				this.clamClick.play();
 				this.startTimer(10, clam, scubaDiver);
@@ -276,9 +284,15 @@ export default class MainScene extends Phaser.Scene {
 					//if fixing clam click count can remove below line
 					this.click.play();
 					//update score
-					this.scubaDiver.score = Number((this.scubaDiver.score + this.state.level/2).toFixed(1))
+					this.scubaDiver.score = Number(
+						(this.scubaDiver.score + this.state.level / 2).toFixed(1)
+					);
 					this.scubaDiver.updateScore(this.score);
-					this.socket.emit('Scored', {key: this.state.key, playerId: this.scubaDiver.playerId, score: this.scubaDiver.score})
+					this.socket.emit("Scored", {
+						key: this.state.key,
+						playerId: this.scubaDiver.playerId,
+						score: this.scubaDiver.score
+					});
 					shrimp.isRead = true;
 				});
 			}
@@ -328,11 +342,13 @@ export default class MainScene extends Phaser.Scene {
 		let y = 70;
 		let scores = [];
 		playerFriends.getChildren().forEach(friend => {
-			scores.push(this.add
-				.text(50, y, `${friend.avatar}: ${friend.score}`, {
-					fontSize: 20
-				})
-				.setScrollFactor(0));
+			scores.push(
+				this.add
+					.text(50, y, `${friend.avatar}: ${friend.score}`, {
+						fontSize: 20
+					})
+					.setScrollFactor(0)
+			);
 			y += 20;
 		});
 		return scores;
@@ -452,11 +468,11 @@ export default class MainScene extends Phaser.Scene {
 			this.countdown.stop();
 			currentTimer.destroy();
 			this.score = this.add
-			.text(50, 50, `${this.scubaDiver.avatar}: ${this.scubaDiver.score}`, {
-				fill: "#02075D",
-				fontSize: 20
-			})
-			.setScrollFactor(0);
+				.text(50, 50, `${this.scubaDiver.avatar}: ${this.scubaDiver.score}`, {
+					fill: "#02075D",
+					fontSize: 20
+				})
+				.setScrollFactor(0);
 			scores = this.friendsScores(scene.playerFriends);
 
 			//add clams and shrimps to game
@@ -528,16 +544,13 @@ export default class MainScene extends Phaser.Scene {
 
 		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 960);
-
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
 		//add the playerGroup of scubaDivers to collider
 		this.playerGroup = this.physics.add.group();
-
 		//add rocks
 		this.decorations = this.physics.add.staticGroup();
-
 		this.platform = this.add
 			.sprite(60, 550, "rock-sand-1")
 			.setScale(0.2)
@@ -577,7 +590,6 @@ export default class MainScene extends Phaser.Scene {
 		});
 
 		//create navigation and animation for scuba divers
-		//this.cursors = this.input.keyboard.createCursorKeys();
 		this.cursors = this.input.keyboard.addKeys({
 			up: Phaser.Input.Keyboard.KeyCodes.UP,
 			down: Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -654,6 +666,7 @@ export default class MainScene extends Phaser.Scene {
 		});
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
+			chatContainer.classList.remove("chat-hidden");
 			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
@@ -687,7 +700,7 @@ export default class MainScene extends Phaser.Scene {
 		this.socket.on("someoneScored", friend => {
 			scores.forEach(score => {
 				score.destroy();
-			})
+			});
 			scene.playerFriends.getChildren().forEach(function (playerFriend) {
 				if (friend.playerId === playerFriend.playerId) {
 					playerFriend.score = friend.score;
@@ -698,7 +711,7 @@ export default class MainScene extends Phaser.Scene {
 
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
-			console.log('in Mainscene', level)
+			console.log("in Mainscene", level);
 			if (scene.state.level === 2) {
 				scene.physics.world.setBounds(0, 320, 1088, 1920);
 			}
