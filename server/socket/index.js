@@ -238,10 +238,8 @@ module.exports = io => {
 					})
 				}
 
-				console.log('result length', result.length, result)
-
-				if (result.length < 5) {
-					console.log("i am less than 5");
+				//CHANGE BACK TO 5!!!!!!
+				if (result.length < 1) {
 					socket
 						.to(key)
 						.emit("someoneScored", {
@@ -249,7 +247,6 @@ module.exports = io => {
 							index: answeredQuestion
 						});
 				} else {
-					console.log('sending next level socket')
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
 
