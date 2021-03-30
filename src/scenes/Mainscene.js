@@ -169,17 +169,18 @@ export default class MainScene extends Phaser.Scene {
 
 	createClam(scene, info, file) {
 		const { x, y, question, options, answer, isResolved } = info;
-		scene.clam = new Clam(scene, x, y, file).setScale(0.07);
+		const clam = new Clam(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("clam");
-		scene.clam.info = { question, options, answer, isResolved };
-		scene.clam.overlapTriggered = false;
-		scene.clam.overlapCollider = scene.physics.add.overlap(
+		clam.info = { question, options, answer, isResolved };
+		clam.overlapTriggered = false;
+		clam.overlapCollider = scene.physics.add.overlap(
 			scene.scubaDiver,
-			scene.clam,
+			clam,
 			scene.isOverlappingQuestion,
 			null,
 			scene
 		);
+		scene.clams.add(clam);
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
@@ -525,6 +526,7 @@ export default class MainScene extends Phaser.Scene {
 
 		//makes friends visibel
 		scene.playerFriends = this.physics.add.group();
+		scene.clams = this.physics.add.group();
 
 		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 960);
@@ -684,10 +686,15 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 
-		this.socket.on("someoneScored", ({ friend, index, level })  => {
+		this.socket.on("someoneScored", ({ friend, question, level })  => {
 			
 			if ( level === 1) {
-				scene.state.questionsLevel1[index].isResolved = true;
+				scene.clams.getChildren().forEach(function (clam) {
+					if(clam.info.question === question) {
+						clam.info.isResolved = true;
+						console.log('this is the changed clam', clam.info.isResolved)
+					}
+				})
 			}
 			if ( level === 2) {
 				scene.state.questionsLevel2[index].isResolved = true;

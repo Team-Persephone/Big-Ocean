@@ -177,50 +177,44 @@ module.exports = io => {
 			"Scored",
 			async function ({ key, playerId, score, clamQuestion, level }) {
 				activeGames[key].players[playerId].score = score;
-				// let currentLevel = level
-				let answeredQuestion;
+				let answeredQuestion = clamQuestion;
 
 				if (level === 1) {
-					activeGames[key].questionsLevel1.forEach((question, index) => {
+					activeGames[key].questionsLevel1.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
 							count++;
 						}
 					});
 				}
 				if (level === 2) {
-					activeGames[key].questionsLevel2.forEach((question, index) => {
+					activeGames[key].questionsLevel2.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
 							count++;
 						}
 					});
 				}
 				if (level === 3) {
-					activeGames[key].questionsLevel3.forEach((question, index) => {
+					activeGames[key].questionsLevel3.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
 							count++;
 						}
 					});
 				}
 				if (level === 4) {
-					activeGames[key].questionsLevel4.forEach((question, index) => {
+					activeGames[key].questionsLevel4.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
 							count++;
 						}
 					});
 				}
 				if (level === 5) {
-					activeGames[key].questionsLevel5.forEach((question, index) => {
+					activeGames[key].questionsLevel5.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
 							count++;
 						}
 					});
@@ -230,7 +224,7 @@ module.exports = io => {
 						.to(key)
 						.emit("someoneScored", {
 							friend: activeGames[key].players[playerId],
-							index: answeredQuestion,
+							question: answeredQuestion,
 							level: activeGames[key].level
 						});
 				}
