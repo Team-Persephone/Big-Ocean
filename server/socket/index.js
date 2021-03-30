@@ -58,7 +58,7 @@ module.exports = io => {
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 960);
+				let y = Math.ceil(Math.random() * 560);
 				let questionObj = {
 					question: question.question,
 					options: question.options,
@@ -87,7 +87,7 @@ module.exports = io => {
 
 			facts.forEach(fact => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 960);
+				let y = Math.ceil(Math.random() * 560);
 				let factObj = {
 					fact: fact.fact,
 					isRead: false, //can multpile people read same fact???
@@ -172,84 +172,67 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-
+		let count = 0;
 		socket.on(
 			"Scored",
 			async function ({ key, playerId, score, clamQuestion, level }) {
-				console.log("level in index", level);
 				activeGames[key].players[playerId].score = score;
-				let answeredQuestion;
-
-				let result;
+				let answeredQuestion = clamQuestion;
 
 				if (level === 1) {
-					activeGames[key].questionsLevel1.forEach((question, index) => {
+					activeGames[key].questionsLevel1.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					 result = activeGames[key].questionsLevel1.filter(question => {
-					return question.isResolved === true
-					})
 				}
 				if (level === 2) {
-					activeGames[key].questionsLevel2.forEach((question, index) => {
+					activeGames[key].questionsLevel2.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel2.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 3) {
-					activeGames[key].questionsLevel3.forEach((question, index) => {
+					activeGames[key].questionsLevel3.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel3.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 4) {
-					activeGames[key].questionsLevel4.forEach((question, index) => {
+					activeGames[key].questionsLevel4.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel4.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 5) {
-					activeGames[key].questionsLevel5.forEach((question, index) => {
+					activeGames[key].questionsLevel5.forEach((question) => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel5.filter(question => {
-						return question.isResolved === true
-					})
 				}
-
-				//CHANGE BACK TO 5!!!!!!
-				if (result.length < 1) {
+        // change it back to 5
+				if (count < 1) {
 					socket
 						.to(key)
 						.emit("someoneScored", {
-							player: activeGames[key].players[playerId],
-							index: answeredQuestion
+							friend: activeGames[key].players[playerId],
+							question: answeredQuestion,
+							level: activeGames[key].level
 						});
-				} else {
+				}
+				if (count === 5) {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
-
+					count = 0;
 				}
 			}
 		);
