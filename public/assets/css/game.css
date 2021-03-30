@@ -49,6 +49,10 @@ body {
   opacity: 0;
 }
 
+.chat-hidden {
+  display: none;
+}
+
 p {
   margin: 0;
 }

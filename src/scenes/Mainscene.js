@@ -3,6 +3,10 @@ import Scuba from "../entities/Scuba";
 import Clam from "../entities/Clam";
 import Shrimp from "../entities/Shrimp";
 
+const chatContainer = document.getElementsByClassName(
+	"chat-box chat-hidden"
+)[0];
+
 export default class MainScene extends Phaser.Scene {
 	constructor() {
 		super("MainScene");
@@ -162,6 +166,12 @@ export default class MainScene extends Phaser.Scene {
 		scene.createAnimations(`${player.avatar}`);
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
+
+		//add chat if new player created
+		if (Object.keys(scene.state.players).length > 1) {
+			chatContainer.classList.remove("chat-hidden");
+		}
+
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
@@ -234,7 +244,6 @@ export default class MainScene extends Phaser.Scene {
 				});
 		}
 	}
-
 	createWaterPlant(scene, waterPlant, x, y, scale = 1, angle = 0) {
 		return scene.decorations
 			.create(x, y, waterPlant)
@@ -546,16 +555,13 @@ export default class MainScene extends Phaser.Scene {
 
 		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 960);
-
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
 		//add the playerGroup of scubaDivers to collider
 		this.playerGroup = this.physics.add.group();
-
 		//add rocks
 		this.decorations = this.physics.add.staticGroup();
-
 		this.platform = this.add
 			.sprite(60, 550, "rock-sand-1")
 			.setScale(0.2)
@@ -614,7 +620,6 @@ export default class MainScene extends Phaser.Scene {
 		});
 
 		//create navigation and animation for scuba divers
-		//this.cursors = this.input.keyboard.createCursorKeys();
 		this.cursors = this.input.keyboard.addKeys({
 			up: Phaser.Input.Keyboard.KeyCodes.UP,
 			down: Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -691,6 +696,7 @@ export default class MainScene extends Phaser.Scene {
 		});
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
+			chatContainer.classList.remove("chat-hidden");
 			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
