@@ -310,15 +310,10 @@ export default class MainScene extends Phaser.Scene {
 			shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 		}
 	}
-	// const timer = this.add.text(50, 50, "")
 
 	async startTimer(time, animal, scuba, view = null) {
 		scuba.frozen = true;
 		while (time > 0) {
-			//timer.setText(`${time}`)
-			//can add so is with clam click, but cannot stop it yet as timer
-			//continues when answer is right or wrong
-			//	this.click.play();
 			await this.sleep(1000);
 			time--;
 		}
@@ -388,6 +383,7 @@ export default class MainScene extends Phaser.Scene {
 		//connect the socket connection to IntoScene
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.scene.launch("ChatScene", { socket: this.socket });
+
 
 		//Volume
 		this.volumeOn = this.add
@@ -475,6 +471,7 @@ export default class MainScene extends Phaser.Scene {
 			}
 			this.scubaDiver.waiting = false;
 			currentTimer.setText("swim!");
+			this.scene.launch("Timer", { socket: this.socket });
 			await this.sleep(1000);
 			this.countdown.stop();
 			currentTimer.destroy();
@@ -741,6 +738,10 @@ export default class MainScene extends Phaser.Scene {
 
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
+
+			this.scene.stop("Timer");
+
+			this.scene.launch("Timer", { socket: scene.socket });
 
 			let seaweedLength = this.seaweed[0].length; //108
 			if (scene.state.level === 2) {
