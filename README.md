@@ -1,3 +1,5 @@
+<!-- Clean up the README so it's a nice description of your project. -->
+
 delete from our package.json at start:
     "prepare": "if [ -d .git ]; then npm-merge-driver install; fi",
 

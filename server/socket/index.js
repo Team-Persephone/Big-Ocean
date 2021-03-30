@@ -29,6 +29,7 @@ module.exports = io => {
 			`A socket connection to the server has been made: ${socket.id}`
 		);
 
+		// any ideas on how to make the below function a little more efficient?
 		//socket listen on createGame
 		socket.on("createGame", async function () {
 			let key = codeGenerator();
@@ -69,7 +70,7 @@ module.exports = io => {
 				};
 				if (question.levelId === 1) {
 					questionObj.y = questionObj.y + 400;
-					activeGames[key].questionsLevel1.push(questionObj);
+					let questionLevel = activeGames[key].questionsLevel1;
 				}
 				if (question.levelId === 2) {
 					activeGames[key].questionsLevel2.push(questionObj);
@@ -83,6 +84,7 @@ module.exports = io => {
 				if (question.levelId === 5) {
 					activeGames[key].questionsLevel5.push(questionObj);
 				}
+				questionLevel.push(questionObj)
 			});
 
 			facts.forEach(fact => {
@@ -162,6 +164,7 @@ module.exports = io => {
 			});
 		});
 
+		// does this need to be async?
 		//Player Movement
 		socket.on("playerMovement", async function (data) {
 			const { x, y, angle, faceRight, key, playerId } = data;
@@ -172,6 +175,9 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
+		// same here: is aync necessary?
+		// could a refactor above make the below code easier?
+		// credit: Asia... maybe use .find instead of forEach
 		let count = 0;
 		socket.on(
 			"Scored",

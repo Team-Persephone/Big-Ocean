@@ -226,6 +226,7 @@ export default class MainScene extends Phaser.Scene {
 
 	}
 
+	// need break or return statements for the switch cases
 	// helper function to add animation to avatars
 	createAnimations(sprite) {
 		switch (sprite) {
@@ -239,6 +240,7 @@ export default class MainScene extends Phaser.Scene {
 					frameRate: 1,
 					repeat: -1
 				});
+				break;
 			case "clam":
 				this.anims.create({
 					key: "openclose",
@@ -249,6 +251,7 @@ export default class MainScene extends Phaser.Scene {
 					frameRate: 1,
 					repeat: -1
 				});
+				break;
 			default:
 				this.anims.create({
 					key: "swim",
@@ -752,6 +755,9 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 
+		// how can we refactor this one to make it more streamlined?
+		// the only thing changing between the if statments is the clamsLevel
+		// so can we set that with case switch statements and then consolidate the loop?
 		this.socket.on("someoneScored", ({ friend, question, level })  => {
 			
 			if ( level === 1) {
@@ -803,6 +809,7 @@ export default class MainScene extends Phaser.Scene {
 			scores = this.friendsScores(scene.playerFriends);
 		});
 
+		// if you pass in scene and this as variables, you could move this function out of this file and into its own function;
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
 

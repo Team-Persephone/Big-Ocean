@@ -1,5 +1,5 @@
 
-import connectChat from "./chat";
+import connectChat from "./chat"; // where is chat coming from?
 
 const connect = (scene) => {
   connectChat(scene);
