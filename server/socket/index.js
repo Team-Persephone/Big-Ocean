@@ -250,6 +250,13 @@ module.exports = io => {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
 
+				// } if (result.length === 1 && level < 2) {
+				// 	activeGames[key].level++;
+				// 	io.to(key).emit("nextLevel", activeGames[key].level);
+				// } else if (result.length === 0 && level === 2) {
+				// 	activeGames[key].level++;
+				// 	io.to(key).emit("youWin", activeGames[key].level);
+				// }
 				}
 			}
 		);

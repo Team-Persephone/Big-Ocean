@@ -20,6 +20,7 @@ export default class IntroScene extends Phaser.Scene {
 		let key;
 		this.scene.launch("IntroScene", { socket: this.socket });
 		this.add.image(0, 0, "blue").setScale(2);
+		//this.scene.launch("WinScene");
 		this.scene.launch("Instructions");
 
 		//if there is a gameKey in the url, stop the waiting room because the code was already generated
@@ -27,6 +28,7 @@ export default class IntroScene extends Phaser.Scene {
 			//gets gameKey from url
 			key = window.location.pathname.slice(1);
 			this.socket.emit("joinWaitingRoom", key);
+		//	this.scene.launch("WinScene")
 			this.scene.launch("Instructions");
 			this.scene.stop("IntroScene");
 			// return;
@@ -46,6 +48,7 @@ export default class IntroScene extends Phaser.Scene {
 		this.socket.on("gameCreated", key => {
 			this.socket.emit("joinWaitingRoom", key);
 			this.scene.stop("IntroScene");
+			//this.scene.stop("WinScene")
 			this.scene.stop("Instructions");
 		});
 

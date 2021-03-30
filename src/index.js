@@ -14,6 +14,7 @@ import ChatScene from "./scenes/ChatScene";
 import Instructions from "./scenes/Instructions";
 import Question from "./scenes/Question";
 import Facts from "./scenes/Facts";
+import WinScene from "./scenes/WinScene";
 
 class Game extends Phaser.Game {
 	constructor() {
@@ -26,6 +27,7 @@ class Game extends Phaser.Game {
 		this.scene.add("Question", Question);
 		this.scene.add("Facts", Facts);
 		this.scene.start("MainScene");
+		this.scene.add("WinScene", WinScene);
 	}
 }
 

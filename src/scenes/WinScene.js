@@ -1,8 +1,14 @@
 import Phaser from "phaser";
 
-export default class Instructions extends Phaser.Scene {
+export default class WinScene extends Phaser.Scene {
 	constructor() {
-		super("Instructions");
+		super("WinScene");
+	}
+
+    init(data) {
+		this.info = data.info;
+		this.socket = data.socket;
+		this.score = data.score;
 	}
 
 	preload() {
@@ -11,10 +17,11 @@ export default class Instructions extends Phaser.Scene {
 
 	async create() {
 		const scene = this;
+        console.log(this, 'this in winScene');
 
 		scene.graphics = scene.add.image(400, 260, "bubble").setScale(0.9);
 
-		scene.add.text(275, 100, "instructiOns", {
+		scene.add.text(275, 100, "cOngratulatiOns! yOu answered all the pearls!", {
 			fill: "#02075D",
 			fontSize: "34px",
 			fontStyle: "bold"
@@ -23,7 +30,7 @@ export default class Instructions extends Phaser.Scene {
 		scene.add.text(
 			200,
 			150,
-			'\n1. scOur the Ocean fOr preciOus clams + click their pearls tO access ancient queries On big-O nOtatiOn. \n\n\n\n 2. dOn’t fOrget tO keep an eye On the clOck.\n\n\n3. need help? apprOach a shrimp fOr a hint.\n\n\n 4. finish with the mOst pOints, and win the title Of "mighty O."',
+			'yOu all win!\n\n but here is hOw it all breaks dOwn:',
 			{
 				fill: "#02075D",
 				fontSize: "17px",

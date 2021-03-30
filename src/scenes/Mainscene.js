@@ -494,6 +494,7 @@ export default class MainScene extends Phaser.Scene {
 				scene.createShrimp(scene, fact, "shrimp");
 			});
 
+			
 			//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
 				.image(734, 545, "instructions")
@@ -739,11 +740,17 @@ export default class MainScene extends Phaser.Scene {
 			scores = this.friendsScores(scene.playerFriends);
 		});
 
+		// this.socket.on("youWin", level => {
+		// 	scene.state.level = level;
+		// 	//change level to 6
+		// 	if (scene.state.level === 2) {
+		//}
+
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
 
 			let seaweedLength = this.seaweed[0].length; //108
-			if (scene.state.level === 2) {
+		//	if (scene.state.level === 2) {
 				// this.cameras.main.setZoom(0.5);
 
 				// scene.tweens.add({
@@ -760,13 +767,13 @@ export default class MainScene extends Phaser.Scene {
 				// });
 
 						//all weeds for level
-				this.seaweed[0] //272 ,                 816
-					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-					.forEach(eachWeed => {
-						eachWeed.destroy();
-					});
-				scene.physics.world.setBounds(0, 320, 1088, 1920);
-			}
+			// 	this.seaweed[0] //272 ,                 816
+			// 		.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+			// 		.forEach(eachWeed => {
+			// 			eachWeed.destroy();
+			// 		});
+			// 	scene.physics.world.setBounds(0, 320, 1088, 1920);
+			// }
 			if (scene.state.level === 3) {
 				this.seaweed[1]
 					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
@@ -791,6 +798,11 @@ export default class MainScene extends Phaser.Scene {
 					});
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
+			if (scene.state.level === 2) {
+				console.log('you win, level 6!')
+				scene.scene.launch("WinScene")
+			}
+			
 		});
 	}
 
