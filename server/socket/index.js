@@ -219,7 +219,8 @@ module.exports = io => {
 						}
 					});
 				}
-				if (count < 5) {
+        // change it back to 5
+				if (count < 1) {
 					socket
 						.to(key)
 						.emit("someoneScored", {
