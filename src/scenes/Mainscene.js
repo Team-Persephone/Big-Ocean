@@ -793,8 +793,7 @@ export default class MainScene extends Phaser.Scene {
 
 			//Note ending game after 2 levels for now
 			if (scene.state.level === 3) {
-				console.log('you win!', scene.playerFriends, scene.scubaDiver)
-				scene.scene.launch("WinScene", { playerFriends: scene.playerFriends, scubaDiver: scene.scubaDiver })
+				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver })
 			}
 		});
 	}
