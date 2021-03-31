@@ -183,14 +183,6 @@ export default class MainScene extends Phaser.Scene {
 		const clam = new Clam(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("clam");
 		clam.info = { question, options, answer, isResolved };
-		clam.overlapTriggered = false;
-		clam.overlapCollider = scene.physics.add.overlap(
-			scene.scubaDiver,
-			clam,
-			scene.isOverlappingQuestion,
-			null,
-			scene
-		);
 		if (level === 1) {
 			scene.clamsLevel1.add(clam);
 		}
@@ -212,14 +204,6 @@ export default class MainScene extends Phaser.Scene {
 		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("shrimp");
 		shrimp.info = { fact, isRead };
-		shrimp.overlapTriggered = false;
-		shrimp.overlapCollider = scene.physics.add.overlap(
-			scene.scubaDiver,
-			shrimp,
-			scene.isOverlappingFact,
-			null,
-			scene
-		);
 		scene.shrimps.add(shrimp);
 	}
 
@@ -268,64 +252,52 @@ export default class MainScene extends Phaser.Scene {
 			.refreshBody();
 	}
 
-	// in here scubadiver and clam are variables passed in from add.overlap
-	//scubadiver and clam do not have to be connected to scene in this callback function
-	isOverlappingQuestion(scubaDiver, clam) {
-		console.log("overlaptriggeret at start", clam.overlapTriggered);
-		console.log("is clame resolved? -->", clam.info.isResolved);
-		if (clam.overlapTriggered || clam.info.isResolved) {
-			console.log("went into remove collider");
-			this.physics.world.removeCollider(clam.overlapCollider);
-			clam.setTint(0xcbc3e3);
-			clam.overlapTriggered = false;
-		} else {
-			clam.setInteractive();
-			clam.on("pointerdown", () => {
-				this.scene.launch("Question", {
-					info: clam.info,
-					scubaDiver: scubaDiver,
-					level: this.state.level,
-					socket: this.socket,
-					key: this.state.key,
-					score: this.score
-				});
-				this.clamClick.play();
-				this.startTimer(10, clam, scubaDiver);
-				//	this.click.play();
+	overlappingEffectsClam(scubaDiver, clam) {
+		clam.setTint(0xcbc3e3);
+		clam.setInteractive();
+		clam.on("pointerdown", () => {
+			console.log("clam clicked!!!!");
+			this.scene.launch("Question", {
+				clam: clam,
+				scubaDiver: scubaDiver,
+				level: this.state.level,
+				socket: this.socket,
+				key: this.state.key,
+				score: this.score
 			});
-			clam.overlapTriggered = true;
-			console.log("overlaptriggeret at end", clam.overlapTriggered);
+			this.scene.physics.pause();
+		});
+	}
+
+	overlappingEffectsShrimp(scubaDiver, shrimp) {
+		shrimp.setTint(0xcbc3e3);
+		shrimp.setInteractive();
+		shrimp.on("pointerdown", () => {
+			this.scene.launch("Facts", {
+				socket: this.socket,
+				info: shrimp.info,
+				level: this.state.level,
+				scubaDiver: this.scubaDiver
+			});
+			this.shrimpClick.play();
+			this.click.play();
+			this.scene.physics.pause();
+		});
+	}
+
+	checkOverlappingEffects(scene, scubaDiver, animal) {
+		const boundsAnimal = animal.getBounds();
+		const boundsScuba = scubaDiver.getBounds();
+		if (
+			!Phaser.Geom.Intersects.RectangleToRectangle(boundsAnimal, boundsScuba)
+		) {
+			scene.deactivateAnimal(animal);
 		}
 	}
 
-	isOverlappingFact(scubaDiver, shrimp) {
-		if (shrimp.overlapTriggered) {
-			this.physics.world.removeCollider(shrimp.overlapCollider);
-			shrimp.setTint(0xbdef83);
-			shrimp.overlapTriggered = false;
-		} else {
-			if (!shrimp.isRead) {
-				shrimp.setInteractive();
-				shrimp.on("pointerdown", () => {
-					this.scene.launch("Facts", { info: shrimp.info });
-					this.shrimpClick.play();
-					this.startTimer(7, shrimp, scubaDiver, "Facts");
-					this.click.play(); //if fixing clam click count can remove below line
-					//update score
-					this.scubaDiver.score = Number(
-						(this.scubaDiver.score + this.state.level / 2).toFixed(1)
-					);
-					this.scubaDiver.updateScore(this.score);
-					this.socket.emit("Scored", {
-						key: this.state.key,
-						playerId: this.scubaDiver.playerId,
-						score: this.scubaDiver.score
-					});
-					shrimp.isRead = true;
-				});
-			}
-			shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
-		}
+	deactivateAnimal(animal) {
+		animal.clearTint();
+		animal.disableInteractive();
 	}
 
 	async startTimer(time, animal, scuba, view = null) {
@@ -758,7 +730,8 @@ export default class MainScene extends Phaser.Scene {
 				scene.clamsLevel1.getChildren().forEach(function (clam) {
 					if (clam.info.question === question) {
 						clam.info.isResolved = true;
-						clam.setTint(0xcbc3e3);
+						console.log("Someone Scored");
+						clam.destroy();
 					}
 				});
 			}
@@ -817,7 +790,6 @@ export default class MainScene extends Phaser.Scene {
 			if (scene.state.level === 2) {
 				//all weeds for level
 				this.seaweed[0]
-
 					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
 					.forEach(eachWeed => {
 						eachWeed.destroy();
@@ -861,6 +833,26 @@ export default class MainScene extends Phaser.Scene {
 		//update the movement
 		if (this.scubaDiver) {
 			this.scubaDiver.update(this.cursors);
+			this.clamsLevel1.getChildren().forEach(clam => {
+				this.physics.add.overlap(
+					this.scubaDiver,
+					clam,
+					scene.overlappingEffectsClam,
+					null,
+					scene
+				);
+				scene.checkOverlappingEffects(scene, this.scubaDiver, clam);
+			});
+			this.shrimps.getChildren().forEach(shrimp => {
+				this.physics.add.overlap(
+					this.scubaDiver,
+					shrimp,
+					scene.overlappingEffectsShrimp,
+					null,
+					scene
+				);
+				scene.checkOverlappingEffects(scene, this.scubaDiver, shrimp);
+			});
 		}
 	}
 }

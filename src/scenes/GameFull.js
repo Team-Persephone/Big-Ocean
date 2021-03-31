@@ -39,17 +39,6 @@ export default class GameFull extends Phaser.Scene {
 
 		this.socket.on("gameCreated", key => {
 			this.socket.emit("joinWaitingRoom", key);
-			// this.scene.stop("IntroScene");
 			this.scene.stop("GameFull");
 		});
-
-		// scene.add.text(200, 150, "Game is full", {
-		// 	fill: "#02075D",
-		// 	//   backgroundColor: "#1abeff",
-		// 	fontSize: "17px",
-		// 	fontStyle: "bold",
-		// 	align: "center",
-		// 	wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
-		// });
-	}
 }

@@ -225,7 +225,7 @@ module.exports = io => {
 				}
 				// change it back to 5
 				if (count < 5) {
-					socket.to(key).emit("someoneScored", {
+					io.to(key).emit("someoneScored", {
 						friend: activeGames[key].players[playerId],
 						question: answeredQuestion,
 						level: activeGames[key].level
