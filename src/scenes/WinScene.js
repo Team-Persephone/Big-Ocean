@@ -6,7 +6,6 @@ export default class WinScene extends Phaser.Scene {
 	}
 
 	init(data) {
-		this.playerFriends = data.playerFriends; ///this only passes in create info, need to set up socket to see other player's scores
 		this.scubaDiver = data.scubaDiver;
 	}
 
@@ -30,8 +29,8 @@ export default class WinScene extends Phaser.Scene {
 			fontSize: "34px",
 			fontStyle: "bold"
 		});
+
 		//player's message and score
-		//let y = 300;
 		scene.add.text(
 			245,
 			175,
@@ -44,14 +43,6 @@ export default class WinScene extends Phaser.Scene {
 				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
 			}
 		);
-		
-		//Add other player's scores (needs socket hook up)
-		// scene.add.text(
-		// 	`${this.playerFriends.getChildren().forEach(friend => {
-		// 		this.add.text(350, y, `${friend.avatar}: ${friend.score}`);
-		// 		y += 20;
-		// 	})}`
-		// );
 
 		//credits
 		scene.add.text(
@@ -65,7 +56,5 @@ export default class WinScene extends Phaser.Scene {
 				wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
 			}
 		);
-
-		//Add replay option
 	}
 }

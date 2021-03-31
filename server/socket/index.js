@@ -112,12 +112,10 @@ module.exports = io => {
 					activeGames[key].factsLevel5.push(factObj);
 				}
 			});
-
 			socket.emit("gameCreated", key);
 		});
 
-		//socket listen on plaery joinGame
-
+		//socket listen on player joinGame
 		socket.on("joinWaitingRoom", async function (gameKey) {
 			socket.join(gameKey); //WHAT IS THIS DOING??
 			const gameInfo = activeGames[gameKey];
@@ -127,7 +125,6 @@ module.exports = io => {
 					x: 100,
 					y: 100,
 					angle: 0
-					//   faceRight: false,
 				},
 				avatar: newAvatar,
 				playerId: socket.id,
@@ -237,9 +234,7 @@ module.exports = io => {
 						return question.isResolved === true
 					})
 				}
-
-				//CHANGE BACK TO 5!!!!!!
-				if (result.length < 1) {
+				if (result.length < 5) {
 					socket
 						.to(key)
 						.emit("someoneScored", {
@@ -249,14 +244,6 @@ module.exports = io => {
 				} else {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
-
-				// } if (result.length === 1 && level < 2) {
-				// 	activeGames[key].level++;
-				// 	io.to(key).emit("nextLevel", activeGames[key].level);
-				// } else if (result.length === 0 && level === 2) {
-				// 	activeGames[key].level++;
-				// 	io.to(key).emit("youWin", activeGames[key].level);
-				// }
 				}
 			}
 		);
