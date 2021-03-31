@@ -193,19 +193,19 @@ export default class MainScene extends Phaser.Scene {
 			null,
 			scene
 		);
-		if(level === 1) {
+		if (level === 1) {
 			scene.clamsLevel1.add(clam);
 		}
-		if(level === 2) {
+		if (level === 2) {
 			scene.clamsLevel2.add(clam);
 		}
-		if(level === 3) {
+		if (level === 3) {
 			scene.clamsLevel3.add(clam);
 		}
-		if(level === 4) {
+		if (level === 4) {
 			scene.clamsLevel4.add(clam);
 		}
-		if(level === 5) {
+		if (level === 5) {
 			scene.clamsLevel5.add(clam);
 		}
 	}
@@ -223,7 +223,6 @@ export default class MainScene extends Phaser.Scene {
 			scene
 		);
 		scene.shrimps.add(shrimp);
-
 	}
 
 	// helper function to add animation to avatars
@@ -273,9 +272,9 @@ export default class MainScene extends Phaser.Scene {
 	//scubadiver and clam do not have to be connected to scene in this callback function
 	isOverlappingQuestion(scubaDiver, clam) {
 		console.log("overlaptriggeret at start", clam.overlapTriggered);
-		console.log('is clame resolved? -->', clam.info.isResolved)
+		console.log("is clame resolved? -->", clam.info.isResolved);
 		if (clam.overlapTriggered || clam.info.isResolved) {
-			console.log('went into remove collider')
+			console.log("went into remove collider");
 			this.physics.world.removeCollider(clam.overlapCollider);
 			clam.setTint(0xcbc3e3);
 			clam.overlapTriggered = false;
@@ -405,7 +404,9 @@ export default class MainScene extends Phaser.Scene {
 		//launch the socket connection
 		this.socket = io();
 		//connect the socket connection to IntoScene
-		this.scene.launch("IntroScene", { socket: this.socket });
+		this.scene.launch("IntroScene", {
+			socket: this.socket
+		});
 		this.scene.launch("ChatScene", { socket: this.socket });
 
 		//Volume
@@ -505,7 +506,7 @@ export default class MainScene extends Phaser.Scene {
 				.setScrollFactor(0);
 			scores = this.friendsScores(scene.playerFriends);
 
-			//add clams and shrimps to game 
+			//add clams and shrimps to game
 			scene.state.questionsLevel1.forEach(question => {
 				scene.createClam(scene, 1, question, "clam");
 			});
@@ -575,7 +576,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.clamsLevel2 = this.physics.add.group();
 		scene.clamsLevel3 = this.physics.add.group();
 		scene.clamsLevel4 = this.physics.add.group();
-		scene.clamsLevel5 = this.physics.add.group();	
+		scene.clamsLevel5 = this.physics.add.group();
 		scene.shrimps = this.physics.add.group();
 
 		//set world bounds
@@ -630,10 +631,10 @@ export default class MainScene extends Phaser.Scene {
 					this.createWaterPlant(
 						this,
 						"waterPlant",
-						x,               //x
-						depths[level],   //y
-						1,               //scale
-						Math.floor(Math.random() * 360)//angle
+						x, //x
+						depths[level], //y
+						1, //scale
+						Math.floor(Math.random() * 360) //angle
 					)
 				);
 			}
@@ -752,45 +753,47 @@ export default class MainScene extends Phaser.Scene {
 			});
 		});
 
-		this.socket.on("someoneScored", ({ friend, question, level })  => {
-			
-			if ( level === 1) {
+		this.socket.on("someoneScored", ({ friend, question, level }) => {
+			if (level === 1) {
 				scene.clamsLevel1.getChildren().forEach(function (clam) {
-					if(clam.info.question === question) {
+					if (clam.info.question === question) {
 						clam.info.isResolved = true;
 						clam.setTint(0xcbc3e3);
 					}
-				})
+				});
 			}
-			if ( level === 2) {
+			if (level === 2) {
 				scene.clamsLevel2.getChildren().forEach(function (clam) {
-					if(clam.info.question === question) {
+					if (clam.info.question === question) {
 						clam.info.isResolved = true;
 						clam.setTint(0xcbc3e3);
 					}
-				})
+				});
 			}
-			if ( level === 3) {
+			if (level === 3) {
 				scene.clamsLevel3.getChildren().forEach(function (clam) {
-					if(clam.info.question === question) {
+					if (clam.info.question === question) {
 						clam.info.isResolved = true;
 						clam.setTint(0xcbc3e3);
 					}
-				})			}
-			if ( level === 4) {
+				});
+			}
+			if (level === 4) {
 				scene.clamsLevel4.getChildren().forEach(function (clam) {
-					if(clam.info.question === question) {
+					if (clam.info.question === question) {
 						clam.info.isResolved = true;
 						clam.setTint(0xcbc3e3);
 					}
-				})			}
-			if ( level === 5) {
+				});
+			}
+			if (level === 5) {
 				scene.clamsLevel5.getChildren().forEach(function (clam) {
-					if(clam.info.question === question) {
+					if (clam.info.question === question) {
 						clam.info.isResolved = true;
 						clam.setTint(0xcbc3e3);
 					}
-				})			}
+				});
+			}
 
 			scores.forEach(score => {
 				score.destroy();
@@ -823,7 +826,7 @@ export default class MainScene extends Phaser.Scene {
 				// 	yoyo: true
 				// });
 
-						//all weeds for level
+				//all weeds for level
 				this.seaweed[0] //272 ,                 816
 					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
 					.forEach(eachWeed => {
