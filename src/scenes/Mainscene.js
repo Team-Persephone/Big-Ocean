@@ -169,7 +169,6 @@ export default class MainScene extends Phaser.Scene {
 		if (Object.keys(scene.state.players).length > 1) {
 			chatContainer.classList.remove("chat-hidden");
 		}
-		//move play button
 
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
@@ -328,15 +327,10 @@ export default class MainScene extends Phaser.Scene {
 			shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
 		}
 	}
-	// const timer = this.add.text(50, 50, "")
 
 	async startTimer(time, animal, scuba, view = null) {
 		scuba.frozen = true;
 		while (time > 0) {
-			//timer.setText(`${time}`)
-			//can add so is with clam click, but cannot stop it yet as timer
-			//continues when answer is right or wrong
-			//	this.click.play();
 			await this.sleep(1000);
 			time--;
 		}
@@ -408,6 +402,7 @@ export default class MainScene extends Phaser.Scene {
 			socket: this.socket
 		});
 		this.scene.launch("ChatScene", { socket: this.socket });
+
 
 		//Volume
 		this.volumeOn = this.add
@@ -495,6 +490,9 @@ export default class MainScene extends Phaser.Scene {
 			}
 			this.scubaDiver.waiting = false;
 			currentTimer.setText("swim!");
+
+			this.scene.launch("Timer", { socket: this.socket, currentTime: new Date()});
+
 			await this.sleep(1000);
 			this.countdown.stop();
 			currentTimer.destroy();
@@ -692,22 +690,22 @@ export default class MainScene extends Phaser.Scene {
 				//this.physics.resume() ----> WHAT DOES THIS??
 
 				//INSTRUCTIONS BUBBLE
-				scene.instructionsBubble = scene.add
-					.image(734, 545, "instructions")
-					.setScale(0.15)
-					.setScrollFactor(0);
+				// scene.instructionsBubble = scene.add
+				// 	.image(734, 545, "instructions")
+				// 	.setScale(0.15)
+				// 	.setScrollFactor(0);
 
-				scene.instructionsBubble.setInteractive();
-				scene.showInstructions = false;
-				scene.instructionsBubble.on("pointerdown", () => {
-					if (!scene.showInstructions) {
-						scene.showInstructions = !scene.showInstructions;
-						scene.scene.launch("Instructions");
-					} else if (scene.showInstructions) {
-						scene.showInstructions = !scene.showInstructions;
-						scene.scene.stop("Instructions");
-					}
-				});
+				// scene.instructionsBubble.setInteractive();
+				// scene.showInstructions = false;
+				// scene.instructionsBubble.on("pointerdown", () => {
+				// 	if (!scene.showInstructions) {
+				// 		scene.showInstructions = !scene.showInstructions;
+				// 		scene.scene.launch("Instructions");
+				// 	} else if (scene.showInstructions) {
+				// 		scene.showInstructions = !scene.showInstructions;
+				// 		scene.scene.stop("Instructions");
+				// 	}
+				// });
 			}
 		);
 
@@ -724,7 +722,7 @@ export default class MainScene extends Phaser.Scene {
 
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
-			chatContainer.classList.remove("chat-hidden");
+			// chatContainer.classList.remove("chat-hidden");
 			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
@@ -811,10 +809,15 @@ export default class MainScene extends Phaser.Scene {
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
 
+			this.scene.stop("Timer");
+
+			this.scene.launch("Timer", {socket: this.socket, });
+
 			let seaweedLength = this.seaweed[0].length;
-      
+			if (scene.state.level === 2) {
 				//all weeds for level
 				this.seaweed[0]
+
 					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
 					.forEach(eachWeed => {
 						eachWeed.destroy();
