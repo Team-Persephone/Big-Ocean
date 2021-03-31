@@ -10,6 +10,7 @@ import "phaser";
 import config from "./config/config";
 import MainScene from "./scenes/Mainscene";
 import IntroScene from "./scenes/IntroScene";
+import GameFull from "./scenes/GameFull";
 import ChatScene from "./scenes/ChatScene";
 import Instructions from "./scenes/Instructions";
 import Question from "./scenes/Question";
@@ -21,6 +22,7 @@ class Game extends Phaser.Game {
 
 		this.scene.add("MainScene", MainScene);
 		this.scene.add("IntroScene", IntroScene);
+		this.scene.add("GameFull", GameFull);
 		this.scene.add("ChatScene", ChatScene);
 		this.scene.add("Instructions", Instructions);
 		this.scene.add("Question", Question);

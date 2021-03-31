@@ -3,7 +3,6 @@ import Phaser from "phaser";
 export default class IntroScene extends Phaser.Scene {
 	constructor() {
 		super("IntroScene");
-		this.gameFull = {};
 	}
 	//get scoket data as props from MainRoom
 	init(data) {
@@ -24,26 +23,14 @@ export default class IntroScene extends Phaser.Scene {
 		this.scene.launch("Instructions");
 
 		//if there is a gameKey in the url, stop the waiting room because the code was already generated
+
 		if (window.location.pathname.length > 1) {
 			key = window.location.pathname.slice(1);
-			console.log("key up top -->", key);
-			if (!this.gameFull[key]) {
-				console.log("hit1");
-				this.add.text(600, 450, "game already full", {
-					fontFamily: "menlo"
-				});
-			} else {
-				console.log("hitting");
-				this.gameFull[key] = false;
-				//gets gameKey from url
-				this.socket.emit("joinWaitingRoom", key);
-				this.scene.launch("Instructions");
-				this.scene.stop("IntroScene");
-				// return;
-			}
+			this.socket.emit("joinWaitingRoom", key);
+			this.scene.launch("Instructions");
+			this.scene.stop("IntroScene");
 		}
-		//OTHERWISE THIS:
-		// add button to create game to scene
+
 		const createGameButton = this.add.text(600, 500, "create new game", {
 			fontFamily: "menlo"
 		});
@@ -60,10 +47,10 @@ export default class IntroScene extends Phaser.Scene {
 			this.scene.stop("Instructions");
 		});
 
-		this.socket.on("gameFull", key => {
-			console.log("this.gameFull -->", this.gameFull);
-			this.gameFull[key] = true;
-			console.log("this.gameFull after -->", this.gameFull);
+		this.socket.on("gameFull", () => {
+			console.log("game is full");
+			this.scene.stop("Instructions");
+			this.scene.launch("GameFull", { socket: this.socket });
 		});
 	}
 

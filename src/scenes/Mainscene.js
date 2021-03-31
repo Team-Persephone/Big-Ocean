@@ -404,7 +404,9 @@ export default class MainScene extends Phaser.Scene {
 		//launch the socket connection
 		this.socket = io();
 		//connect the socket connection to IntoScene
-		this.scene.launch("IntroScene", { socket: this.socket });
+		this.scene.launch("IntroScene", {
+			socket: this.socket
+		});
 		this.scene.launch("ChatScene", { socket: this.socket });
 
 		//Volume

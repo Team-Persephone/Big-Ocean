@@ -119,11 +119,12 @@ module.exports = io => {
 		//socket listen on plaery joinGame
 
 		socket.on("joinWaitingRoom", async function (gameKey) {
+			const gameInfo = activeGames[gameKey];
+
 			if (!activeGames[gameKey].avatars.length) {
-				socket.emit("gameFull", gameKey);
+				socket.emit("gameFull");
 			} else {
 				socket.join(gameKey); //WHAT IS THIS DOING??
-				const gameInfo = activeGames[gameKey];
 
 				const newAvatar = activeGames[gameKey].avatars.pop();
 				activeGames[gameKey].players[socket.id] = {
