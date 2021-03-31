@@ -180,8 +180,8 @@ export default class MainScene extends Phaser.Scene {
 
 	createClam(scene, level, info, file) {
 		const { x, y, question, options, answer, isResolved } = info;
-		const clam = new Clam(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("clam");
+		const clam = new Clam(scene, x, y, file).setScale(0.07);
 		clam.info = { question, options, answer, isResolved };
 		if (level === 1) {
 			scene.clamsLevel1.add(clam);
@@ -201,8 +201,8 @@ export default class MainScene extends Phaser.Scene {
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
-		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("shrimp");
+		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
 		shrimp.info = { fact, isRead };
 		scene.shrimps.add(shrimp);
 	}
@@ -784,7 +784,7 @@ export default class MainScene extends Phaser.Scene {
 
 			this.scene.stop("Timer");
 
-			this.scene.launch("Timer", {socket: this.socket, });
+			this.scene.launch("Timer", {socket: this.socket });
 
 			let seaweedLength = this.seaweed[0].length;
 			if (scene.state.level === 2) {

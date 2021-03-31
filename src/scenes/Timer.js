@@ -23,7 +23,7 @@ export default class Timer extends Phaser.Scene {
 			}
 		});
     // change to 120
-		this.initialTime = 5 - Math.floor((new Date() - this.timeOnPause) / 1000);
+		this.initialTime = 120 - Math.floor((new Date() - this.timeOnPause) / 1000);
 
 		this.text = this.add.text(
 			250,
