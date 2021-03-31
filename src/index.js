@@ -15,6 +15,7 @@ import Instructions from "./scenes/Instructions";
 import Question from "./scenes/Question";
 import Facts from "./scenes/Facts";
 import Timer from "./scenes/Timer"
+import Loser from "./scenes/Loser"
 
 class Game extends Phaser.Game {
 	constructor() {
@@ -27,6 +28,7 @@ class Game extends Phaser.Game {
 		this.scene.add("Question", Question);
 		this.scene.add("Facts", Facts);
 		this.scene.add("Timer", Timer);
+		this.scene.add("Loser", Loser)
 		this.scene.start("MainScene");
 	}
 }

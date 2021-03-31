@@ -7,10 +7,11 @@ export default class Timer extends Phaser.Scene {
 
 	init(data) {
 		this.currentTime = data.currentTime;
+
 	}
 	preload() {}
 	create() {
-		console.log(this.currentTime);
+		const scene = this;
 
 		this.timeOnPause = this.currentTime;
 
@@ -21,13 +22,14 @@ export default class Timer extends Phaser.Scene {
 				this.scene.resume();
 			}
 		});
-    // 120
-		this.initialTime = 20 - Math.floor((new Date() - this.timeOnPause) / 1000);
+    // change to 120
+		this.initialTime = 5 - Math.floor((new Date() - this.timeOnPause) / 1000);
 
 		this.text = this.add.text(
-			32,
-			32,
-			"Countdown: " + formatTime(this.initialTime)
+			250,
+			22,
+			"cOuntdOwn: " + formatTime(this.initialTime),
+			{ fontSize: 30, fill: "#02075D"}
 		);
 
 		// Each 1000 ms call onEvent
@@ -61,16 +63,15 @@ export default class Timer extends Phaser.Scene {
       this.timeOnPause = new Date();
       this.initialTime -= 1; // One second
       if(this.initialTime < 0) {
-        //LAUNCH LOSER SCENE HERE
-        this.text.setText("Game over");
-        this.timedEvent.paused = true
+        //LAUNCH LOSER SCENE
+				this.text.setText("Game over");
+				this.scene.launch("Loser")
+				this.timedEvent.paused = true
       } else {
-        this.text.setText("Countdown: " + formatTime(this.initialTime));
+        this.text.setText("cOuntdOwn: " + formatTime(this.initialTime));
       }
 		}
 	}
 	update() {
-		// this.graphics.clear();
-		// drawClock(400, 300, timerEvent);
 	}
 }
