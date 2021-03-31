@@ -58,7 +58,7 @@ module.exports = io => {
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 960);
+				let y = Math.ceil(Math.random() * 560);
 				let questionObj = {
 					question: question.question,
 					options: question.options,
@@ -87,7 +87,7 @@ module.exports = io => {
 
 			facts.forEach(fact => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 960);
+				let y = Math.ceil(Math.random() * 560);
 				let factObj = {
 					fact: fact.fact,
 					isRead: false, //can multpile people read same fact???
@@ -112,43 +112,47 @@ module.exports = io => {
 					activeGames[key].factsLevel5.push(factObj);
 				}
 			});
-
 			socket.emit("gameCreated", key);
 		});
 
-		//socket listen on plaery joinGame
-
+		//socket listen on player joinGame
 		socket.on("joinWaitingRoom", async function (gameKey) {
-			socket.join(gameKey); //WHAT IS THIS DOING??
 			const gameInfo = activeGames[gameKey];
-			const newAvatar = activeGames[gameKey].avatars.pop();
-			activeGames[gameKey].players[socket.id] = {
-				position: {
-					x: 100,
-					y: 100,
-					angle: 0
-					//   faceRight: false,
-				},
-				avatar: newAvatar,
-				playerId: socket.id,
-				score: 0
-			};
 
-			gameInfo.numPlayer = Object.keys(gameInfo.players).length;
-			//send state info
+			if (!activeGames[gameKey].avatars.length) {
+				socket.emit("gameFull");
+			} else {
+				socket.join(gameKey); //WHAT IS THIS DOING??
 
-			socket.emit("setState", gameInfo);
+				const newAvatar = activeGames[gameKey].avatars.pop();
+				activeGames[gameKey].players[socket.id] = {
+					position: {
+						x: 100,
+						y: 100,
+						angle: 0
+						//   faceRight: false,
+					},
+					avatar: newAvatar,
+					playerId: socket.id,
+					score: 0
+				};
 
-			//send current players info
-			socket.emit("currentPlayers", {
-				players: gameInfo.players,
-				numPlayers: gameInfo.numPlayers
-			});
-			//send new player info
-			socket.to(gameKey).emit("newPlayer", {
-				newPlayer: gameInfo.players[socket.id],
-				numPlayers: gameInfo.numPlayers
-			});
+				gameInfo.numPlayer = Object.keys(gameInfo.players).length;
+				//send state info
+
+				socket.emit("setState", gameInfo);
+
+				//send current players info
+				socket.emit("currentPlayers", {
+					players: gameInfo.players,
+					numPlayers: gameInfo.numPlayers
+				});
+				//send new player info
+				socket.to(gameKey).emit("newPlayer", {
+					newPlayer: gameInfo.players[socket.id],
+					numPlayers: gameInfo.numPlayers
+				});
+			}
 		});
 
 		socket.on("startCountdown", ({ seconds, key }) => {
@@ -172,84 +176,65 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-
+		let count = 0;
 		socket.on(
 			"Scored",
 			async function ({ key, playerId, score, clamQuestion, level }) {
-				console.log("level in index", level);
 				activeGames[key].players[playerId].score = score;
-				let answeredQuestion;
-
-				let result;
+				let answeredQuestion = clamQuestion;
 
 				if (level === 1) {
-					activeGames[key].questionsLevel1.forEach((question, index) => {
+					activeGames[key].questionsLevel1.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					 result = activeGames[key].questionsLevel1.filter(question => {
-					return question.isResolved === true
-					})
 				}
 				if (level === 2) {
-					activeGames[key].questionsLevel2.forEach((question, index) => {
+					activeGames[key].questionsLevel2.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel2.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 3) {
-					activeGames[key].questionsLevel3.forEach((question, index) => {
+					activeGames[key].questionsLevel3.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel3.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 4) {
-					activeGames[key].questionsLevel4.forEach((question, index) => {
+					activeGames[key].questionsLevel4.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel4.filter(question => {
-						return question.isResolved === true
-					})
 				}
 				if (level === 5) {
-					activeGames[key].questionsLevel5.forEach((question, index) => {
+					activeGames[key].questionsLevel5.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							answeredQuestion = index;
+							count++;
 						}
 					});
-					result = activeGames[key].questionsLevel5.filter(question => {
-						return question.isResolved === true
-					})
 				}
-
-				//CHANGE BACK TO 5!!!!!!
-				if (result.length < 1) {
-					socket
-						.to(key)
-						.emit("someoneScored", {
-							player: activeGames[key].players[playerId],
-							index: answeredQuestion
-						});
-				} else {
+				// change it back to 5
+				if (count < 5) {
+					socket.to(key).emit("someoneScored", {
+						friend: activeGames[key].players[playerId],
+						question: answeredQuestion,
+						level: activeGames[key].level
+					});
+				}
+				if (count === 5) {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
-
+					count = 0;
 				}
 			}
 		);
