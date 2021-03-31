@@ -206,14 +206,6 @@ export default class MainScene extends Phaser.Scene {
 		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
 		scene.createAnimations("shrimp");
 		shrimp.info = { fact, isRead };
-		shrimp.overlapTriggered = false;
-		shrimp.overlapCollider = scene.physics.add.overlap(
-			scene.scubaDiver,
-			shrimp,
-			scene.isOverlappingFact,
-			null,
-			scene
-		);
 		scene.shrimps.add(shrimp);
 	}
 
@@ -309,38 +301,6 @@ export default class MainScene extends Phaser.Scene {
 		animal.clearTint();
 		animal.disableInteractive();
 	}
-
-	isOverlappingFact(scubaDiver, shrimp) {
-		if (shrimp.overlapTriggered) {
-			this.physics.world.removeCollider(shrimp.overlapCollider);
-			shrimp.setTint(0xcbc3e3);
-			shrimp.overlapTriggered = false;
-		} else {
-			if (!shrimp.isRead) {
-				shrimp.setInteractive();
-				shrimp.on("pointerdown", () => {
-					this.scene.launch("Facts", { info: shrimp.info });
-					this.shrimpClick.play();
-					this.startTimer(7, shrimp, scubaDiver, "Facts");
-					//if fixing clam click count can remove below line
-					this.click.play();
-					//update score
-					this.scubaDiver.score = Number(
-						(this.scubaDiver.score + this.state.level / 2).toFixed(1)
-					);
-					this.scubaDiver.updateScore(this.score);
-					this.socket.emit("Scored", {
-						key: this.state.key,
-						playerId: this.scubaDiver.playerId,
-						score: this.scubaDiver.score
-					});
-					shrimp.isRead = true;
-				});
-			}
-			shrimp.overlapTriggered = true; //WHERE DOES THIS NEED TO GO, WHAT DOES IT ANYWAY??!
-		}
-	}
-	// const timer = this.add.text(50, 50, "")
 
 	async startTimer(time, animal, scuba, view = null) {
 		scuba.frozen = true;
