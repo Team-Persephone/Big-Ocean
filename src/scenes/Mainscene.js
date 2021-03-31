@@ -743,7 +743,7 @@ export default class MainScene extends Phaser.Scene {
 
 			this.scene.stop("Timer");
 
-			this.scene.launch("Timer", {socket: this.socket, currentTime: new Date()});
+			this.scene.launch("Timer", {socket: this.socket, });
 
 			let seaweedLength = this.seaweed[0].length; //108
 			if (scene.state.level === 2) {

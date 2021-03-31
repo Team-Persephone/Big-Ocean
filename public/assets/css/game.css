@@ -50,7 +50,7 @@ body {
 }
 
 .chat-hidden {
-  display: none;
+  visibility: none;
 }
 
 p {
