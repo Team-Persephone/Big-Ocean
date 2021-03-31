@@ -68,7 +68,7 @@ module.exports = io => {
 					y
 				};
 				if (question.levelId === 1) {
-					questionObj.y = questionObj.y + 400;
+					questionObj.y = questionObj.y + 380;
 					activeGames[key].questionsLevel1.push(questionObj);
 				}
 				if (question.levelId === 2) {
@@ -96,7 +96,7 @@ module.exports = io => {
 				};
 
 				if (fact.levelId === 1) {
-					factObj.y = factObj.y + 400;
+					factObj.y = factObj.y + 380;
 					activeGames[key].factsLevel1.push(factObj);
 				}
 				if (fact.levelId === 2) {

@@ -24,13 +24,14 @@ export default class Loser extends Phaser.Scene {
 		scene.add.text(245, 130, "ya basic!", {
 			fill: "#02075D",
 			fontSize: "34px",
-			fontStyle: "bold"
+			fontStyle: "bold",
+			align: "center"
 		});
 		//Game over message
 		scene.add.text(
 			245,
 			175,
-			// `\Your mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
+			`\nYour mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
 			{
 				fill: "#02075D",
 				fontSize: "19px",
