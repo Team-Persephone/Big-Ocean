@@ -103,8 +103,6 @@ export default class MainScene extends Phaser.Scene {
 		this.load.audio("clamClick", "/audio/clam-click.mp3");
 		//click on shrimp
 		this.load.audio("shrimpClick", "/audio/shrimpClick.mp3");
-		//collide with rock
-		this.load.audio("impact", "/audio/impact.mp3");
 		//Start game timer countdown
 		this.load.audio("countdown", "/audio/countdown.mp3");
 		// question/fact click count
@@ -145,7 +143,7 @@ export default class MainScene extends Phaser.Scene {
 		return link;
 	}
 
-	//take on functin for rocks
+	//take on function for rocks
 	createRock(scene, rockName, x, y, scale = 1, angle = 0) {
 		scene.decorations
 			.create(x, y, rockName)
@@ -171,7 +169,6 @@ export default class MainScene extends Phaser.Scene {
 		if (Object.keys(scene.state.players).length > 1) {
 			chatContainer.classList.remove("chat-hidden");
 		}
-
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
@@ -238,6 +235,7 @@ export default class MainScene extends Phaser.Scene {
 					frameRate: 1,
 					repeat: -1
 				});
+				break;
 			case "clam":
 				this.anims.create({
 					key: "openclose",
@@ -248,6 +246,7 @@ export default class MainScene extends Phaser.Scene {
 					frameRate: 1,
 					repeat: -1
 				});
+				break;
 			default:
 				this.anims.create({
 					key: "swim",
@@ -310,8 +309,7 @@ export default class MainScene extends Phaser.Scene {
 					this.scene.launch("Facts", { info: shrimp.info });
 					this.shrimpClick.play();
 					this.startTimer(7, shrimp, scubaDiver, "Facts");
-					//if fixing clam click count can remove below line
-					this.click.play();
+					this.click.play(); //if fixing clam click count can remove below line
 					//update score
 					this.scubaDiver.score = Number(
 						(this.scubaDiver.score + this.state.level / 2).toFixed(1)
@@ -393,7 +391,6 @@ export default class MainScene extends Phaser.Scene {
 		this.music.play();
 		this.clamClick = this.sound.add("clamClick", { volume: 2 });
 		this.shrimpClick = this.sound.add("shrimpClick", { volume: 0.6 });
-		this.impact = this.sound.add("impact", { volume: 2 }); //not hooked up correctly
 		this.countdown = this.sound.add("countdown", { volume: 1 });
 		this.click = this.sound.add("click", {
 			volume: 0.5,
@@ -401,6 +398,7 @@ export default class MainScene extends Phaser.Scene {
 			rate: 0.9
 		}); //needs work with clam
 		this.infoBubble = this.sound.add("infoBubble", { volume: 6 });
+		
 		//launch the socket connection
 		this.socket = io();
 		//connect the socket connection to IntoScene
@@ -513,7 +511,7 @@ export default class MainScene extends Phaser.Scene {
 			scene.state.factsLevel1.forEach(fact => {
 				scene.createShrimp(scene, fact, "shrimp");
 			});
-
+	
 			//INSTRUCTIONS BUBBLE
 			scene.instructionsBubble = scene.add
 				.image(734, 545, "instructions")
@@ -593,6 +591,7 @@ export default class MainScene extends Phaser.Scene {
 			.setScale(0.2)
 			.setAngle(30);
 		this.decorations.add(this.platform);
+		
 		//create rocks
 		this.createRock(this, "rock-sand-1", 25, 500, 0.28, 20);
 		this.createRock(this, "rock-sand-2", 135, 550, 0.25);
@@ -641,8 +640,7 @@ export default class MainScene extends Phaser.Scene {
 		}
 
 		this.physics.add.collider(this.playerGroup, this.decorations, function () {
-			console.log("inside collider with rocks, tetsing sound");
-			//this.impact.play();
+			console.log("inside collider with rocks, testing sound");
 		});
 
 		//create navigation and animation for scuba divers
@@ -720,6 +718,7 @@ export default class MainScene extends Phaser.Scene {
 				}
 			});
 		});
+
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
 			chatContainer.classList.remove("chat-hidden");
@@ -809,25 +808,10 @@ export default class MainScene extends Phaser.Scene {
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
 
-			let seaweedLength = this.seaweed[0].length; //108
-			if (scene.state.level === 2) {
-				// this.cameras.main.setZoom(0.5);
-
-				// scene.tweens.add({
-				// 	targets: this.cameras.main,
-				// 	props: {
-				// 		// centerX: 1088 / 2,
-				// 		// centerY: 960,
-				// 		y: -1000
-				// 	},
-				// 	ease: 'Sine.easeInOut', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-				// 	duration: 3000,
-				// 	repeat: 0, // -1: infinity
-				// 	yoyo: true
-				// });
-
+			let seaweedLength = this.seaweed[0].length;
+      
 				//all weeds for level
-				this.seaweed[0] //272 ,                 816
+				this.seaweed[0]
 					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
 					.forEach(eachWeed => {
 						eachWeed.destroy();
@@ -857,6 +841,11 @@ export default class MainScene extends Phaser.Scene {
 						eachWeed.destroy();
 					});
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
+			}
+
+			//Note ending game after 2 levels for now
+			if (scene.state.level === 3) {
+				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver })
 			}
 		});
 	}

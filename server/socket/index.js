@@ -112,12 +112,10 @@ module.exports = io => {
 					activeGames[key].factsLevel5.push(factObj);
 				}
 			});
-
 			socket.emit("gameCreated", key);
 		});
 
-		//socket listen on plaery joinGame
-
+		//socket listen on player joinGame
 		socket.on("joinWaitingRoom", async function (gameKey) {
 			const gameInfo = activeGames[gameKey];
 
@@ -226,7 +224,7 @@ module.exports = io => {
 					});
 				}
 				// change it back to 5
-				if (count < 1) {
+				if (count < 5) {
 					socket.to(key).emit("someoneScored", {
 						friend: activeGames[key].players[playerId],
 						question: answeredQuestion,
