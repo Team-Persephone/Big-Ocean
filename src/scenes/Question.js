@@ -26,10 +26,8 @@ export default class Question extends Phaser.Scene {
 			console.log("right answer!!!!");
 			this.correct.play();
 			this.scubaDiver.frozen = false;
-			console.log('in level', this.level)
 			this.scubaDiver.score = this.scubaDiver.score + this.level;
 			this.info.isResolved = true;
-			console.log('scuba score---->', this.scubaDiver.score)
 			this.scubaDiver.updateScore(this.score);
 			this.socket.emit("Scored", {
 				key: this.key,
