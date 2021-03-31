@@ -168,9 +168,9 @@ export default class MainScene extends Phaser.Scene {
 		scene.playerGroup.add(scene.scubaDiver);
 
 		//add chat if new player created
-		if (Object.keys(scene.state.players).length > 1) {
-			chatContainer.classList.remove("chat-hidden");
-		}
+		// if (Object.keys(scene.state.players).length > 1) {
+		// 	chatContainer.classList.remove("chat-hidden");
+		// }
 
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
@@ -471,7 +471,9 @@ export default class MainScene extends Phaser.Scene {
 			}
 			this.scubaDiver.waiting = false;
 			currentTimer.setText("swim!");
-			this.scene.launch("Timer", { socket: this.socket });
+
+			this.scene.launch("Timer", { socket: this.socket, currentTime: new Date()});
+
 			await this.sleep(1000);
 			this.countdown.stop();
 			currentTimer.destroy();
@@ -662,22 +664,22 @@ export default class MainScene extends Phaser.Scene {
 				//this.physics.resume() ----> WHAT DOES THIS??
 
 				//INSTRUCTIONS BUBBLE
-				scene.instructionsBubble = scene.add
-					.image(734, 545, "instructions")
-					.setScale(0.15)
-					.setScrollFactor(0);
+				// scene.instructionsBubble = scene.add
+				// 	.image(734, 545, "instructions")
+				// 	.setScale(0.15)
+				// 	.setScrollFactor(0);
 
-				scene.instructionsBubble.setInteractive();
-				scene.showInstructions = false;
-				scene.instructionsBubble.on("pointerdown", () => {
-					if (!scene.showInstructions) {
-						scene.showInstructions = !scene.showInstructions;
-						scene.scene.launch("Instructions");
-					} else if (scene.showInstructions) {
-						scene.showInstructions = !scene.showInstructions;
-						scene.scene.stop("Instructions");
-					}
-				});
+				// scene.instructionsBubble.setInteractive();
+				// scene.showInstructions = false;
+				// scene.instructionsBubble.on("pointerdown", () => {
+				// 	if (!scene.showInstructions) {
+				// 		scene.showInstructions = !scene.showInstructions;
+				// 		scene.scene.launch("Instructions");
+				// 	} else if (scene.showInstructions) {
+				// 		scene.showInstructions = !scene.showInstructions;
+				// 		scene.scene.stop("Instructions");
+				// 	}
+				// });
 			}
 		);
 
@@ -693,7 +695,7 @@ export default class MainScene extends Phaser.Scene {
 		});
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
-			chatContainer.classList.remove("chat-hidden");
+			// chatContainer.classList.remove("chat-hidden");
 			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
@@ -741,7 +743,7 @@ export default class MainScene extends Phaser.Scene {
 
 			this.scene.stop("Timer");
 
-			this.scene.launch("Timer", { socket: scene.socket });
+			this.scene.launch("Timer", {socket: this.socket, currentTime: new Date()});
 
 			let seaweedLength = this.seaweed[0].length; //108
 			if (scene.state.level === 2) {

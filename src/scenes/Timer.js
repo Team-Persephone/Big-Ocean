@@ -4,10 +4,16 @@ export default class Timer extends Phaser.Scene {
 	constructor() {
 		super("Timer");
 	}
+
+	init(data) {
+		this.currentTime = data.currentTime;
+	}
 	preload() {}
 	create() {
-		console.log("create");
-    this.timeOnPause = new Date();
+		console.log(this.currentTime);
+
+		this.timeOnPause = this.currentTime;
+
 		document.addEventListener("visibilitychange", () => {
 			if (document.hidden) {
 				this.scene.pause();
@@ -16,7 +22,7 @@ export default class Timer extends Phaser.Scene {
 			}
 		});
     // 120
-		this.initialTime = 20;
+		this.initialTime = 20 - Math.floor((new Date() - this.timeOnPause) / 1000);
 
 		this.text = this.add.text(
 			32,
