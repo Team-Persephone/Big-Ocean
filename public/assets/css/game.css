@@ -50,7 +50,7 @@ body {
 }
 
 .chat-hidden {
-  display: none;
+  visibility: hidden;
 }
 
 p {
@@ -174,7 +174,6 @@ p {
   background: rgb(163, 124, 253);
 }
 
-
 .user-profile.active {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
@@ -184,4 +183,8 @@ p {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+#big-ocean {
+  margin-left: 10em;
 }

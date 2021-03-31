@@ -169,6 +169,8 @@ export default class MainScene extends Phaser.Scene {
 		if (Object.keys(scene.state.players).length > 1) {
 			chatContainer.classList.remove("chat-hidden");
 		}
+		//move play button
+
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
@@ -530,6 +532,7 @@ export default class MainScene extends Phaser.Scene {
 				590,
 				"When yOu are ready tO plunge, click"
 			);
+			
 			const playButton = this.add.text(520, 590, "< start >", {
 				fontFamily: "menlo"
 			});
@@ -544,8 +547,9 @@ export default class MainScene extends Phaser.Scene {
 					key: this.state.key
 				});
 			});
-		} else {
-			waitingForHost = this.add.text(170, "waiting fOr hOst tO start game...");
+		 } 
+		 else {
+			waitingForHost = this.add.text(170, 590, "waiting fOr hOst tO start game...");
 		}
 
 		//makes friends visibel
@@ -614,7 +618,6 @@ export default class MainScene extends Phaser.Scene {
 		}
 
 		this.physics.add.collider(this.playerGroup, this.decorations, function () {
-			console.log("inside collider with rocks, testing sound");
 		});
 
 		//create navigation and animation for scuba divers
