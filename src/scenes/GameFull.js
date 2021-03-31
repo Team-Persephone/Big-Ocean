@@ -39,8 +39,6 @@ export default class GameFull extends Phaser.Scene {
 
 		this.socket.on("gameCreated", key => {
 			this.socket.emit("joinWaitingRoom", key);
-			// this.scene.stop("IntroScene");
 			this.scene.stop("GameFull");
 		});
-	}
 }

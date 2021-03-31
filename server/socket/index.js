@@ -112,43 +112,47 @@ module.exports = io => {
 					activeGames[key].factsLevel5.push(factObj);
 				}
 			});
-
 			socket.emit("gameCreated", key);
 		});
 
-		//socket listen on plaery joinGame
-
+		//socket listen on player joinGame
 		socket.on("joinWaitingRoom", async function (gameKey) {
-			socket.join(gameKey); //WHAT IS THIS DOING??
 			const gameInfo = activeGames[gameKey];
-			const newAvatar = activeGames[gameKey].avatars.pop();
-			activeGames[gameKey].players[socket.id] = {
-				position: {
-					x: 100,
-					y: 100,
-					angle: 0
-					//   faceRight: false,
-				},
-				avatar: newAvatar,
-				playerId: socket.id,
-				score: 0
-			};
 
-			gameInfo.numPlayer = Object.keys(gameInfo.players).length;
-			//send state info
+			if (!activeGames[gameKey].avatars.length) {
+				socket.emit("gameFull");
+			} else {
+				socket.join(gameKey); //WHAT IS THIS DOING??
 
-			socket.emit("setState", gameInfo);
+				const newAvatar = activeGames[gameKey].avatars.pop();
+				activeGames[gameKey].players[socket.id] = {
+					position: {
+						x: 100,
+						y: 100,
+						angle: 0
+						//   faceRight: false,
+					},
+					avatar: newAvatar,
+					playerId: socket.id,
+					score: 0
+				};
 
-			//send current players info
-			socket.emit("currentPlayers", {
-				players: gameInfo.players,
-				numPlayers: gameInfo.numPlayers
-			});
-			//send new player info
-			socket.to(gameKey).emit("newPlayer", {
-				newPlayer: gameInfo.players[socket.id],
-				numPlayers: gameInfo.numPlayers
-			});
+				gameInfo.numPlayer = Object.keys(gameInfo.players).length;
+				//send state info
+
+				socket.emit("setState", gameInfo);
+
+				//send current players info
+				socket.emit("currentPlayers", {
+					players: gameInfo.players,
+					numPlayers: gameInfo.numPlayers
+				});
+				//send new player info
+				socket.to(gameKey).emit("newPlayer", {
+					newPlayer: gameInfo.players[socket.id],
+					numPlayers: gameInfo.numPlayers
+				});
+			}
 		});
 
 		socket.on("startCountdown", ({ seconds, key }) => {
