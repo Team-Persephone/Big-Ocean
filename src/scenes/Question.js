@@ -6,7 +6,7 @@ export default class Question extends Phaser.Scene {
 	}
 
 	init(data) {
-		this.info = data.info;
+		this.clam = data.clam;
 		this.scubaDiver = data.scubaDiver;
 		this.level = data.level;
 		this.socket = data.socket;
@@ -22,18 +22,17 @@ export default class Question extends Phaser.Scene {
 	}
 
 	isCorrect(answer) {
-		if (answer === this.info.answer) {
+		if (answer === this.clam.info.answer) {
 			console.log("right answer!!!!");
 			this.correct.play();
 			this.scubaDiver.frozen = false;
 			this.scubaDiver.score = this.scubaDiver.score + this.level;
-			this.info.isResolved = true;
 			this.scubaDiver.updateScore(this.score);
 			this.socket.emit("Scored", {
 				key: this.key,
 				playerId: this.scubaDiver.playerId,
 				score: this.scubaDiver.score,
-				clamQuestion: this.info.question,
+				clamQuestion: this.clam.info.question,
 				level: this.level
 			});
 		} else {
@@ -45,7 +44,7 @@ export default class Question extends Phaser.Scene {
 		this.scene.stop("Question");
 	}
 	create() {
-		const info = this.info;
+		const info = this.clam.info;
 		const scene = this;
 
 		this.surface = this.sound.add("surface", { volume: 1.5 });

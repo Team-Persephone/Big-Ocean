@@ -180,7 +180,7 @@ module.exports = io => {
 				let answeredQuestion = clamQuestion;
 
 				if (level === 1) {
-					activeGames[key].questionsLevel1.forEach((question) => {
+					activeGames[key].questionsLevel1.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
 							count++;
@@ -188,7 +188,7 @@ module.exports = io => {
 					});
 				}
 				if (level === 2) {
-					activeGames[key].questionsLevel2.forEach((question) => {
+					activeGames[key].questionsLevel2.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
 							count++;
@@ -196,7 +196,7 @@ module.exports = io => {
 					});
 				}
 				if (level === 3) {
-					activeGames[key].questionsLevel3.forEach((question) => {
+					activeGames[key].questionsLevel3.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
 							count++;
@@ -204,7 +204,7 @@ module.exports = io => {
 					});
 				}
 				if (level === 4) {
-					activeGames[key].questionsLevel4.forEach((question) => {
+					activeGames[key].questionsLevel4.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
 							count++;
@@ -212,22 +212,20 @@ module.exports = io => {
 					});
 				}
 				if (level === 5) {
-					activeGames[key].questionsLevel5.forEach((question) => {
+					activeGames[key].questionsLevel5.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
 							count++;
 						}
 					});
 				}
-        // change it back to 5
-				if (count < 1) {
-					socket
-						.to(key)
-						.emit("someoneScored", {
-							friend: activeGames[key].players[playerId],
-							question: answeredQuestion,
-							level: activeGames[key].level
-						});
+				// change it back to 5
+				if (count < 5) {
+					io.to(key).emit("someoneScored", {
+						friend: activeGames[key].players[playerId],
+						question: answeredQuestion,
+						level: activeGames[key].level
+					});
 				}
 				if (count === 5) {
 					activeGames[key].level++;
