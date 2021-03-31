@@ -5,8 +5,8 @@ export default class WinScene extends Phaser.Scene {
 		super("WinScene");
 	}
 
-    init(data) {
-		this.playerFriends = data.playerFriends;
+	init(data) {
+		this.playerFriends = data.playerFriends; ///this only passes in create info, need to set up socket to see other player's scores
 		this.scubaDiver = data.scubaDiver;
 	}
 
@@ -18,8 +18,6 @@ export default class WinScene extends Phaser.Scene {
 
 	async create() {
 		const scene = this;
-
-       // console.log('this.playerFriends.children', this.playerFriends.getChildren().forEach(friend => console.log `${friend.avatar}: ${friend.score}`));
 		this.gameWin = this.sound.add("gameWin", { volume: 2 });
 		this.gameWin.play();
 
@@ -33,33 +31,33 @@ export default class WinScene extends Phaser.Scene {
 			fontStyle: "bold"
 		});
 		//player's message and score
-		let y = 300;
+		//let y = 300;
 		scene.add.text(
-			225,
+			245,
 			175,
-			`yOu answered all the pearls!\n\n yOu all win!\n\n but here is hOw it all breaks dOwn: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`);
-			
-		scene.add.text(
-			`${this.playerFriends.getChildren().forEach(friend => {
-				this.add
-						.text(350, y, `${friend.avatar}: ${friend.score}`); y +=20;
-			})}`,
-			
+			`\nyOu cOllected all the pearls!\n\n yOu all win!\n\n but here is hOw yOu did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
 			{
 				fill: "#02075D",
-				fontSize: "17px",
+				fontSize: "19px",
 				fontStyle: "bold",
 				align: "center",
-				wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
+				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
 			}
-		);	
+		);
 		
+		//Add other player's scores (needs socket hook up)
+		// scene.add.text(
+		// 	`${this.playerFriends.getChildren().forEach(friend => {
+		// 		this.add.text(350, y, `${friend.avatar}: ${friend.score}`);
+		// 		y += 20;
+		// 	})}`
+		// );
 
-			//credits
+		//credits
 		scene.add.text(
 			255,
 			360,
-			'One-big-Ocean is brOught tO yOu by \n\nasia thOmas, isabelle stettler, \n\n sOfija suttOn, & Olivia wOng.',
+			"One-big-Ocean is brOught tO yOu by \n\nasia thOmas, isabelle stettler, \n\n sOfija suttOn, & Olivia wOng.",
 			{
 				fill: "#02075D",
 				fontSize: "14px",
@@ -68,7 +66,6 @@ export default class WinScene extends Phaser.Scene {
 			}
 		);
 
-
-		//replay option and disconnect
+		//Add replay option
 	}
 }
