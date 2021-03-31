@@ -30,7 +30,7 @@ export default class Loser extends Phaser.Scene {
 		scene.add.text(
 			245,
 			175,
-			`\Your mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
+			// `\Your mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
 			{
 				fill: "#02075D",
 				fontSize: "19px",
