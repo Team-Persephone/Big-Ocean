@@ -694,7 +694,7 @@ export default class MainScene extends Phaser.Scene {
 
 		//listen to add new player to scene
 		this.socket.on("newPlayer", function ({ newPlayer, numPlayers }) {
-			// chatContainer.classList.remove("chat-hidden");
+			chatContainer.classList.remove("chat-hidden");
 			scene.addFriends(scene, newPlayer);
 			scene.state.numPlayers = numPlayers;
 		});
