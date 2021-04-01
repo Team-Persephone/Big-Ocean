@@ -43,7 +43,6 @@ https://one-big-ocean.herokuapp.com/
 
 ## **Schema Design**
 
-[SchemaDesign]('./public/assets/SchemaDesign.png')
 <img src='./public/assets/SchemaDesign.png' />
 
 
@@ -75,13 +74,9 @@ players
 
 **Description: Author: Source**
 
-ScubaDiver Sprite Base: Fellowship Of the Game: https://opengameart.org/content/scuba-diver
-
-Background SeaScape: pikisuperstar :  <a href="https://www.freepik.com/vectors/background">Background vector created by pikisuperstar - www.freepik.com</a> 
-
-Clam Base: pch.vector: <a href="https://www.freepik.com/vectors/banner">Banner vector created by pch.vector - www.freepik.com</a> 
-
-Shrimp Base: macrovector: <a href="https://www.freepik.com/vectors/food">Food vector created by macrovector - www.freepik.com</a>
-
-Seaweed: macrovector:  <a href='https://www.freepik.com/vectors/food'>Food vector created by macrovector - www.freepik.com</a>  
+* ScubaDiver Sprite Base: Fellowship Of the Game: https://opengameart.org/content/scuba-diver
+* Background SeaScape: pikisuperstar :  <a href="https://www.freepik.com/vectors/background">Background vector created by pikisuperstar - www.freepik.com</a> 
+* Clam Base: pch.vector: <a href="https://www.freepik.com/vectors/banner">Banner vector created by pch.vector - www.freepik.com</a> 
+* Shrimp Base: macrovector: <a href="https://www.freepik.com/vectors/food">Food vector created by macrovector - www.freepik.com</a>
+* Seaweed: macrovector:  <a href='https://www.freepik.com/vectors/food'>Food vector created by macrovector - www.freepik.com</a>  
 
