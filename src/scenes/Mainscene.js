@@ -142,34 +142,29 @@ export default class MainScene extends Phaser.Scene {
 		});
 		return link;
 	}
-
 	//take on function for rocks
 	createRock(scene, rockName, x, y, scale = 1, angle = 0) {
 		scene.decorations
 			.create(x, y, rockName)
 			.setScale(scale)
 			.setAngle(angle)
-			.refreshBody();
+			.refreshBody();		
 	}
 
 	//helper function to create avatar for player
 	createPlayer(scene, player) {
-		scene.scubaDiver = new Scuba(scene, 100, 350, `${player.avatar}`).setScale(
-			0.2
-		);
+		scene.scubaDiver = new Scuba(scene, 100, 350, `${player.avatar}`).setScale(0.2);
 		scene.scubaDiver.setAngle(-45);
 		scene.scubaDiver.faceRight = true;
-
+		scene.scubaDiver.setSize(scene.scubaDiver.width * 0.5, scene.scubaDiver.height * 0.5, true)
 		//create animation
 		scene.createAnimations(`${player.avatar}`);
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
-
 		//add chat if new player created
 		if (Object.keys(scene.state.players).length > 1) {
 			chatContainer.classList.remove("chat-hidden");
 		}
-
 		//scuba can't leave the screne
 		scene.scubaDiver.body.collideWorldBounds = true;
 		scene.cameras.main.startFollow(scene.scubaDiver);
@@ -182,6 +177,7 @@ export default class MainScene extends Phaser.Scene {
 		const { x, y, question, options, answer, isResolved } = info;
 		scene.createAnimations("clam");
 		const clam = new Clam(scene, x, y, file).setScale(0.07);
+		clam.setSize(clam.width * 2, clam.height * 2, true)
 		clam.info = { question, options, answer, isResolved };
 		if (level === 1) {
 			scene.clamsLevel1.add(clam);
@@ -204,6 +200,7 @@ export default class MainScene extends Phaser.Scene {
 		const { x, y, fact, isRead } = info;
 		scene.createAnimations("shrimp");
 		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
+		shrimp.setSize(shrimp.width * 1.5, shrimp.height * 1.5, true)
 		shrimp.info = { fact, isRead };
 		scene.shrimps.add(shrimp);
 	}
@@ -807,7 +804,7 @@ export default class MainScene extends Phaser.Scene {
 					.forEach(eachWeed => {
 						eachWeed.destroy();
 					});
-				scene.physics.world.setBounds(0, 320, 1088, 1920);
+				scene.physics.world.setBounds(0, 320, 1088, 1900);
 			}
 			if (scene.state.level === 3) {
 				scene.state.questionsLevel3.forEach(question => {
