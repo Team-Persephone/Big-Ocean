@@ -12,6 +12,7 @@ export default class Question extends Phaser.Scene {
 		this.socket = data.socket;
 		this.key = data.key;
 		this.score = data.score;
+		this.click = data.click;
 	}
 
 	preload() {
@@ -20,11 +21,23 @@ export default class Question extends Phaser.Scene {
 		//correct clam sound
 		this.load.audio("correct", "/audio/correct.mp3");
 	}
-
+	onEvent() {
+		this.click.play();
+		this.timeRemainig.setText(`the O-timer: ${this.timer.repeatCount}`)
+		console.log('time:', this.timer.repeatCount)
+		if(this.timer.repeatCount === 0) {
+			this.scubaDiver.tweenPosition(0, 0);
+			this.click.stop();
+			this.scene.stop("Question")
+			this.surface.play();
+		}
+	}
 	isCorrect(answer) {
+		this.click.stop();
 		if (answer === this.clam.info.answer) {
 			console.log("right answer!!!!");
 			this.correct.play();
+			this.timer.paused = !this.timer.paused;
 			this.scubaDiver.frozen = false;
 			this.scubaDiver.score = this.scubaDiver.score + this.level;
 			this.scubaDiver.updateScore(this.score);
@@ -40,13 +53,21 @@ export default class Question extends Phaser.Scene {
 			this.scubaDiver.tweenPosition(0, 0);
 			this.surface.play();
 			this.scubaDiver.frozen = false;
+			this.timer.paused = !this.timer.paused;
 		}
 		this.scene.stop("Question");
 	}
 	create() {
 		const info = this.clam.info;
 		const scene = this;
-
+		this.timer = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope: this, repeat: 10});
+		this.timeRemainig = this.add.text(50, 30, "", {
+			fill: "#02075D",
+			backgroundColor: "#1abeff",
+			fontSize: "17px",
+			fontStyle: "bold",
+			align: "center",
+		});
 		this.surface = this.sound.add("surface", { volume: 1.5 });
 		this.correct = this.sound.add("correct", { volume: 1 });
 

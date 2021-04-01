@@ -264,7 +264,8 @@ export default class MainScene extends Phaser.Scene {
 				level: this.state.level,
 				socket: this.socket,
 				key: this.state.key,
-				score: this.score
+				score: this.score,
+				click: this.click
 			});
 			//needed an error thrown/stop it
 			throw new Error();
@@ -284,7 +285,6 @@ export default class MainScene extends Phaser.Scene {
 				click: this.click
 			});
 			this.shrimpClick.play();
-			this.click.play();
 			this.scene.physics.pause(); //disabeling physics---> look into it
 		});
 	}
@@ -302,20 +302,6 @@ export default class MainScene extends Phaser.Scene {
 	deactivateAnimal(animal) {
 		animal.clearTint();
 		animal.disableInteractive();
-	}
-
-	async startTimer(time, animal, scuba, view = null) {
-		scuba.frozen = true;
-		while (time > 0) {
-			await this.sleep(1000);
-			time--;
-		}
-		if (view) {
-			this.scene.stop(view);
-		}
-		scuba.frozen = false;
-		animal.disableInteractive();
-		this.click.stop();
 	}
 
 	addFriends(scene, player) {
@@ -367,7 +353,7 @@ export default class MainScene extends Phaser.Scene {
 		this.click = this.sound.add("click", {
 			volume: 0.5,
 			loop: true,
-			rate: 0.9
+			rate: 0.7
 		}); //needs work with clam
 		this.infoBubble = this.sound.add("infoBubble", { volume: 6 });
 

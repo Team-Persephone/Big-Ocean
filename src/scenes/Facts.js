@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { $CombinedState } from "redux";
 
 export default class Facts extends Phaser.Scene {
 	constructor() {
@@ -19,11 +20,12 @@ export default class Facts extends Phaser.Scene {
 	async sleep(delay) {
 		return new Promise(resolve => setTimeout(() => resolve(true), delay));
 	}
-
+	
 	async startTimer(time, animal, scuba, view = null) {
+		this.click.play();
 		scuba.frozen = true;
 		while (time > 0) {
-			this.timeRemaining.setText(`${time}`)
+			this.timeRemaining.setText(`fact-O-timer: ${time}`)
 			console.log(time)
 			await this.sleep(1000);
 			time--;
@@ -35,7 +37,7 @@ export default class Facts extends Phaser.Scene {
 		animal.disableInteractive();
 		this.click.stop();
 	}
-
+	
 	create() {
 		const info = this.shrimp.info;
 		this.timeRemaining = this.add.text(50, 30, "", {
