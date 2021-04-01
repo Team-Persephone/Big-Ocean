@@ -254,7 +254,6 @@ export default class MainScene extends Phaser.Scene {
 		clam.setTint(0xcbc3e3);
 		clam.setInteractive();
 		clam.on("pointerdown", () => {
-			console.log("clam clicked!!!!");
 			this.scene.launch("Question", {
 				clam: clam,
 				scubaDiver: scubaDiver,
@@ -282,7 +281,7 @@ export default class MainScene extends Phaser.Scene {
 				click: this.click
 			});
 			this.shrimpClick.play();
-			this.scene.physics.pause(); //disabeling physics---> look into it
+			throw new Error();
 		});
 	}
 
