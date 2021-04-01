@@ -109,10 +109,8 @@ export default class MainScene extends Phaser.Scene {
 		this.load.audio("click", "/audio/click.mp3");
 		//instructions pop up
 		this.load.audio("infoBubble", "/audio/infoBubble.mp3");
-		//level timer up/lose game
-		this.load.audio("gameOver", "/audio/gameOver.mp3"); //not linked yet
-		//win game
-		this.load.audio("gameWin", "/audio/gameWin.mp3"); //not linked yet
+		//nextLevel -seaweed parting
+		this.load.audio("nextLevel", "/audio/nextLevel.mp3");
 
 		//LOAD ON
 		this.load.on("progress", function (value) {
@@ -198,7 +196,7 @@ export default class MainScene extends Phaser.Scene {
 		if (level === 5) {
 			scene.clamsLevel5.add(clam);
 		}
-		return clam
+		return clam;
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
@@ -359,6 +357,7 @@ export default class MainScene extends Phaser.Scene {
 			loop: true
 		});
 		this.music.play();
+
 		this.clamClick = this.sound.add("clamClick", { volume: 2 });
 		this.shrimpClick = this.sound.add("shrimpClick", { volume: 0.6 });
 		this.countdown = this.sound.add("countdown", { volume: 1 });
@@ -368,6 +367,7 @@ export default class MainScene extends Phaser.Scene {
 			rate: 0.9
 		}); //needs work with clam
 		this.infoBubble = this.sound.add("infoBubble", { volume: 6 });
+		this.nextLevel = this.sound.add("nextLevel", { volume: 9 });
 
 		//launch the socket connection
 		this.socket = io();
@@ -377,68 +377,67 @@ export default class MainScene extends Phaser.Scene {
 		});
 		this.scene.launch("ChatScene", { socket: this.socket });
 
-		//Volume
-		this.volumeOn = this.add
-			.image(700, 50, "volumeOn")
-			.setScrollFactor(0)
-			.setScale(0.09);
-		this.volumeUp = this.add
-			.image(750, 50, "volumeUp")
-			.setScrollFactor(0)
-			.setScale(0.07);
-		this.volumeDown = this.add
-			.image(650, 50, "volumeDown")
-			.setScrollFactor(0)
-			.setScale(0.07);
+		// //Volume
+		// this.volumeOn = this.add.image(300, 50, "volumeOn")
+		// 	.setScrollFactor(0)
+		// 	.setScale(1);
+		// this.volumeUp = this.add
+		// 	.image(750, 50, "volumeUp")
+		// 	.setScrollFactor(0)
+		// 	.setScale(0.07);
+		// this.volumeDown = this.add
+		// 	.image(650, 50, "volumeDown")
+		// 	.setScrollFactor(0)
+		// 	.setScale(0.07);
 
-		this.volumeOn.setInteractive();
-		this.volumeUp.setInteractive();
-		this.volumeDown.setInteractive();
+		// this.volumeOn.setInteractive();
+		// this.volumeUp.setInteractive();
+		// this.volumeDown.setInteractive();
 
-		this.volumeUp.on("pointerdown", () => {
-			this.volumeUp.setTint(0xc2c2c2);
-			let newVol = this.sound.volume + 0.1;
-			this.sound.setVolume(newVol);
-			if (this.sound.volume < 0.1) {
-				this.volumeOn.setTexture("volumeOn");
-			}
-			if (this.sound.volume >= 1.5) {
-				this.volumeUp.setTint(0x056ff1);
-				this.volumeUp.disableInteractive();
-			} else {
-				this.volumeDown.clearTint();
-				this.volumeDown.setInteractive();
-			}
-		});
-		this.volumeDown.on("pointerdown", () => {
-			this.volumeDown.setTint(0xc2c2c2);
-			let newVol = this.sound.volume - 0.1;
-			this.sound.setVolume(newVol);
-			if (this.sound.volume <= 0.1) {
-				this.volumeDown.setTint(0x056ff1);
-				this.volumeDown.disableInteractive();
-				this.volumeSpeaker.setTexture("volumeOff");
-			} else {
-				this.volumeUp.clearTint();
-				this.volumeUp.setInteractive();
-			}
-		});
-		this.volumeDown.on("pointerup", () => {
-			this.volumeDown.clearTint();
-		});
-		this.volumeUp.on("pointerup", () => {
-			this.volumeUp.clearTint();
-		});
+		// this.volumeUp.on("pointerdown", () => {
+		// 	this.volumeUp.setTint(0xc2c2c2);
+		// 	let newVol = this.sound.volume + 0.1;
+		// 	this.sound.setVolume(newVol);
+		// 	if (this.sound.volume < 0.1) {
+		// 		this.volumeOn.setTexture("volumeOn");
+		// 	}
+		// 	if (this.sound.volume >= 1.5) {
+		// 		this.volumeUp.setTint(0x056ff1);
+		// 		this.volumeUp.disableInteractive();
+		// 	} else {
+		// 		this.volumeDown.clearTint();
+		// 		this.volumeDown.setInteractive();
+		// 	}
+		// });
+		// this.volumeDown.on("pointerdown", () => {
+		// 	this.volumeDown.setTint(0xc2c2c2);
+		// 	let newVol = this.sound.volume - 0.1;
+		// 	this.sound.setVolume(newVol);
+		// 	if (this.sound.volume <= 0.1) {
+		// 		this.volumeDown.setTint(0x056ff1);
+		// 		this.volumeDown.disableInteractive();
+		// 		this.volumeSpeaker.setTexture("volumeOff");
+		// 	} else {
+		// 		this.volumeUp.clearTint();
+		// 		this.volumeUp.setInteractive();
+		// 	}
+		// });
+		// this.volumeDown.on("pointerup", () => {
+		// 	this.volumeDown.clearTint();
+		// });
+		// this.volumeUp.on("pointerup", () => {
+		// 	this.volumeUp.clearTint();
+		// });
 
-		this.volumeOn.on("pointerdown", () => {
-			if (this.volumeOn.texture.key === "volumeOn") {
-				this.volumeOn.setTexture("volumeOff");
-				this.sound.setMute(true);
-			} else {
-				this.volumeOn.setTexture("volumeOn");
-				this.sound.setMute(false);
-			}
-		});
+		// this.volumeOn.on("pointerdown", () => {
+		// 	if (this.volumeOn.texture.key === "volumeOn") {
+		// 		this.volumeOn.setTexture("volumeOff");
+		// 		this.sound.setMute(true);
+		// 	} else {
+		// 		this.volumeOn.setTexture("volumeOn");
+		// 		this.sound.setMute(false);
+		// 	}
+		// });
 
 		let link;
 		this.socket.on("gameCreated", gameKey => {
@@ -505,6 +504,69 @@ export default class MainScene extends Phaser.Scene {
 					scene.showInstructions = !scene.showInstructions;
 					this.infoBubble.play();
 					scene.scene.stop("Instructions");
+				}
+			});
+
+			//Volume
+			this.volumeOn = this.add
+				.image(700, 50, "volumeOn")
+				.setScrollFactor(0)
+				.setScale(0.09);
+			this.volumeUp = this.add
+				.image(750, 50, "volumeUp")
+				.setScrollFactor(0)
+				.setScale(0.07);
+			this.volumeDown = this.add
+				.image(650, 50, "volumeDown")
+				.setScrollFactor(0)
+				.setScale(0.07);
+
+			this.volumeOn.setInteractive();
+			this.volumeUp.setInteractive();
+			this.volumeDown.setInteractive();
+
+			this.volumeUp.on("pointerdown", () => {
+				this.volumeUp.setTint(0xc2c2c2);
+				let newVol = this.sound.volume + 0.1;
+				this.sound.setVolume(newVol);
+				if (this.sound.volume < 0.1) {
+					this.volumeOn.setTexture("volumeOn");
+				}
+				if (this.sound.volume >= 1.5) {
+					this.volumeUp.setTint(0x056ff1);
+					this.volumeUp.disableInteractive();
+				} else {
+					this.volumeDown.clearTint();
+					this.volumeDown.setInteractive();
+				}
+			});
+			this.volumeDown.on("pointerdown", () => {
+				this.volumeDown.setTint(0xc2c2c2);
+				let newVol = this.sound.volume - 0.1;
+				this.sound.setVolume(newVol);
+				if (this.sound.volume <= 0.1) {
+					this.volumeDown.setTint(0x056ff1);
+					this.volumeDown.disableInteractive();
+					this.volumeSpeaker.setTexture("volumeOff");
+				} else {
+					this.volumeUp.clearTint();
+					this.volumeUp.setInteractive();
+				}
+			});
+			this.volumeDown.on("pointerup", () => {
+				this.volumeDown.clearTint();
+			});
+			this.volumeUp.on("pointerup", () => {
+				this.volumeUp.clearTint();
+			});
+
+			this.volumeOn.on("pointerdown", () => {
+				if (this.volumeOn.texture.key === "volumeOn") {
+					this.volumeOn.setTexture("volumeOff");
+					this.sound.setMute(true);
+				} else {
+					this.volumeOn.setTexture("volumeOn");
+					this.sound.setMute(false);
 				}
 			});
 		});
@@ -577,7 +639,7 @@ export default class MainScene extends Phaser.Scene {
 		this.createRock(this, "rock-sand-1", 25, 500, 0.28, 20);
 		this.createRock(this, "rock-sand-2", 135, 550, 0.25);
 		this.createRock(this, "rock-sand-2", 600, 650, 0.2, -50);
-		this.createRock(this, "rock-sand-1", 500, 900, 0.15);
+		this.createRock(this, "rock-sand-1", 300, 900, 0.15);
 		this.createRock(this, "rock-sand-1", 1000, 860, 0.4);
 		this.createRock(this, "rock-sand-2", 935, 780, 0.3, -130);
 		this.createRock(this, "rock-brown-2", 20, 900, 0.35, 90);
@@ -671,25 +733,6 @@ export default class MainScene extends Phaser.Scene {
 					factsLevel5,
 					count
 				};
-				//this.physics.resume() ----> WHAT DOES THIS??
-
-				//INSTRUCTIONS BUBBLE
-				// scene.instructionsBubble = scene.add
-				// 	.image(734, 545, "instructions")
-				// 	.setScale(0.15)
-				// 	.setScrollFactor(0);
-
-				// scene.instructionsBubble.setInteractive();
-				// scene.showInstructions = false;
-				// scene.instructionsBubble.on("pointerdown", () => {
-				// 	if (!scene.showInstructions) {
-				// 		scene.showInstructions = !scene.showInstructions;
-				// 		scene.scene.launch("Instructions");
-				// 	} else if (scene.showInstructions) {
-				// 		scene.showInstructions = !scene.showInstructions;
-				// 		scene.scene.stop("Instructions");
-				// 	}
-				// });
 			}
 		);
 
@@ -797,6 +840,7 @@ export default class MainScene extends Phaser.Scene {
 
 		this.socket.on("nextLevel", level => {
 			scene.state.level = level;
+			this.nextLevel.play();
 
 			this.scene.stop("Timer");
 
@@ -804,8 +848,6 @@ export default class MainScene extends Phaser.Scene {
 				socket: this.socket,
 				currentTime: new Date()
 			});
-
-
 
 			let seaweedLength = this.seaweed[0].length;
 			if (scene.state.level === 2) {
@@ -824,7 +866,6 @@ export default class MainScene extends Phaser.Scene {
 				scene.physics.world.setBounds(0, 320, 1088, 1920);
 			}
 			if (scene.state.level === 3) {
-
 				scene.state.questionsLevel3.forEach(question => {
 					scene.createClam(scene, 3, question, "clam");
 				});
