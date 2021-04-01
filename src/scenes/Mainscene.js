@@ -377,68 +377,6 @@ export default class MainScene extends Phaser.Scene {
 		});
 		this.scene.launch("ChatScene", { socket: this.socket });
 
-		// //Volume
-		// this.volumeOn = this.add.image(300, 50, "volumeOn")
-		// 	.setScrollFactor(0)
-		// 	.setScale(1);
-		// this.volumeUp = this.add
-		// 	.image(750, 50, "volumeUp")
-		// 	.setScrollFactor(0)
-		// 	.setScale(0.07);
-		// this.volumeDown = this.add
-		// 	.image(650, 50, "volumeDown")
-		// 	.setScrollFactor(0)
-		// 	.setScale(0.07);
-
-		// this.volumeOn.setInteractive();
-		// this.volumeUp.setInteractive();
-		// this.volumeDown.setInteractive();
-
-		// this.volumeUp.on("pointerdown", () => {
-		// 	this.volumeUp.setTint(0xc2c2c2);
-		// 	let newVol = this.sound.volume + 0.1;
-		// 	this.sound.setVolume(newVol);
-		// 	if (this.sound.volume < 0.1) {
-		// 		this.volumeOn.setTexture("volumeOn");
-		// 	}
-		// 	if (this.sound.volume >= 1.5) {
-		// 		this.volumeUp.setTint(0x056ff1);
-		// 		this.volumeUp.disableInteractive();
-		// 	} else {
-		// 		this.volumeDown.clearTint();
-		// 		this.volumeDown.setInteractive();
-		// 	}
-		// });
-		// this.volumeDown.on("pointerdown", () => {
-		// 	this.volumeDown.setTint(0xc2c2c2);
-		// 	let newVol = this.sound.volume - 0.1;
-		// 	this.sound.setVolume(newVol);
-		// 	if (this.sound.volume <= 0.1) {
-		// 		this.volumeDown.setTint(0x056ff1);
-		// 		this.volumeDown.disableInteractive();
-		// 		this.volumeSpeaker.setTexture("volumeOff");
-		// 	} else {
-		// 		this.volumeUp.clearTint();
-		// 		this.volumeUp.setInteractive();
-		// 	}
-		// });
-		// this.volumeDown.on("pointerup", () => {
-		// 	this.volumeDown.clearTint();
-		// });
-		// this.volumeUp.on("pointerup", () => {
-		// 	this.volumeUp.clearTint();
-		// });
-
-		// this.volumeOn.on("pointerdown", () => {
-		// 	if (this.volumeOn.texture.key === "volumeOn") {
-		// 		this.volumeOn.setTexture("volumeOff");
-		// 		this.sound.setMute(true);
-		// 	} else {
-		// 		this.volumeOn.setTexture("volumeOn");
-		// 		this.sound.setMute(false);
-		// 	}
-		// });
-
 		let link;
 		this.socket.on("gameCreated", gameKey => {
 			link = this.addUrl(gameKey);
