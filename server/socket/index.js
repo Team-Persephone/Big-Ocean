@@ -50,7 +50,8 @@ module.exports = io => {
 				factsLevel2: [],
 				factsLevel3: [],
 				factsLevel4: [],
-				factsLevel5: []
+				factsLevel5: [],
+				count: 0
 			};
 
 			const questions = await PearlQuest.findAll();
@@ -186,7 +187,6 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-		let count = 0;
 		socket.on(
 			"Scored",
 			async function ({ key, playerId, score, clamQuestion, level }) {
@@ -197,7 +197,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel1.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -205,7 +205,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel2.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -213,7 +213,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel3.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -221,7 +221,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel4.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -229,23 +229,24 @@ module.exports = io => {
 					activeGames[key].questionsLevel5.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
 				// change it back to 5
 				// if (count < 5) {
-					io.to(key).emit("someoneScored", {
-						friend: activeGames[key].players[playerId],
-						question: answeredQuestion,
-						level: activeGames[key].level
-					});
+				io.to(key).emit("setState", activeGames[key]);
+				io.to(key).emit("someoneScored", {
+					friend: activeGames[key].players[playerId],
+					question: answeredQuestion,
+					level: activeGames[key].level
+				});
 				// }
 				//change back to 5!
-				if (count >= 5) {
+				if (activeGames[key].count >= 5) {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
-					count = 0;
+					activeGames[key].count = 0;
 				}
 			}
 		);

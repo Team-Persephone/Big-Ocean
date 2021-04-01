@@ -651,7 +651,8 @@ export default class MainScene extends Phaser.Scene {
 				factsLevel2,
 				factsLevel3,
 				factsLevel4,
-				factsLevel5
+				factsLevel5,
+				count
 			}) {
 				scene.state = {
 					key,
@@ -667,7 +668,8 @@ export default class MainScene extends Phaser.Scene {
 					factsLevel2,
 					factsLevel3,
 					factsLevel4,
-					factsLevel5
+					factsLevel5,
+					count
 				};
 				//this.physics.resume() ----> WHAT DOES THIS??
 
