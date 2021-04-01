@@ -330,7 +330,14 @@ export default class MainScene extends Phaser.Scene {
 			scores.push(
 				this.add
 					.text(50, y, `${friend.avatar}: ${friend.score}`, {
-						fontSize: 20
+						fill:
+							friend.avatar === "scubaPurple"
+								? "#A37CFD"
+								: friend.avatar === "scubaGreen"
+								? "#00FF00"
+								: "#FFB1EE",
+						fontSize: 20,
+						fontStyle: "bold"
 					})
 					.setScrollFactor(0)
 			);
@@ -444,6 +451,7 @@ export default class MainScene extends Phaser.Scene {
 			});
 
 			while (seconds > 0) {
+				console.log("scuba -->", this.scubaDiver.avatar);
 				currentTimer.setText(`${seconds}`);
 				this.countdown.play();
 				await this.sleep(1000);
@@ -454,7 +462,8 @@ export default class MainScene extends Phaser.Scene {
 
 			this.scene.launch("Timer", {
 				socket: this.socket,
-				currentTime: new Date()
+				currentTime: new Date(),
+				avatar: this.scubaDiver.avatar
 			});
 
 			await this.sleep(1000);
@@ -462,8 +471,14 @@ export default class MainScene extends Phaser.Scene {
 			currentTimer.destroy();
 			this.score = this.add
 				.text(50, 50, `${this.scubaDiver.avatar}: ${this.scubaDiver.score}`, {
-					fill: "#02075D",
-					fontSize: 20
+					fill:
+						this.scubaDiver.avatar === "scubaPurple"
+							? "#A37CFD"
+							: this.scubaDiver.avatar === "scubaGreen"
+							? "#00FF00"
+							: "#FFB1EE",
+					fontSize: 20,
+					fontStyle: "bold"
 				})
 				.setScrollFactor(0);
 			scores = this.friendsScores(scene.playerFriends);
