@@ -63,14 +63,18 @@ export default class MainScene extends Phaser.Scene {
 				frameHeight: 420
 			}
 		);
-		this.load.spritesheet("clam", "/assets/clam.png", {
+		this.load.spritesheet("clam", "/assets/animals/clam.png", {
 			frameWidth: 990,
 			frameHeight: 860
 		});
-		this.load.spritesheet("shrimp", "/assets/shrimp.png", {
+		this.load.spritesheet("shrimp", "/assets/animals/shrimp.png", {
 			frameWidth: 1000,
 			frameHeight: 1090
 		});
+		this.load.spritesheet("jellyfish", "assets/animals/jellyfish.png", {
+			frameWidth: 400,
+			frameHeight: 500
+		})
 
 		//load background
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
@@ -384,7 +388,6 @@ export default class MainScene extends Phaser.Scene {
 			});
 
 			while (seconds > 0) {
-				console.log("scuba -->", this.scubaDiver.avatar);
 				currentTimer.setText(`${seconds}`);
 				this.countdown.play();
 				await this.sleep(1000);
@@ -722,7 +725,6 @@ export default class MainScene extends Phaser.Scene {
 				scene.clamsLevel1.getChildren().forEach(function (clam) {
 					if (clam.info.question === question) {
 						clam.info.isResolved = true;
-						console.log("Someone Scored");
 						clam.destroy();
 					}
 				});
@@ -852,7 +854,6 @@ export default class MainScene extends Phaser.Scene {
 		});
 
 		this.socket.on("disconnected", function ({ playerId, numPlayers }) {
-			console.log("someone disconnected");
 			scene.state.numPlayers = numPlayers;
 			scene.playerFriends.getChildren().forEach(function (friend) {
 				if (playerId === friend.playerId) {

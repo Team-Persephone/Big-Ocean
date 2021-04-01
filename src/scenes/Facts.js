@@ -25,7 +25,6 @@ export default class Facts extends Phaser.Scene {
 		scuba.frozen = true;
 		while (time > 0) {
 			this.timeRemaining.setText(`fact-O-timer: ${time}`);
-			console.log(time);
 			await this.sleep(1000);
 			time--;
 		}
