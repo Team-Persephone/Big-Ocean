@@ -19,13 +19,13 @@ export default class Facts extends Phaser.Scene {
 	async sleep(delay) {
 		return new Promise(resolve => setTimeout(() => resolve(true), delay));
 	}
-	
+
 	async startTimer(time, animal, scuba, view = null) {
 		this.click.play();
 		scuba.frozen = true;
 		while (time > 0) {
-			this.timeRemaining.setText(`fact-O-timer: ${time}`)
-			console.log(time)
+			this.timeRemaining.setText(`fact-O-timer: ${time}`);
+			console.log(time);
 			await this.sleep(1000);
 			time--;
 		}
@@ -36,25 +36,25 @@ export default class Facts extends Phaser.Scene {
 		animal.disableInteractive();
 		this.click.stop();
 	}
-	
+
 	create() {
 		const info = this.shrimp.info;
-		this.timeRemaining = this.add.text(50, 30, "", {
-			fill: "#00ff00",
-			backgroundColor: "#1abeff",
+		this.timeRemaining = this.add.text(50, 180, "", {
+			fill: "#FFFFFF",
+			backgroundColor: "#02075D",
 			fontSize: "17px",
 			fontStyle: "bold",
 			align: "center"
-		})
-		this.add.text(50, 50, `${info.fact}`, {
-			fill: "#00ff00",
-			backgroundColor: "#1abeff",
+		});
+		this.add.text(50, 200, `${info.fact}`, {
+			fill: "#FFFFFF",
+			backgroundColor: "#02075D",
 			fontSize: "17px",
 			fontStyle: "bold",
 			align: "left",
 			wordWrap: { width: 700, height: 445, useAdvancedWrap: true }
 		});
-		this.startTimer(7, this.shrimp, this.scubaDiver, "Facts")
+		this.startTimer(7, this.shrimp, this.scubaDiver, "Facts");
 		this.scubaDiver.score = Number(
 			(this.scubaDiver.score + this.level / 2).toFixed(1)
 		);
@@ -64,8 +64,7 @@ export default class Facts extends Phaser.Scene {
 			playerId: this.scubaDiver.playerId,
 			score: this.scubaDiver.score
 		});
-	}	
+	}
 
 	update() {}
-}	
-
+}
