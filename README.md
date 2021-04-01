@@ -33,8 +33,11 @@ https://one-big-ocean.herokuapp.com/
 ## **Contributors**
 
 -Asia Thomas - https://www.linkedin.com/in/amthoms2/
--Isabelle Stettler - https://www.linkedin.com/in/stettlerisabelle/ 
+
+-Isabelle Stettler - https://www.linkedin.com/in/stettlerisabelle/
+
 -Olivia Wong - https://www.linkedin.com/in/oliviawongnyc/
+
 -Sofija Sutton - https://www.linkedin.com/in/sofija-fia-sutton/
 
 ## **Technologies**
@@ -49,18 +52,24 @@ https://one-big-ocean.herokuapp.com/
 
 ### Users can…
 ...choose their own sprite
+
 ...interrupt other players’ challenges or attack other 
 players
+
 ...see other player’s score in lose and win scenes
+
 ...see a replay game option on end and win scenes
 
 ### Game has…
 ...a tie condition with a starfish collections game 
+
 ...shuffles an increased database of 125 questions and facts
+
 ...chat function is designed with active avatars, and scrolls to newest messages
 
 ### Environment has…
 ...increased rocks, seaweed, angler fish, piranhas, whales, and sharks
+
 ...impact sound effects
 
 ## **Attributes**
@@ -68,8 +77,12 @@ players
 **Description: Author: Source**
 
 ScubaDiver Sprite Base: Fellowship Of the Game: https://opengameart.org/content/scuba-diver
+
 Background SeaScape: pikisuperstar :  <a href="https://www.freepik.com/vectors/background">Background vector created by pikisuperstar - www.freepik.com</a> 
+
 Clam Base: pch.vector: <a href="https://www.freepik.com/vectors/banner">Banner vector created by pch.vector - www.freepik.com</a> 
+
 Shrimp Base: macrovector: <a href="https://www.freepik.com/vectors/food">Food vector created by macrovector - www.freepik.com</a>
+
 Seaweed: macrovector:  <a href='https://www.freepik.com/vectors/food'>Food vector created by macrovector - www.freepik.com</a>  
 
