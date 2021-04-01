@@ -73,20 +73,20 @@ module.exports = io => {
 					activeGames[key].questionsLevel1.push(questionObj);
 				}
 				if (question.levelId === 2) {
-					questionObj.y = questionObj.y + 380 + (2880 - 1920);
+					questionObj.y = questionObj.y + (2880 - 1920);
 					activeGames[key].questionsLevel2.push(questionObj);
 				}
 				if (question.levelId === 3) {
-					questionObj.y = questionObj.y + 380 + (3840 - 1920);
+					questionObj.y = questionObj.y + (3840 - 1920);
 					activeGames[key].questionsLevel3.push(questionObj);
 				}
 				if (question.levelId === 4) {
-					questionObj.y = questionObj.y + 380 + (4800 - 1920);
+					questionObj.y = questionObj.y + (4800 - 1920);
 					activeGames[key].questionsLevel4.push(questionObj);
 				}
 				if (question.levelId === 5) {
 					//CHANGE 5500! THIS IS JUST A GUESS FOR TESTING!
-					questionObj.y = questionObj.y + 380 + (5500 - 1920);
+					questionObj.y = questionObj.y + (5500 - 1920);
 					activeGames[key].questionsLevel5.push(questionObj);
 				}
 			});
@@ -250,6 +250,33 @@ module.exports = io => {
 				}
 			}
 		);
+
+		// when a player disconnects, remove them from our players object
+		socket.on("disconnect", function () {
+			//find which room they belong to
+			let key = 0;
+			for (let keys1 in activeGames) {
+				for (let keys2 in activeGames[keys1]) {
+					Object.keys(activeGames[keys1][keys2]).map(el => {
+						if (el === socket.id) {
+							key = keys1;
+						}
+					});
+				}
+			}
+
+			const gameInfo = activeGames[key];
+
+			if (gameInfo) {
+				console.log("user disconnected: ", socket.id);
+				delete gameInfo.players[socket.id];
+				gameInfo.numPlayers = Object.keys(gameInfo.players).length;
+				io.to(key).emit("disconnected", {
+					playerId: socket.id,
+					numPlayers: gameInfo.numPlayers
+				});
+			}
+		});
 	});
 
 	function codeGenerator() {
