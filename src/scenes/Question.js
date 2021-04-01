@@ -61,12 +61,13 @@ export default class Question extends Phaser.Scene {
 	create() {
 		const info = this.clam.info;
 		const scene = this;
+		const time = this.level < 4 ? 10 : 15;
 		this.scubaDiver.frozen = true;
 		this.timer = this.time.addEvent({
 			delay: 1000,
 			callback: this.onEvent,
 			callbackScope: this,
-			repeat: 10
+			repeat: time
 		});
 		this.timeRemaining = this.add.text(50, 180, "", {
 			fill: "#FFFFFF",
