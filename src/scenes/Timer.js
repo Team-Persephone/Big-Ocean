@@ -42,7 +42,7 @@ export default class Timer extends Phaser.Scene {
 
 		this.events.on("resume", () => {
 
-      const elapsedTime = Math.floor((new Date() - this.timeOnPause) / 1000);
+    	const elapsedTime = Math.floor((new Date() - this.timeOnPause) / 1000);
 
 			this.initialTime -= elapsedTime;
 
@@ -60,18 +60,18 @@ export default class Timer extends Phaser.Scene {
 		}
 
 		function onEvent() {
-      this.timeOnPause = new Date();
-      this.initialTime -= 1; // One second
-      if(this.initialTime < 0) {
-        //LAUNCH LOSER SCENE
-				this.text.setText("Game over");
-				this.scene.launch("Loser")
-				this.timedEvent.paused = true
-      } else {
-        this.text.setText("cOuntdOwn: " + formatTime(this.initialTime));
-      }
+			this.timeOnPause = new Date();
+			this.initialTime -= 1; // One second
+			if(this.initialTime < 0) {
+				//LAUNCH LOSER SCENE
+						this.text.setText("Game over");
+						this.scene.launch("Loser")
+						this.timedEvent.paused = true
+			}
+			else {
+				this.text.setText("cOuntdOwn: " + formatTime(this.initialTime));
+			}
 		}
 	}
-	update() {
-	}
+	update() {}
 }
