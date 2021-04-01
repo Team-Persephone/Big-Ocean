@@ -561,7 +561,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.shrimps = this.physics.add.group();
 
 		//set world bounds
-		this.physics.world.setBounds(0, 320, 1088, 960);
+		this.physics.world.setBounds(0, 320, 1088, 1216);
 		//set up camera
 		this.cameras.main.setBounds(0, 0, 1088, 4800);
 
@@ -603,7 +603,7 @@ export default class MainScene extends Phaser.Scene {
 		this.createRock(this, "rock-gray-3", 100, 1800, 0.55, -90);
 		this.createRock(this, "rock-brown-3", 835, 2500, 0.6, 0);
 
-		let depths = [960, 1920, 2880, 3840];
+		let depths = [1216, 2112, 3008, 3904];
 
 		this.seaweed = [[], [], [], []];
 
@@ -802,7 +802,7 @@ export default class MainScene extends Phaser.Scene {
 					.forEach(eachWeed => {
 						eachWeed.destroy();
 					});
-				scene.physics.world.setBounds(0, 320, 1088, 1900);
+				scene.physics.world.setBounds(0, 320, 1088, 2112);
 			}
 			if (scene.state.level === 3) {
 				scene.state.questionsLevel3.forEach(question => {
@@ -816,7 +816,7 @@ export default class MainScene extends Phaser.Scene {
 					.forEach(eachWeed => {
 						eachWeed.destroy();
 					});
-				scene.physics.world.setBounds(0, 320, 1088, 2880);
+				scene.physics.world.setBounds(0, 320, 1088, 3008);
 			}
 			if (scene.state.level === 4) {
 				scene.state.questionsLevel4.forEach(question => {
@@ -830,7 +830,7 @@ export default class MainScene extends Phaser.Scene {
 					.forEach(eachWeed => {
 						eachWeed.destroy();
 					});
-				scene.physics.world.setBounds(0, 320, 1088, 3840);
+				scene.physics.world.setBounds(0, 320, 1088, 3904);
 			}
 			if (scene.state.level === 5) {
 				scene.state.questionsLevel5.forEach(question => {

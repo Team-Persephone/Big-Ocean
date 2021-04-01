@@ -59,7 +59,7 @@ module.exports = io => {
 
 			questions.forEach(question => {
 				let x = Math.ceil(Math.random() * 1000);
-				let y = Math.ceil(Math.random() * 560);
+				let y = Math.ceil(Math.random() * 880);
 				let questionObj = {
 					question: question.question,
 					options: question.options,
@@ -69,24 +69,24 @@ module.exports = io => {
 					y
 				};
 				if (question.levelId === 1) {
-					questionObj.y = questionObj.y + 380;
+					questionObj.y = questionObj.y + 320;
 					activeGames[key].questionsLevel1.push(questionObj);
 				}
 				if (question.levelId === 2) {
-					questionObj.y = questionObj.y + (2880 - 1920);
+					questionObj.y = questionObj.y + 1216;
 					activeGames[key].questionsLevel2.push(questionObj);
 				}
 				if (question.levelId === 3) {
-					questionObj.y = questionObj.y + (3840 - 1920);
+					questionObj.y = questionObj.y + 2112;
 					activeGames[key].questionsLevel3.push(questionObj);
 				}
 				if (question.levelId === 4) {
-					questionObj.y = questionObj.y + (4800 - 1920);
+					questionObj.y = questionObj.y + 3008;
 					activeGames[key].questionsLevel4.push(questionObj);
 				}
 				if (question.levelId === 5) {
 					//CHANGE 5500! THIS IS JUST A GUESS FOR TESTING!
-					questionObj.y = questionObj.y + (5500 - 1920);
+					questionObj.y = questionObj.y + 3904;
 					activeGames[key].questionsLevel5.push(questionObj);
 				}
 			});
