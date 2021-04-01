@@ -32,13 +32,10 @@ https://one-big-ocean.herokuapp.com/
 
 ## **Contributors**
 
--Asia Thomas - https://www.linkedin.com/in/amthoms2/
-
--Isabelle Stettler - https://www.linkedin.com/in/stettlerisabelle/
-
--Olivia Wong - https://www.linkedin.com/in/oliviawongnyc/
-
--Sofija Sutton - https://www.linkedin.com/in/sofija-fia-sutton/
+* Asia Thomas - https://www.linkedin.com/in/amthoms2/
+* Isabelle Stettler - https://www.linkedin.com/in/stettlerisabelle/
+* Olivia Wong - https://www.linkedin.com/in/oliviawongnyc/
+* Sofija Sutton - https://www.linkedin.com/in/sofija-fia-sutton/
 
 ## **Technologies**
 
@@ -46,7 +43,9 @@ https://one-big-ocean.herokuapp.com/
 
 ## **Schema Design**
 
-[SchemaDesign]('./public/assets/SchemaDesign)
+[SchemaDesign]('./public/assets/SchemaDesign.png')
+<img src='./public/assets/SchemaDesign.png' />
+
 
 ## **Future Features & Stretch Goals**
 
