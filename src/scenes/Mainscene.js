@@ -275,13 +275,15 @@ export default class MainScene extends Phaser.Scene {
 		shrimp.on("pointerdown", () => {
 			this.scene.launch("Facts", {
 				socket: this.socket,
-				info: shrimp.info,
+				shrimp: shrimp,
 				level: this.state.level,
-				scubaDiver: this.scubaDiver
+				scubaDiver: this.scubaDiver,
+				key: this.state.key,
+				click: this.click
 			});
 			this.shrimpClick.play();
 			this.click.play();
-			this.scene.physics.pause();
+			this.scene.physics.pause(); //disabeling physics---> look into it
 		});
 	}
 
