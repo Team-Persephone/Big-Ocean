@@ -50,7 +50,8 @@ module.exports = io => {
 				factsLevel2: [],
 				factsLevel3: [],
 				factsLevel4: [],
-				factsLevel5: []
+				factsLevel5: [],
+				count: 0
 			};
 
 			const questions = await PearlQuest.findAll();
@@ -72,15 +73,20 @@ module.exports = io => {
 					activeGames[key].questionsLevel1.push(questionObj);
 				}
 				if (question.levelId === 2) {
+					questionObj.y = questionObj.y + 380 + (2880 - 1920);
 					activeGames[key].questionsLevel2.push(questionObj);
 				}
 				if (question.levelId === 3) {
+					questionObj.y = questionObj.y + 380 + (3840 - 1920);
 					activeGames[key].questionsLevel3.push(questionObj);
 				}
 				if (question.levelId === 4) {
+					questionObj.y = questionObj.y + 380 + (4800 - 1920);
 					activeGames[key].questionsLevel4.push(questionObj);
 				}
 				if (question.levelId === 5) {
+					//CHANGE 5500! THIS IS JUST A GUESS FOR TESTING!
+					questionObj.y = questionObj.y + 380 + (5500 - 1920);
 					activeGames[key].questionsLevel5.push(questionObj);
 				}
 			});
@@ -100,15 +106,20 @@ module.exports = io => {
 					activeGames[key].factsLevel1.push(factObj);
 				}
 				if (fact.levelId === 2) {
+					factObj.y = factObj.y + 380 + (2880 - 1920);
 					activeGames[key].factsLevel2.push(factObj);
 				}
 				if (fact.levelId === 3) {
+					factObj.y = factObj.y + 380 + (3840 - 1920);
 					activeGames[key].factsLevel3.push(factObj);
 				}
 				if (fact.levelId === 4) {
+					factObj.y = factObj.y + 380 + (4800 - 1920);
 					activeGames[key].factsLevel4.push(factObj);
 				}
 				if (fact.levelId === 5) {
+					//CHANGE 6000! THIS IS JUST A GUESS FOR TESTING!
+					factObj.y = factObj.y + 380 + (5500 - 1920);
 					activeGames[key].factsLevel5.push(factObj);
 				}
 			});
@@ -176,7 +187,6 @@ module.exports = io => {
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
 		});
 
-		let count = 0;
 		socket.on(
 			"Scored",
 			async function ({ key, playerId, score, clamQuestion, level }) {
@@ -187,7 +197,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel1.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -195,7 +205,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel2.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -203,7 +213,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel3.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -211,7 +221,7 @@ module.exports = io => {
 					activeGames[key].questionsLevel4.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
@@ -219,22 +229,24 @@ module.exports = io => {
 					activeGames[key].questionsLevel5.forEach(question => {
 						if (question.question === clamQuestion) {
 							question.isResolved = true;
-							count++;
+							activeGames[key].count++;
 						}
 					});
 				}
 				// change it back to 5
-				if (count < 5) {
-					io.to(key).emit("someoneScored", {
-						friend: activeGames[key].players[playerId],
-						question: answeredQuestion,
-						level: activeGames[key].level
-					});
-				}
-				if (count === 5) {
+				// if (count < 5) {
+				io.to(key).emit("setState", activeGames[key]);
+				io.to(key).emit("someoneScored", {
+					friend: activeGames[key].players[playerId],
+					question: answeredQuestion,
+					level: activeGames[key].level
+				});
+				// }
+				//change back to 5!
+				if (activeGames[key].count >= 5) {
 					activeGames[key].level++;
 					io.to(key).emit("nextLevel", activeGames[key].level);
-					count = 0;
+					activeGames[key].count = 0;
 				}
 			}
 		);
