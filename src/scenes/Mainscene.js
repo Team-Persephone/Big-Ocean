@@ -198,7 +198,7 @@ export default class MainScene extends Phaser.Scene {
 		if (level === 5) {
 			scene.clamsLevel5.add(clam);
 		}
-		return clam
+		return clam;
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
@@ -805,8 +805,6 @@ export default class MainScene extends Phaser.Scene {
 				currentTime: new Date()
 			});
 
-
-
 			let seaweedLength = this.seaweed[0].length;
 			if (scene.state.level === 2) {
 				//all weeds for level
@@ -824,7 +822,6 @@ export default class MainScene extends Phaser.Scene {
 				scene.physics.world.setBounds(0, 320, 1088, 1920);
 			}
 			if (scene.state.level === 3) {
-
 				scene.state.questionsLevel3.forEach(question => {
 					scene.createClam(scene, 3, question, "clam");
 				});
@@ -870,6 +867,19 @@ export default class MainScene extends Phaser.Scene {
 			//Note ending game after 2 levels for now
 			if (scene.state.level === 6) {
 				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver });
+			}
+		});
+
+		this.socket.on("disconnected", function ({ playerId, numPlayers }) {
+			console.log("someone disconnected");
+			scene.state.numPlayers = numPlayers;
+			scene.playerFriends.getChildren().forEach(function (friend) {
+				if (playerId === friend.playerId) {
+					friend.destroy();
+				}
+			});
+			if (numPlayers < 2) {
+				chatContainer.classList.add("chat-hidden");
 			}
 		});
 	}
