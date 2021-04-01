@@ -1,6 +1,3 @@
-delete from our package.json at start:
-    "prepare": "if [ -d .git ]; then npm-merge-driver install; fi",
-
 # **One-big-Ocean** 
 
 One-big-Ocean is a web-based multiplayer game that helps players learn about big-O notation by navigating an underwater adventure. By collecting pearls and answering questions, players work together to pass each level before the timer runs out. Shrimp facts can be found along the way for hints and partial points, but at a time cost. If all the levels are passed, then the game is won as a team, while individuals are ranked by pearls and points. The game is built for one to three players, so work solo or as a team to collect the treasures and improve your big-O understanding.
