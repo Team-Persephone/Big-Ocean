@@ -47,7 +47,7 @@ export default class IntroScene extends Phaser.Scene {
 		});
 
 		this.socket.on("gameFull", () => {
-			console.log("game is full");
+			this.scene.stop("MainScene");
 			this.scene.stop("Instructions");
 			this.scene.launch("GameFull", { socket: this.socket });
 		});
