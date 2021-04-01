@@ -30,6 +30,7 @@ export default class Question extends Phaser.Scene {
 			this.click.stop();
 			this.scene.stop("Question");
 			this.surface.play();
+			this.scubaDiver.frozen = false;
 		}
 	}
 	isCorrect(answer) {
@@ -60,6 +61,7 @@ export default class Question extends Phaser.Scene {
 	create() {
 		const info = this.clam.info;
 		const scene = this;
+		this.scubaDiver.frozen = true;
 		this.timer = this.time.addEvent({
 			delay: 1000,
 			callback: this.onEvent,

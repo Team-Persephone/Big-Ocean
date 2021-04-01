@@ -8,14 +8,12 @@ export default class Loser extends Phaser.Scene {
 	// 	// this.scubaDiver = data.scubaDiver;
 	// }
 	preload() {
-		console.log("in preload");
 		this.load.image("blue", "/assets/background/babyGotBlue.png");
 		this.load.image("bubble", "/assets/bubble-blank.png");
 		this.load.audio("gameOver", "/audio/gameOver.mp3");
 	}
 	async create() {
 		const scene = this;
-		console.log("in loser scene");
 		this.gameOver = this.sound.add("gameOver", { volume: 2 });
 		this.gameOver.play();
 		scene.add.image(0, 0, "blue").setScale(2);
