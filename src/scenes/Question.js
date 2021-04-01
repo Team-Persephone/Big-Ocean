@@ -23,12 +23,12 @@ export default class Question extends Phaser.Scene {
 	}
 	onEvent() {
 		this.click.play();
-		this.timeRemainig.setText(`the O-timer: ${this.timer.repeatCount}`)
-		console.log('time:', this.timer.repeatCount)
-		if(this.timer.repeatCount === 0) {
+		this.timeRemaining.setText(`the O-timer: ${this.timer.repeatCount}`);
+		console.log("time:", this.timer.repeatCount);
+		if (this.timer.repeatCount === 0) {
 			this.scubaDiver.tweenPosition(0, 0);
 			this.click.stop();
-			this.scene.stop("Question")
+			this.scene.stop("Question");
 			this.surface.play();
 		}
 	}
@@ -60,29 +60,58 @@ export default class Question extends Phaser.Scene {
 	create() {
 		const info = this.clam.info;
 		const scene = this;
-		this.timer = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope: this, repeat: 10});
-		this.timeRemainig = this.add.text(50, 30, "", {
-			fill: "#02075D",
-			backgroundColor: "#1abeff",
+		this.timer = this.time.addEvent({
+			delay: 1000,
+			callback: this.onEvent,
+			callbackScope: this,
+			repeat: 10
+		});
+		this.timeRemaining = this.add.text(50, 180, "", {
+			fill: "#FFFFFF",
+			backgroundColor: "#02075D",
 			fontSize: "17px",
 			fontStyle: "bold",
-			align: "center",
+			align: "center"
 		});
 		this.surface = this.sound.add("surface", { volume: 1.5 });
 		this.correct = this.sound.add("correct", { volume: 1 });
 
-		this.add.text(50, 50, `${info.question}`, {
-			fill: "#02075D",
-			backgroundColor: "#1abeff",
+		this.add.text(50, 200, `${info.question}`, {
+			fill: "#FFFFFF",
+			backgroundColor: "#02075D",
 			fontSize: "17px",
 			fontStyle: "bold",
 			align: "left",
 			wordWrap: { width: 700, height: 445, useAdvancedWrap: true }
 		});
 		let x = 50;
+		let y;
+		switch (this.level) {
+			case 1:
+				y = 250;
+				break;
+			case 2:
+				y = 250;
+				break;
+			case 3:
+				y = 300;
+				break;
+			case 4:
+				y = 400;
+				break;
+			case 5:
+				y = 650;
+				break;
+		}
+
 		info.options.forEach(option => {
 			scene.add
-				.text(x, 100, `${option}`, { fill: "#02075D" })
+				.text(x, y, `${option}`, {
+					fill: "#FFFFFF",
+					backgroundColor: "#02075D",
+					fontSize: "15px",
+					wordWrap: { width: 300, height: 445, useAdvancedWrap: true }
+				})
 				.setInteractive()
 				.on("pointerdown", () => {
 					this.isCorrect(option);

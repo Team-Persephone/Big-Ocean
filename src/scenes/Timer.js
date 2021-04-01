@@ -6,8 +6,9 @@ export default class Timer extends Phaser.Scene {
 	}
 
 	init(data) {
+		this.socket = data.socket;
 		this.currentTime = data.currentTime;
-
+		this.avatar = data.avatar;
 	}
 	preload() {}
 	create() {
@@ -22,14 +23,17 @@ export default class Timer extends Phaser.Scene {
 				this.scene.resume();
 			}
 		});
-    // change to 120
+		// change to 120
 		this.initialTime = 120 - Math.floor((new Date() - this.timeOnPause) / 1000);
 
 		this.text = this.add.text(
 			250,
 			22,
 			"cOuntdOwn: " + formatTime(this.initialTime),
-			{ fontSize: 30, fill: "#02075D"}
+			{
+				fontSize: 30,
+				fill: "#FFFFFF"
+			}
 		);
 
 		// Each 1000 ms call onEvent
@@ -41,11 +45,9 @@ export default class Timer extends Phaser.Scene {
 		});
 
 		this.events.on("resume", () => {
-
-    	const elapsedTime = Math.floor((new Date() - this.timeOnPause) / 1000);
+			const elapsedTime = Math.floor((new Date() - this.timeOnPause) / 1000);
 
 			this.initialTime -= elapsedTime;
-
 		});
 
 		function formatTime(seconds) {
@@ -62,13 +64,12 @@ export default class Timer extends Phaser.Scene {
 		function onEvent() {
 			this.timeOnPause = new Date();
 			this.initialTime -= 1; // One second
-			if(this.initialTime < 0) {
+			if (this.initialTime < 0) {
 				//LAUNCH LOSER SCENE
-						this.text.setText("Game over");
-						this.scene.launch("Loser")
-						this.timedEvent.paused = true
-			}
-			else {
+				this.text.setText("Game over");
+				this.scene.launch("Loser");
+				this.timedEvent.paused = true;
+			} else {
 				this.text.setText("cOuntdOwn: " + formatTime(this.initialTime));
 			}
 		}
