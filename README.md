@@ -43,7 +43,7 @@ https://one-big-ocean.herokuapp.com/
 
 ## **Schema Design**
 
-![SchemaDesign]('./public/assets/SchemaDesign)
+[SchemaDesign]('./public/assets/SchemaDesign)
 
 ## **Future Features & Stretch Goals**
 
