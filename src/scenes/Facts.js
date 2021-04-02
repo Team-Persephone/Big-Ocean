@@ -67,3 +67,4 @@ export default class Facts extends Phaser.Scene {
 
 	update() {}
 }
+
