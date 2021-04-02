@@ -93,7 +93,7 @@ export default class Question extends Phaser.Scene {
 
 		info.options.forEach(option => {
 			scene.add
-				.text(x, y, `${option}`, {
+				.text(x, y, `${option.split(',').join(`\n`)}`, {
 					fill: "#FFFFFF",
 					backgroundColor: "#02075D",
 					fontSize: "15px",

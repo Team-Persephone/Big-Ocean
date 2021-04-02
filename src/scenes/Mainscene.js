@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import Scuba from "../entities/Scuba";
 import Clam from "../entities/Clam";
 import Shrimp from "../entities/Shrimp";
+import Jellyfish from "../entities/Jellyfish";
 
 const chatContainer = document.getElementsByClassName(
 	"chat-box chat-hidden"
@@ -55,14 +56,10 @@ export default class MainScene extends Phaser.Scene {
 			frameWidth: 820,
 			frameHeight: 420
 		});
-		this.load.spritesheet(
-			"scubaPurple",
-			"/assets/scuba_divers/scubaPurple.png",
-			{
-				frameWidth: 820,
-				frameHeight: 420
-			}
-		);
+		this.load.spritesheet("scubaPurple", "/assets/scuba_divers/scubaPurple.png", {
+			frameWidth: 820,
+			frameHeight: 420
+		});
 		this.load.spritesheet("clam", "/assets/animals/clam.png", {
 			frameWidth: 990,
 			frameHeight: 860
@@ -71,9 +68,9 @@ export default class MainScene extends Phaser.Scene {
 			frameWidth: 1000,
 			frameHeight: 1090
 		});
-		this.load.spritesheet("jellyfish", "assets/animals/jellyfish.png", {
-			frameWidth: 400,
-			frameHeight: 500
+		this.load.spritesheet("jellyfish", "assets/animals/jellyfish_small.png", {
+			frameWidth: 300,
+			frameHeight: 300
 		})
 
 		//load background
@@ -82,14 +79,14 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("instructions", "/assets/bubble.png");
 
 		//rocks-Textures
-		this.load.image("rock-brown-1", "/assets/rock-brown-1.png");
-		this.load.image("rock-brown-2", "/assets/rock-brown-2.png");
-		this.load.image("rock-brown-3", "/assets/rock-brown-3.png");
-		this.load.image("rock-gray-1", "/assets/rock-gray-1.png");
-		this.load.image("rock-gray-2", "/assets/rock-gray-2.png");
-		this.load.image("rock-gray-3", "/assets/rock-gray-3.png");
-		this.load.image("rock-sand-1", "/assets/rock-sand-1.png");
-		this.load.image("rock-sand-2", "/assets/rock-sand-2.png");
+		this.load.image("rock-brown-1", "/assets/rocks/rock-brown-1.png");
+		this.load.image("rock-brown-2", "/assets/rocks/rock-brown-2.png");
+		this.load.image("rock-brown-3", "/assets/rocks/rock-brown-3.png");
+		this.load.image("rock-gray-1", "/assets/rocks/rock-gray-1.png");
+		this.load.image("rock-gray-2", "/assets/rocks/rock-gray-2.png");
+		this.load.image("rock-gray-3", "/assets/rocks/rock-gray-3.png");
+		this.load.image("rock-sand-1", "/assets/rocks/rock-sand-1.png");
+		this.load.image("rock-sand-2", "/assets/rocks/rock-sand-2.png");
 
 		//Audio Images
 		this.load.image("volumeOn", "/assets/volume/volumeOn.png");
@@ -201,10 +198,15 @@ export default class MainScene extends Phaser.Scene {
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
 		scene.createAnimations("shrimp");
-		const shrimp = new Shrimp(scene, x, y, file).setScale(0.07);
-		shrimp.setSize(shrimp.width * 1.5, shrimp.height * 1.5, true)
+		const shrimp = new Shrimp(scene, x, y, file).setScale(0.05);
+		shrimp.setSize(shrimp.width, shrimp.height, true)
 		shrimp.info = { fact, isRead };
 		scene.shrimps.add(shrimp);
+	}
+
+	createJellyfish(scene, file) {
+		scene.createAnimations("jellyfish");
+		const jellyfish = new Jellyfish(scene, 400, 400, file).setScale(0.2)
 	}
 
 	// helper function to add animation to avatars
@@ -230,7 +232,18 @@ export default class MainScene extends Phaser.Scene {
 					}),
 					frameRate: 1,
 					repeat: -1
-				});
+				});				
+				break;
+			case "jellyfish":
+				this.anims.create({
+					key: "float",
+					frames: this.anims.generateFrameNumbers(sprite, {
+						start: 0,
+						end: 2
+					}),
+					frameRate: 2,
+					repeat: -1
+				})
 				break;
 			default:
 				this.anims.create({
@@ -727,6 +740,7 @@ export default class MainScene extends Phaser.Scene {
 						clam.info.isResolved = true;
 						clam.destroy();
 					}
+					scene.createJellyfish(scene, "jellyfish");
 				});
 			}
 			if (level === 2) {
