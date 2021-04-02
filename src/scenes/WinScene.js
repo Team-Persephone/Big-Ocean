@@ -22,10 +22,10 @@ export default class WinScene extends Phaser.Scene {
 		this.gameWin.play();
 
 		scene.add.image(0, 0, "blue").setScale(2);
-		scene.graphics = scene.add.image(400, 260, "bubble").setScale(0.9);
+		scene.graphics = scene.add.image(400, 270, "bubble").setScale(1);
 
 		//congrats!
-		scene.add.text(245, 125, "cOngratulatiOns!", {
+		scene.add.text(235, 110, "cOngratulatiOns!", {
 			fill: "#02075D",
 			fontSize: "34px",
 			fontStyle: "bold"
@@ -33,31 +33,49 @@ export default class WinScene extends Phaser.Scene {
 
 		//player's message and score
 		scene.add.text(
-			245,
-			165,
-			`\nyOu cOllected all the pearls!\n\n yOu all win!\n\n but here is hOw yOu all did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
+			210,
+			155,
+			`\nyOu cOllected all the pearls and won!\n\n here is hOw yOu did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
 			{
 				fill: "#02075D",
-				fontSize: "19px",
+				fontSize: "17px",
 				fontStyle: "bold",
 				align: "center",
 				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
 			}
 		);
-			let y = 315;
+			let y = 275;
 			this.playerFriends.getChildren().forEach(friend => {
 				this.add.text(
-					345,
+					335,
 					y,
 					`${friend.avatar}: ${friend.score}`
 				)
-				y += 20
+			y += 20
 			})
+
+			const createGameButton = this.add.text(300, 330, " play again here! ", {
+				fontSize: "20px",
+				fontStyle: "bold",
+				fill: "#FFFFFF",
+				backgroundColor: "#02075D",
+			});
+	
+			createGameButton.setInteractive();
+			createGameButton.on("pointerdown", () => {
+				if (window.location.pathname.length > 1) {
+				window.open(`${window.location.href.slice(0, window.location.href.length - 6)}`,
+					"_blank"
+			)} else {
+				window.open(`${window.location.pathname}`), 
+				"_blank"
+			}		
+			});
 
 		//credits
 		scene.add.text(
-			255,
-			360,
+			245,
+			370,
 			"One-big-Ocean is brOught tO yOu by \n\nasia thOmas, isabelle stettler, \n\n Olivia wOng, & sOfija suttOn.",
 			{
 				fill: "#02075D",
