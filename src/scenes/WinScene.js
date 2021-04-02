@@ -7,6 +7,7 @@ export default class WinScene extends Phaser.Scene {
 
 	init(data) {
 		this.scubaDiver = data.scubaDiver;
+		this.playerFriends = data.playerFriends
 	}
 
 	preload() {
@@ -43,6 +44,15 @@ export default class WinScene extends Phaser.Scene {
 				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
 			}
 		);
+			let y = 280;
+			this.playerFriends.getChildren().forEach(friend => {
+				this.add.text(
+					265,
+					y,
+					`${friend.avatar}: ${friend.score}`
+				)
+				y += 20
+			})
 
 		//credits
 		scene.add.text(
