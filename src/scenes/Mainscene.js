@@ -552,7 +552,7 @@ export default class MainScene extends Phaser.Scene {
 				display.setVisible(false);
 				link.destroy();
 				this.socket.emit("startCountdown", {
-					seconds: 1,
+					seconds: 5,
 					key: this.state.key
 				});
 			});
@@ -861,8 +861,7 @@ export default class MainScene extends Phaser.Scene {
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 
-			//Note ending game after 2 levels for now
-			if (scene.state.level === 2) {
+			if (scene.state.level === 6) {
 				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver, playerFriends: scene.playerFriends });
 			}
 		});
