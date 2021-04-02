@@ -25,7 +25,7 @@ export default class WinScene extends Phaser.Scene {
 		scene.graphics = scene.add.image(400, 260, "bubble").setScale(0.9);
 
 		//congrats!
-		scene.add.text(245, 130, "cOngratulatiOns!", {
+		scene.add.text(245, 125, "cOngratulatiOns!", {
 			fill: "#02075D",
 			fontSize: "34px",
 			fontStyle: "bold"
@@ -34,8 +34,8 @@ export default class WinScene extends Phaser.Scene {
 		//player's message and score
 		scene.add.text(
 			245,
-			175,
-			`\nyOu cOllected all the pearls!\n\n yOu all win!\n\n but here is hOw yOu did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
+			165,
+			`\nyOu cOllected all the pearls!\n\n yOu all win!\n\n but here is hOw yOu all did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
 			{
 				fill: "#02075D",
 				fontSize: "19px",
@@ -44,10 +44,10 @@ export default class WinScene extends Phaser.Scene {
 				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
 			}
 		);
-			let y = 280;
+			let y = 315;
 			this.playerFriends.getChildren().forEach(friend => {
 				this.add.text(
-					265,
+					345,
 					y,
 					`${friend.avatar}: ${friend.score}`
 				)
@@ -58,7 +58,7 @@ export default class WinScene extends Phaser.Scene {
 		scene.add.text(
 			255,
 			360,
-			"One-big-Ocean is brOught tO yOu by \n\nasia thOmas, isabelle stettler, \n\n sOfija suttOn, & Olivia wOng.",
+			"One-big-Ocean is brOught tO yOu by \n\nasia thOmas, isabelle stettler, \n\n Olivia wOng, & sOfija suttOn.",
 			{
 				fill: "#02075D",
 				fontSize: "14px",
