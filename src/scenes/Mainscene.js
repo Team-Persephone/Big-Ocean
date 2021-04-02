@@ -98,7 +98,7 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("volumeDown", "/assets/volume/volumeDown.png");
 
 		//WATERPLANT IMAGE
-		this.load.image("waterPlant", "/assets/waterplant.png");
+		this.load.image("waterPlant", "/assets/waterplant3.png");
 
 		//Audio Sounds
 		//background bubbles
@@ -244,10 +244,10 @@ export default class MainScene extends Phaser.Scene {
 				});
 		}
 	}
-	createWaterPlant(scene, waterPlant, x, y, scale = 1, angle = 0) {
+	createWaterPlant(scene, waterPlant, x, y, size=(.01, .008), angle = 0) {
 		return scene.decorations
 			.create(x, y, waterPlant)
-			.setScale(scale)
+			.setSize(size)
 			.setAngle(angle)
 			.refreshBody();
 	}
@@ -608,15 +608,15 @@ export default class MainScene extends Phaser.Scene {
 		this.seaweed = [[], [], [], []];
 
 		for (let level = 0; level < 4; level++) {
-			for (let x = 0; x <= 1088; x += 10) {
+			for (let x = 0; x <= 1088; x += 70) {
 				this.seaweed[level].push(
 					this.createWaterPlant(
 						this,
 						"waterPlant",
 						x, //x
 						depths[level], //y
-						1, //scale
-						Math.floor(Math.random() * 360) //angle
+						this.size, //scale
+						0, //angle
 					)
 				);
 			}
@@ -848,8 +848,8 @@ export default class MainScene extends Phaser.Scene {
 			}
 
 			//Note ending game after 2 levels for now
-			if (scene.state.level === 6) {
-				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver });
+			if (scene.state.level === 2) {
+				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver, playerFriends: scene.playerFriends });
 			}
 		});
 
