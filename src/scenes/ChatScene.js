@@ -67,7 +67,7 @@ export default class ChatScene extends Phaser.Scene {
 			scene.state.questions = questions;
 			scene.state.facts = facts;
 		});
-    
+
 		this.socket.on("broadcastMessage", function ({ username, message }) {
 			broadcastMessage(username, message);
 		});
@@ -87,7 +87,7 @@ export default class ChatScene extends Phaser.Scene {
 				scene.socket.emit(
 					"submitMemo",
 					scene.state.key,
-					scene.state.players[this.socket.id].avatar || "Anonymous",
+					scene.state.players[scene.socket.id].avatar || "Anonymous",
 					memoInput.value
 				);
 				//console.log('scene in main', scene)

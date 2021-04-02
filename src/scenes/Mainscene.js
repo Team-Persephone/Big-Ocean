@@ -150,7 +150,7 @@ export default class MainScene extends Phaser.Scene {
 			.create(x, y, rockName)
 			.setScale(scale)
 			.setAngle(angle)
-			.refreshBody();		
+			.refreshBody();
 	}
 
 	//helper function to create avatar for player
@@ -397,9 +397,11 @@ export default class MainScene extends Phaser.Scene {
 			currentTimer.setText("swim!");
 
 			this.scene.launch("Timer", {
-				socket: this.socket,
 				currentTime: new Date(),
-				avatar: this.scubaDiver.avatar
+				avatar: this.scubaDiver.avatar,
+				socket: scene.socket,
+				scubaDiver: scene.scubaDiver,
+				players: this.friendsScores(scene.playerFriends)
 			});
 
 			await this.sleep(1000);

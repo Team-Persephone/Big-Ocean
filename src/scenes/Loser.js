@@ -4,19 +4,24 @@ export default class Loser extends Phaser.Scene {
 	constructor() {
 		super("Loser");
 	}
-	// init(data) {
-	// 	// this.scubaDiver = data.scubaDiver;
-	// }
+	init(data) {
+		this.scene.scubaDiver = data.scubaDiver;
+	}
 	preload() {
-		this.load.image("blue", "/assets/background/babyGotBlue.png");
+		// this.load.image("blue", "/assets/background/babyGotBlue.png");
+		// this.load.image("blue", "/assets/background/babyGotBlue.png");
+		this.load.image("darkocean", "assets/darkocean.png")
 		this.load.image("bubble", "/assets/bubble-blank.png");
+		this.load.image("logo", "assets/logo.png");
+
 		this.load.audio("gameOver", "/audio/gameOver.mp3");
 	}
 	async create() {
 		const scene = this;
+		// console.log('in loser', this.scene.scubaDiver.avatar);
 		this.gameOver = this.sound.add("gameOver", { volume: 2 });
 		this.gameOver.play();
-		scene.add.image(0, 0, "blue").setScale(2);
+		scene.add.image(400, 300, "darkocean").setScale(0.25);
 		scene.graphics = scene.add.image(400, 260, "bubble").setScale(0.9);
 		//loser!
 		scene.add.text(245, 130, "ya basic!", {
@@ -29,7 +34,8 @@ export default class Loser extends Phaser.Scene {
 		scene.add.text(
 			245,
 			175,
-			`\nYour mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
+			`\ngame Over\n\n Your score: ${this.scene.scubaDiver.score}`,
+			// `\ngame Over\n\n ${this.scene.scubaDiver.avatar}: ${this.scene.scubaDiver.score}`,
 			{
 				fill: "#02075D",
 				fontSize: "19px",
@@ -51,5 +57,22 @@ export default class Loser extends Phaser.Scene {
 				wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
 			}
 		);
+		// var bg = this.add.image(400, 300, 'bubble').setScale(3);
+		var particles = this.add.particles('fillin');
+
+    var emitter = particles.createEmitter({
+        speed: 100,
+        scale: { start: 1, end: 0 },
+        blendMode: 'ADD'
+    });
+
+    var logo = this.physics.add.image(400, 100, 'logo');
+
+    logo.setVelocity(100, 200);
+    logo.setBounce(1, 1);
+    logo.setCollideWorldBounds(true);
+
+    emitter.startFollow(logo);
+
 	}
 }
