@@ -848,7 +848,7 @@ export default class MainScene extends Phaser.Scene {
 			}
 
 			//Note ending game after 2 levels for now
-			if (scene.state.level === 2) {
+			if (scene.state.level === 6) {
 				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver, playerFriends: scene.playerFriends });
 			}
 		});
