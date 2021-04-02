@@ -208,7 +208,16 @@ export default class MainScene extends Phaser.Scene {
 
 	createJellyfish(scene, file) {
 		scene.createAnimations("jellyfish");
-		const jellyfish = new Jellyfish(scene, 400, 400, file).setScale(0.2)
+		let y = scene.physics.world.bounds.height;
+		let x = scene.physics.world.bounds.width;
+		let startX =  Math.ceil(Math.random() * x);
+		let startY =  Math.ceil(Math.random() * 500) + y;
+		for(let i = 0; i < 10; i++){
+			let addX = Math.ceil(Math.random() * 150)
+			let addY = Math.ceil(Math.random() * 150)
+			new Jellyfish(scene, startX + addX, startY + addY, file).setScale(0.2).setVelocity(10, -50)
+		}
+		//add collition and collition effect
 	}
 
 	// helper function to add animation to avatars
@@ -293,9 +302,9 @@ export default class MainScene extends Phaser.Scene {
 				socket: this.socket,
 				shrimp: shrimp,
 				level: this.state.level,
-				scubaDiver: this.scubaDiver,
+				scubaDiver: scubaDiver,
 				key: this.state.key,
-				click: this.click
+				click: this.click,
 			});
 			this.shrimpClick.play();
 			throw new Error();
@@ -766,8 +775,8 @@ export default class MainScene extends Phaser.Scene {
 						clam.info.isResolved = true;
 						clam.destroy();
 					}
-					scene.createJellyfish(scene, "jellyfish");
 				});
+				scene.createJellyfish(scene, "jellyfish");
 			}
 			if (level === 2) {
 				scene.clamsLevel2.getChildren().forEach(function (clam) {
@@ -777,6 +786,7 @@ export default class MainScene extends Phaser.Scene {
 						clam.destroy();
 					}
 				});
+				scene.createJellyfish(scene, "jellyfish");
 			}
 			if (level === 3) {
 				scene.clamsLevel3.getChildren().forEach(function (clam) {
@@ -786,6 +796,7 @@ export default class MainScene extends Phaser.Scene {
 						clam.destroy();
 					}
 				});
+				scene.createJellyfish(scene, "jellyfish");
 			}
 			if (level === 4) {
 				scene.clamsLevel4.getChildren().forEach(function (clam) {
@@ -795,6 +806,7 @@ export default class MainScene extends Phaser.Scene {
 						clam.destroy();
 					}
 				});
+				scene.createJellyfish(scene, "jellyfish");
 			}
 			if (level === 5) {
 				scene.clamsLevel5.getChildren().forEach(function (clam) {
@@ -804,6 +816,7 @@ export default class MainScene extends Phaser.Scene {
 						clam.destroy();
 					}
 				});
+				scene.createJellyfish(scene, "jellyfish");
 			}
 
 			scores.forEach(score => {

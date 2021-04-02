@@ -27,7 +27,6 @@ export default class Question extends Phaser.Scene {
 	onEvent() {
 		this.click.play();
 		this.timeRemaining.setText(`the O-timer: ${this.timer.repeatCount}`);
-		console.log("time:", this.timer.repeatCount);
 		if (this.timer.repeatCount === 0) {
 			this.scubaDiver.tweenPosition(0, 0);
 			this.click.stop();
