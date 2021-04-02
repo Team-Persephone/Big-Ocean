@@ -98,7 +98,7 @@ export default class MainScene extends Phaser.Scene {
 		this.load.image("volumeDown", "/assets/volume/volumeDown.png");
 
 		//WATERPLANT IMAGE
-		this.load.image("waterPlant", "/assets/waterplant.png");
+		this.load.image("waterPlant", "/assets/waterplant3.png");
 
 		//Audio Sounds
 		//background bubbles
@@ -244,10 +244,10 @@ export default class MainScene extends Phaser.Scene {
 				});
 		}
 	}
-	createWaterPlant(scene, waterPlant, x, y, scale = 1, angle = 0) {
+	createWaterPlant(scene, waterPlant, x, y, size=(.01, .008), angle = 0) {
 		return scene.decorations
 			.create(x, y, waterPlant)
-			.setScale(scale)
+			.setSize(size)
 			.setAngle(angle)
 			.refreshBody();
 	}
@@ -341,7 +341,18 @@ export default class MainScene extends Phaser.Scene {
 			);
 			y += 20;
 		});
-		return scores;
+		//using reduce from reacto
+		let questionsLevel = [this.state.questionsLevel1, this.state.questionsLevel2, this.state.questionsLevel3, this.state.questionsLevel4, this.state.questionsLevel5][this.state.level - 1];
+
+		// let numClams = 5 - questionsLevel.reduce((acc, question) => {
+		// 	if (question.isResolved){
+		// 		acc++
+		// 	}
+		// 	return acc
+		// }, 0);
+		// if(numClams === 0) numClams = 5;
+		// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam").join(' ')}`).setScrollFactor(0))
+		// return scores;
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -401,7 +412,8 @@ export default class MainScene extends Phaser.Scene {
 				avatar: this.scubaDiver.avatar,
 				socket: scene.socket,
 				scubaDiver: scene.scubaDiver,
-				players: this.friendsScores(scene.playerFriends)
+				playerFriends: scene.playerFriends
+				// players: this.friendsScores(scene.playerFriends)
 			});
 
 			await this.sleep(1000);
@@ -610,15 +622,16 @@ export default class MainScene extends Phaser.Scene {
 		this.seaweed = [[], [], [], []];
 
 		for (let level = 0; level < 4; level++) {
-			for (let x = 0; x <= 1088; x += 10) {
+			for (let x = 0; x <= 1088; x += 70) {
 				this.seaweed[level].push(
 					this.createWaterPlant(
 						this,
 						"waterPlant",
 						x, //x
 						depths[level], //y
-						1, //scale
-						Math.floor(Math.random() * 360) //angle
+						this.size, //size
+						0 //angle
+						// Math.floor(Math.random() * 360) //angle
 					)
 				);
 			}
@@ -787,7 +800,9 @@ export default class MainScene extends Phaser.Scene {
 
 			this.scene.launch("Timer", {
 				socket: this.socket,
-				currentTime: new Date()
+				currentTime: new Date(),
+				scubaDiver: scene.scubaDiver,
+				playerFriends: scene.playerFriends
 			});
 
 			let seaweedLength = this.seaweed[0].length;

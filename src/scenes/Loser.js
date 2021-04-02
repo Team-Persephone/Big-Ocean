@@ -6,6 +6,7 @@ export default class Loser extends Phaser.Scene {
 	}
 	init(data) {
 		this.scene.scubaDiver = data.scubaDiver;
+		this.playerFriends = data.playerFriends
 	}
 	preload() {
 		// this.load.image("blue", "/assets/background/babyGotBlue.png");
@@ -30,6 +31,15 @@ export default class Loser extends Phaser.Scene {
 			fontStyle: "bold",
 			align: "center"
 		});
+		let y = 245;
+		this.playerFriends.getChildren().forEach(friend => {
+			this.add.text(
+				245,
+				y,
+				`${friend.avatar}: ${friend.score}`
+			)
+			y += 20
+		})
 		//Game over message
 		scene.add.text(
 			245,

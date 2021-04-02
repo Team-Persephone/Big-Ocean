@@ -10,6 +10,7 @@ export default class Timer extends Phaser.Scene {
 		this.currentTime = data.currentTime;
 		this.avatar = data.avatar;
 		this.scene.scubaDiver = data.scubaDiver;
+		this.playerFriends = data.playerFriends;
 
 	}
 	preload() {}
@@ -33,7 +34,7 @@ export default class Timer extends Phaser.Scene {
 			}
 		});
     // change to 120
-		this.initialTime = 20 - Math.floor((new Date() - this.timeOnPause) / 1000);
+		this.initialTime = 10 - Math.floor((new Date() - this.timeOnPause) / 1000);
 
 		this.text = this.add.text(
 			250,
@@ -76,7 +77,7 @@ export default class Timer extends Phaser.Scene {
 			if (this.initialTime < 0) {
 				//LAUNCH LOSER SCENE
 				this.text.setText("Game over");
-				this.scene.launch("Loser", { scubaDiver: this.scene.scubaDiver})
+				this.scene.launch("Loser", { scubaDiver: this.scene.scubaDiver, playerFriends: this.playerFriends})
 				this.timedEvent.paused = true
       } else {
         this.text.setText("cOuntdOwn: " + formatTime(this.initialTime));
