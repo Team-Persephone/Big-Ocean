@@ -76,4 +76,5 @@ players
 * Clam Base: pch.vector: <a href="https://www.freepik.com/vectors/banner">Banner vector created by pch.vector - www.freepik.com</a> 
 * Shrimp Base: macrovector: <a href="https://www.freepik.com/vectors/food">Food vector created by macrovector - www.freepik.com</a>
 * Seaweed: macrovector:  <a href='https://www.freepik.com/vectors/food'>Food vector created by macrovector - www.freepik.com</a>  
+* LoseScene Background: upklyak: <a href='https://www.freepik.com/vectors/banner'>Banner vector created by upklyak - www.freepik.com</a>
 
