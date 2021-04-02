@@ -20,14 +20,10 @@ export default class Question extends Phaser.Scene {
 		this.load.audio("surface", "/audio/water-surface.mp3");
 		//correct clam sound
 		this.load.audio("correct", "/audio/correct.mp3");
-		//bubble background
-		//this.load.image("bubble", "/assets/bubble-large.png");
-
 	}
 	onEvent() {
 		this.click.play();
 		this.timeRemaining.setText(`the O-timer: ${this.timer.repeatCount}`);
-		console.log("time:", this.timer.repeatCount);
 		if (this.timer.repeatCount === 0) {
 			this.scubaDiver.tweenPosition(0, 0);
 			this.click.stop();
@@ -64,9 +60,6 @@ export default class Question extends Phaser.Scene {
 	create() {
 		const info = this.clam.info;
 		const scene = this;
-
-		//this.graphics = this.add.image(400, 180, "bubble").setScale(.5);
-
 
 		const time = this.level < 4 ? 10 : 15;
 		this.scubaDiver.frozen = true;
