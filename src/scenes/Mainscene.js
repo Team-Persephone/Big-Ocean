@@ -137,7 +137,7 @@ export default class MainScene extends Phaser.Scene {
 		link.setInteractive();
 		link.on("pointerdown", () => {
 			navigator.clipboard.writeText(url);
-			link.setText("copied!");
+			link.setText("cOpied!");
 		});
 		return link;
 	}
@@ -539,7 +539,7 @@ export default class MainScene extends Phaser.Scene {
 			const display = this.add.text(
 				170,
 				590,
-				"When yOu are ready tO plunge, click"
+				"when yOu are ready tO plunge, click"
 			);
 
 			const playButton = this.add.text(520, 590, "< start >", {
@@ -862,7 +862,7 @@ export default class MainScene extends Phaser.Scene {
 			}
 
 			//Note ending game after 2 levels for now
-			if (scene.state.level === 6) {
+			if (scene.state.level === 2) {
 				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver, playerFriends: scene.playerFriends });
 			}
 		});
