@@ -4,34 +4,55 @@ export default class Loser extends Phaser.Scene {
 	constructor() {
 		super("Loser");
 	}
-	// init(data) {
-	// 	// this.scubaDiver = data.scubaDiver;
-	// }
+	init(data) {
+		this.scene.scubaDiver = data.scubaDiver;
+		this.playerFriends = data.playerFriends
+	}
 	preload() {
-		this.load.image("blue", "/assets/background/babyGotBlue.png");
-		this.load.image("bubble", "/assets/bubble-blank.png");
+		this.load.image("darkocean", "assets/darkocean.png")
+		this.load.image("bubblecopy", "/assets/bubble-blankcopy.png");
+		this.load.image("littlebubble", "/assets/littlebubble.png");
+		this.load.image("logo", "assets/logo.png");
+
 		this.load.audio("gameOver", "/audio/gameOver.mp3");
 	}
 	async create() {
 		const scene = this;
 		this.gameOver = this.sound.add("gameOver", { volume: 2 });
 		this.gameOver.play();
-		scene.add.image(0, 0, "blue").setScale(2);
-		scene.graphics = scene.add.image(400, 260, "bubble").setScale(0.9);
+		scene.add.image(400, 300, "darkocean").setScale(0.25);
+		scene.graphics = scene.add.image(400, 260, "bubblecopy").setScale(0.9);
 		//loser!
-		scene.add.text(245, 130, "ya basic!", {
+		scene.add.text(300, 130, "game Over", {
 			fill: "#02075D",
 			fontSize: "34px",
 			fontStyle: "bold",
 			align: "center"
 		});
+
+		let y = 250;
+		this.playerFriends.getChildren().forEach(friend => {
+			this.add.text(
+				320,
+				y,
+				`${friend.avatar}: ${friend.score}`,
+				{
+					fill: "#02075D",
+					fontSize: "19px",
+					// fontStyle: "bold",
+					// align: "center",
+					wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
+				}
+			)
+			y += 20
+		})
 		//Game over message
 		scene.add.text(
-			245,
+			320,
 			175,
-			`\nYour mamma's so fat, the recursive function computing her mass caused a stack overflow.`,
+			`\nyOur scOre: ${this.scene.scubaDiver.score}`,
 			{
-				fill: "#02075D",
+				fill: "#ffffff",
 				fontSize: "19px",
 				fontStyle: "bold",
 				align: "center",
@@ -51,5 +72,38 @@ export default class Loser extends Phaser.Scene {
 				wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
 			}
 		);
+
+		const createGameButton = this.add.text(300, 330, " play again here! ", {
+			fontSize: "20px",
+			fontStyle: "bold",
+			fill: "#FFFFFF",
+			backgroundColor: "#02075D",
+		});
+		createGameButton.setInteractive();
+		createGameButton.on("pointerdown", () => {
+			if (window.location.pathname.length > 1) {
+			window.open(`${window.location.href.slice(0, window.location.href.length - 6)}`,
+				"_blank"
+		)} else {
+			window.open(`${window.location.pathname}`),
+			"_blank"
+		}
+		});
+		// var bg = this.add.image(400, 300, 'bubble').setScale(3);
+		var particles = this.add.particles('littlebubble');
+
+    var emitter = particles.createEmitter({
+        speed: 100,
+        scale: { start: 1, end: 0 },
+        blendMode: 'ADD'
+    });
+
+    var logo = this.physics.add.image(400, 100, 'logo');
+
+    logo.setVelocity(100, 200);
+    logo.setBounce(1, 1);
+    logo.setCollideWorldBounds(true);
+
+    emitter.startFollow(logo);
 	}
 }

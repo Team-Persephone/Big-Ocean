@@ -54,6 +54,23 @@ export default class WinScene extends Phaser.Scene {
 				y += 20
 			})
 
+			const createGameButton = this.add.text(300, 330, " play again here! ", {
+				fontSize: "20px",
+				fontStyle: "bold",
+				fill: "#FFFFFF",
+				backgroundColor: "#02075D",
+			});
+			createGameButton.setInteractive();
+			createGameButton.on("pointerdown", () => {
+				if (window.location.pathname.length > 1) {
+				window.open(`${window.location.href.slice(0, window.location.href.length - 6)}`,
+					"_blank"
+			)} else {
+				window.open(`${window.location.pathname}`),
+				"_blank"
+			}
+			});
+
 		//credits
 		scene.add.text(
 			255,
