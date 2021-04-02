@@ -60,7 +60,7 @@ export default class WinScene extends Phaser.Scene {
 				fill: "#FFFFFF",
 				backgroundColor: "#02075D",
 			});
-	
+
 			createGameButton.setInteractive();
 			createGameButton.on("pointerdown", () => {
 				if (window.location.pathname.length > 1) {

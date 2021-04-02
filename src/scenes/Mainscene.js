@@ -73,6 +73,8 @@ export default class MainScene extends Phaser.Scene {
 			frameHeight: 300
 		})
 
+		this.load.image("pearl", "/assets/pearl.png")
+
 		//load background
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
 		this.load.tilemapTiledJSON("bigOcean", "/assets/background/big-ocean.json");
@@ -147,7 +149,7 @@ export default class MainScene extends Phaser.Scene {
 			.create(x, y, rockName)
 			.setScale(scale)
 			.setAngle(angle)
-			.refreshBody();		
+			.refreshBody();
 	}
 
 	//helper function to create avatar for player
@@ -232,7 +234,7 @@ export default class MainScene extends Phaser.Scene {
 					}),
 					frameRate: 1,
 					repeat: -1
-				});				
+				});
 				break;
 			case "jellyfish":
 				this.anims.create({
@@ -336,7 +338,7 @@ export default class MainScene extends Phaser.Scene {
 
 	friendsScores(playerFriends) {
 		let y = 70;
-		let scores = [];
+		// let scores = [];
 		playerFriends.getChildren().forEach(friend => {
 			scores.push(
 				this.add
@@ -354,7 +356,29 @@ export default class MainScene extends Phaser.Scene {
 			);
 			y += 20;
 		});
-		return scores;
+			//using reduce from reacto
+			let questionsLevel = [this.state.questionsLevel1, this.state.questionsLevel2, this.state.questionsLevel3, this.state.questionsLevel4, this.state.questionsLevel5][this.state.level - 1];
+
+
+			// this.pearl = this.add.image(300, 115, "pearl").setScrollFactor(0);
+			// this.pearl = this.add.image(350, 115, "pearl").setScrollFactor(0);
+			// this.pearl = this.add.image(400, 115, "pearl").setScrollFactor(0);
+			// this.pearl = this.add.image(450, 115, "pearl").setScrollFactor(0);
+			// this.pearl = this.add.image(500, 115, "pearl").setScrollFactor(0);
+
+			//            number of clams
+			// let numClams = 5 - questionsLevel.reduce((acc, question) => {
+			// 	if (question.isResolved){
+			// 		acc++
+			// 	}
+			// 	return acc
+			// }, 0);
+			// if(numClams === 0) numClams = 5;
+			// // scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")	}`).setScrollFactor(0))
+			// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")}`).setScrollFactor(0))
+			// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
+
+			//  return scores;
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -410,9 +434,11 @@ export default class MainScene extends Phaser.Scene {
 			currentTimer.setText("swim!");
 
 			this.scene.launch("Timer", {
-				socket: this.socket,
 				currentTime: new Date(),
-				avatar: this.scubaDiver.avatar
+				avatar: this.scubaDiver.avatar,
+				socket: scene.socket,
+				scubaDiver: scene.scubaDiver,
+				playerFriends: scene.playerFriends
 			});
 
 			await this.sleep(1000);
@@ -798,8 +824,11 @@ export default class MainScene extends Phaser.Scene {
 			this.scene.stop("Timer");
 
 			this.scene.launch("Timer", {
-				socket: this.socket,
-				currentTime: new Date()
+				currentTime: new Date(),
+				avatar: this.scubaDiver.avatar,
+				socket: scene.socket,
+				scubaDiver: scene.scubaDiver,
+				playerFriends: scene.playerFriends
 			});
 
 			let seaweedLength = this.seaweed[0].length;
