@@ -185,35 +185,35 @@ async function seed() {
 			question:
 				"What is the average time complexity of deleting a node in a binary search tree? What is the worst-case?",
 			options: [
-				"average: O(n), worst-case: 0(log n)",
-				"average: O(log n), worst-case: 0(n)",
-				"average: O(log), worst-case: 0(n!)",
-				"average: O(n), worst-case: 0(n^2)"
+				"average: O(n),worst-case: 0(log n)",
+				"average: O(log n),worst-case: 0(n)",
+				"average: O(log),worst-case: 0(n!)",
+				"average: O(n),worst-case: 0(n^2)"
 			],
-			answer: "average: O(log n), worst-case: 0(n)",
+			answer: "average: O(log n),worst-case: 0(n)",
 			levelId: 5
 		}),
 		PearlQuest.create({
 			question:
 				"What is the worst-case time and space complexity of bubble sort?",
 			options: [
-				"time: O(n^2), space: O(1)",
-				"time: O(n), space: O(1)",
-				"time: O(n^2), space: O(log n)",
-				"time: O(1), space: O(1)"
+				"time: O(n^2),space: O(1)",
+				"time: O(n),space: O(1)",
+				"time: O(n^2),space: O(log n)",
+				"time: O(1),space: O(1)"
 			],
-			answer: "time: O(n^2), space: O(1)",
+			answer: "time: O(n^2),space: O(1)",
 			levelId: 5
 		}),
 		PearlQuest.create({
 			question: "What is the time + space complexity of merge sort?",
 			options: [
-				"time: O(n^2), space: O(1)",
-				"time: O(n log n), space: O(1)",
-				"time: O(n log n), space: O(n)",
-				"time: O(log n), space: O(log n)"
+				"time: O(n^2),space: O(1)",
+				"time: O(n log n),space: O(1)",
+				"time: O(n log n),space: O(n)",
+				"time: O(log n),space: O(log n)"
 			],
-			answer: "time: O(n log n), space: O(n)",
+			answer: "time: O(n log n),space: O(n)",
 			levelId: 5
 		}),
 		PearlQuest.create({
@@ -252,12 +252,12 @@ async function seed() {
         return count;
     }`,
 			options: [
-				"count1: O(n) count2: O(n^2)",
-				"count1: O(n^2) count2: O(n^2)",
-				"count1: O(2n) count2: O(10n)",
-				"count1: O(n * n) count2: O(n^2)"
+				"count1: O(n),count2: O(n^2)",
+				"count1: O(n^2),count2: O(n^2)",
+				"count1: O(2n),count2: O(10n)",
+				"count1: O(n * n),count2: O(n^2)"
 			],
-			answer: "count1: O(n) count2: O(n^2)",
+			answer: "count1: O(n),count2: O(n^2)",
 			levelId: 5
 		})
 	]);
