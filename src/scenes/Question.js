@@ -69,7 +69,7 @@ export default class Question extends Phaser.Scene {
 			callbackScope: this,
 			repeat: time
 		});
-		this.timeRemaining = this.add.text(50, 180, "", {
+		this.timeRemaining = this.add.text(50, 140, "", {
 			fill: "#FFFFFF",
 			backgroundColor: "#02075D",
 			fontSize: "17px",
@@ -79,33 +79,17 @@ export default class Question extends Phaser.Scene {
 		this.surface = this.sound.add("surface", { volume: 1.5 });
 		this.correct = this.sound.add("correct", { volume: 1 });
 
-		this.add.text(50, 200, `${info.question}`, {
+		let questionContainer = this.add.text(50, 160, `${info.question}`, {
 			fill: "#FFFFFF",
 			backgroundColor: "#02075D",
-			fontSize: "17px",
+			fontSize: "15px",
 			fontStyle: "bold",
 			align: "left",
 			wordWrap: { width: 700, height: 445, useAdvancedWrap: true }
 		});
+
 		let x = 50;
-		let y;
-		switch (this.level) {
-			case 1:
-				y = 250;
-				break;
-			case 2:
-				y = 250;
-				break;
-			case 3:
-				y = 300;
-				break;
-			case 4:
-				y = 400;
-				break;
-			case 5:
-				y = 650;
-				break;
-		}
+		let y = questionContainer.getBottomLeft().y + 20;
 
 		info.options.forEach(option => {
 			scene.add
@@ -125,3 +109,50 @@ export default class Question extends Phaser.Scene {
 
 	update() {}
 }
+
+// this.add.text(50, 200, `${info.question}`, {
+// 	fill: "#FFFFFF",
+// 	backgroundColor: "#02075D",
+// 	fontSize: "17px",
+// 	fontStyle: "bold",
+// 	align: "left",
+// 	wordWrap: { width: 700, height: 445, useAdvancedWrap: true }
+// });
+// let x = 50;
+// let y;
+// switch (this.level) {
+// 	case 1:
+// 		y = 250;
+// 		break;
+// 	case 2:
+// 		y = 250;
+// 		break;
+// 	case 3:
+// 		y = 300;
+// 		break;
+// 	case 4:
+// 		y = 400;
+// 		break;
+// 	case 5:
+// 		y = 500;
+// 		break;
+// }
+
+// info.options.forEach(option => {
+// 	scene.add
+// 		.text(x, y, `${option}`, {
+// 			fill: "#FFFFFF",
+// 			backgroundColor: "#02075D",
+// 			fontSize: "15px",
+// 			wordWrap: { width: 300, height: 445, useAdvancedWrap: true }
+// 		})
+// 		.setInteractive()
+// 		.on("pointerdown", () => {
+// 			this.isCorrect(option);
+// 		});
+// 	x += 200;
+// });
+// }
+
+// update() {}
+// }
