@@ -11,8 +11,9 @@ export default class WinScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image("blue", "/assets/background/babyGotBlue.png");
-		this.load.image("bubble", "/assets/bubble-blank.png");
+		this.load.image("darkocean", "assets/darkocean.png")
+		this.load.image("bubblecopy", "/assets/bubble-blankcopy.png");
+		this.load.image("littlebubble", "/assets/littlebubble.png");
 		this.load.audio("gameWin", "/audio/gameWin.mp3");
 	}
 
@@ -21,8 +22,8 @@ export default class WinScene extends Phaser.Scene {
 		this.gameWin = this.sound.add("gameWin", { volume: 2 });
 		this.gameWin.play();
 
-		scene.add.image(0, 0, "blue").setScale(2);
-		scene.graphics = scene.add.image(400, 270, "bubble").setScale(1);
+		scene.add.image(400, 300, "darkocean").setScale(0.25);
+		scene.graphics = scene.add.image(400, 260, "bubblecopy").setScale(0.9);
 
 		//congrats!
 		scene.add.text(235, 110, "cOngratulatiOns!", {
@@ -84,5 +85,17 @@ export default class WinScene extends Phaser.Scene {
 				wordWrap: { width: 400, height: 400, useAdvancedWrap: true }
 			}
 		);
+		//mouse bubbles
+		var particles = this.add.particles("littlebubble");
+
+		var emitter = particles.createEmitter({
+			speed: 100,
+			scale: { start: 1, end: 0 },
+			blendMode: "ADD"
+		});
+
+		this.input.on("pointermove", function (pointer) {
+			emitter.setPosition(pointer.x, pointer.y);
+		});
 	}
 }
