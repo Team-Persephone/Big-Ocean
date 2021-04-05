@@ -67,7 +67,6 @@ export default class Timer extends Phaser.Scene {
 			this.initialTime -= 1; // One second
 			if (this.initialTime < 0) {
 				//LAUNCH LOSER SCENE
-				this.text.setText("Game over");
 				this.scene.launch("Loser", { scubaDiver: this.scene.scubaDiver, playerFriends: this.playerFriends});
 				this.timedEvent.paused = true;
 			} else {
