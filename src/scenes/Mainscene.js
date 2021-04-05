@@ -434,6 +434,34 @@ export default class MainScene extends Phaser.Scene {
 			return scores;
 	}
 
+	scoreChange(scene, clamLevel, question) {
+		clamLevel.getChildren().forEach(function (clam) {
+			if (clam.info.question === question) {
+				clam.info.isResolved = true;
+				clam.setTint(0xcbc3e3);
+				clam.destroy();
+			}
+		});
+		scene.createJellyfish(scene, "jellyfish");
+	}
+
+	levelChange(scene, questions, facts, seaweed){
+
+		let seaweedLength = this.seaweed[0].length;
+
+		questions.forEach(question => {
+			scene.createClam(scene, 2, question, "clam");
+		});
+		facts.forEach(fact => {
+			scene.createShrimp(scene, fact, "shrimp");
+		});
+		seaweed[0]
+			.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+			.forEach(eachWeed => {
+				eachWeed.destroy();
+			});
+	}
+
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
 	create() {
 		const scene = this;
@@ -814,53 +842,19 @@ export default class MainScene extends Phaser.Scene {
 
 		this.socket.on("someoneScored", ({ friend, question, level }) => {
 			if (level === 1) {
-				scene.clamsLevel1.getChildren().forEach(function (clam) {
-					if (clam.info.question === question) {
-						clam.info.isResolved = true;
-						clam.destroy();
-					}
-				});
-				scene.createJellyfish(scene, "jellyfish");
+				this.scoreChange(scene, scene.clamsLevel1, question)
 			}
 			if (level === 2) {
-				scene.clamsLevel2.getChildren().forEach(function (clam) {
-					if (clam.info.question === question) {
-						clam.info.isResolved = true;
-						clam.setTint(0xcbc3e3);
-						clam.destroy();
-					}
-				});
-				scene.createJellyfish(scene, "jellyfish");
+				this.scoreChange(scene, scene.clamsLevel2, question)
 			}
 			if (level === 3) {
-				scene.clamsLevel3.getChildren().forEach(function (clam) {
-					if (clam.info.question === question) {
-						clam.info.isResolved = true;
-						clam.setTint(0xcbc3e3);
-						clam.destroy();
-					}
-				});
-				scene.createJellyfish(scene, "jellyfish");
+				this.scoreChange(scene, scene.clamsLevel3, question)
 			}
 			if (level === 4) {
-				scene.clamsLevel4.getChildren().forEach(function (clam) {
-					if (clam.info.question === question) {
-						clam.info.isResolved = true;
-						clam.setTint(0xcbc3e3);
-						clam.destroy();
-					}
-				});
-				scene.createJellyfish(scene, "jellyfish");
+				this.scoreChange(scene, scene.clamsLevel4, question)
 			}
 			if (level === 5) {
-				scene.clamsLevel5.getChildren().forEach(function (clam) {
-					if (clam.info.question === question) {
-						clam.info.isResolved = true;
-						clam.setTint(0xcbc3e3);
-						clam.destroy();
-					}
-				});
-				scene.createJellyfish(scene, "jellyfish");
+				this.scoreChange(scene, scene.clamsLevel5, question)
 			}
 
 			scores.forEach(score => {
@@ -891,59 +885,63 @@ export default class MainScene extends Phaser.Scene {
 			let seaweedLength = this.seaweed[0].length;
 			if (scene.state.level === 2) {
 				//all weeds for level
-				scene.state.questionsLevel2.forEach(question => {
-					scene.createClam(scene, 2, question, "clam");
-				});
-				scene.state.factsLevel2.forEach(fact => {
-					scene.createShrimp(scene, fact, "shrimp");
-				});
-				this.seaweed[0]
-					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-					.forEach(eachWeed => {
-						eachWeed.destroy();
-					});
+				this.levelChange(scene, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed)
+				// scene.state.questionsLevel2.forEach(question => {
+				// 	scene.createClam(scene, 2, question, "clam");
+				// });
+				// scene.state.factsLevel2.forEach(fact => {
+				// 	scene.createShrimp(scene, fact, "shrimp");
+				// });
+				// this.seaweed[0]
+				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+				// 	.forEach(eachWeed => {
+				// 		eachWeed.destroy();
+				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 2112);
 			}
 			if (scene.state.level === 3) {
-				scene.state.questionsLevel3.forEach(question => {
-					scene.createClam(scene, 3, question, "clam");
-				});
-				scene.state.factsLevel3.forEach(fact => {
-					scene.createShrimp(scene, fact, "shrimp");
-				});
-				this.seaweed[1]
-					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-					.forEach(eachWeed => {
-						eachWeed.destroy();
-					});
+				this.levelChange(scene, scene.state.questionsLevel3, scene.state.factsLevel3, scene.seaweed)
+				// scene.state.questionsLevel3.forEach(question => {
+				// 	scene.createClam(scene, 3, question, "clam");
+				// });
+				// scene.state.factsLevel3.forEach(fact => {
+				// 	scene.createShrimp(scene, fact, "shrimp");
+				// });
+				// this.seaweed[1]
+				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+				// 	.forEach(eachWeed => {
+				// 		eachWeed.destroy();
+				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 3008);
 			}
 			if (scene.state.level === 4) {
-				scene.state.questionsLevel4.forEach(question => {
-					scene.createClam(scene, 4, question, "clam");
-				});
-				scene.state.factsLevel4.forEach(fact => {
-					scene.createShrimp(scene, fact, "shrimp");
-				});
-				this.seaweed[2]
-					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-					.forEach(eachWeed => {
-						eachWeed.destroy();
-					});
+				this.levelChange(scene, scene.state.questionsLevel4, scene.state.factsLevel4, scene.seaweed)
+				// scene.state.questionsLevel4.forEach(question => {
+				// 	scene.createClam(scene, 4, question, "clam");
+				// });
+				// scene.state.factsLevel4.forEach(fact => {
+				// 	scene.createShrimp(scene, fact, "shrimp");
+				// });
+				// this.seaweed[2]
+				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+				// 	.forEach(eachWeed => {
+				// 		eachWeed.destroy();
+				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 3904);
 			}
 			if (scene.state.level === 5) {
-				scene.state.questionsLevel5.forEach(question => {
-					scene.createClam(scene, 5, question, "clam");
-				});
-				scene.state.factsLevel5.forEach(fact => {
-					scene.createShrimp(scene, fact, "shrimp");
-				});
-				this.seaweed[3]
-					.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-					.forEach(eachWeed => {
-						eachWeed.destroy();
-					});
+				this.levelChange(scene, scene.state.questionsLevel5, scene.state.factsLevel5, scene.seaweed)
+				// scene.state.questionsLevel5.forEach(question => {
+				// 	scene.createClam(scene, 5, question, "clam");
+				// });
+				// scene.state.factsLevel5.forEach(fact => {
+				// 	scene.createShrimp(scene, fact, "shrimp");
+				// });
+				// this.seaweed[3]
+				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
+				// 	.forEach(eachWeed => {
+				// 		eachWeed.destroy();
+				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 
