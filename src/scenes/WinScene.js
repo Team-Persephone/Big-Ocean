@@ -35,7 +35,7 @@ export default class WinScene extends Phaser.Scene {
 		scene.add.text(
 			210,
 			155,
-			`\nyOu cOllected all the pearls and won!\n\n here is hOw yOu did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
+			`\nyOu cOllected all the pearls & wOn!\n\n here is hOw yOu did: \n\n ${this.scubaDiver.avatar}: ${this.scubaDiver.score}`,
 			{
 				fill: "#02075D",
 				fontSize: "17px",

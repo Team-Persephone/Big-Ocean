@@ -431,7 +431,7 @@ export default class MainScene extends Phaser.Scene {
 			// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")}`).setScrollFactor(0))
 			// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
 
-			 return scores;
+			return scores;
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
