@@ -28,9 +28,11 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		if(score )
 			score.setText(`${this.avatar}: ${this.score}`)
 	}
+	
 
 	updateMovement(cursors) {
-		this.anims.play("swim", true);
+		
+		// this.anims.play("swim", true);
 
 		let movementObject = {
 			key: this.scene.state.key,
@@ -44,8 +46,10 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		//move down
 		const waiting = this.waiting;
 		const frozen = this.frozen;
-
 		if (!waiting && !frozen && cursors.down.isDown) {
+			if(this.hit){
+				this.anims.play("scubaHit", true)
+			}
 			if (this.faceRight) {
 				this.setAngle(45);
 			} else if (!this.faceRight) {
