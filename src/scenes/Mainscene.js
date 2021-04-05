@@ -221,16 +221,13 @@ export default class MainScene extends Phaser.Scene {
 			jellyfishCloud.push(new Jellyfish(scene, startX + addX, startY + addY, file).setScale(0.2).setVelocity(10, -50)) 
 		}
 		this.physics.add.overlap(scene.scubaDiver, jellyfishCloud, this.jellyBuzz, this.checkOverlappingJelly, scene)
-		// scene.jellyfishs.add(jellyfishCloud);
 		//add collition and collition effect
-		console.log(scene.scubaDiver)
 	}
 
 	jellyBuzz(scubaDiver, jellyfish) {
 		//make buzz happeing here!!
 		jellyfish.setTint("0xfffff");
 		scubaDiver.anims.play("scubaHit",true)
-		console.log("got buzzed")
 	}
 
 	checkOverlappingJelly(scubaDiver, jellyfish) {
@@ -245,7 +242,6 @@ export default class MainScene extends Phaser.Scene {
 		await this.sleep(1000);
 		jellyfish.clearTint();
 		scubaDiver.anims.play("swim", true);
-		console.log("deactivated.")
 	}
 	// helper function to add animation to avatars
 	createScubaAnims(scuba){
