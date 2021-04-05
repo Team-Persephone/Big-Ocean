@@ -65,6 +65,7 @@ module.exports = io => {
 					options: question.options,
 					answer: question.answer,
 					isResolved: false,
+					isOpen: false,
 					x,
 					y
 				};
@@ -185,6 +186,52 @@ module.exports = io => {
 			activeGames[key].players[playerId].position.angle = angle;
 			activeGames[key].players[playerId].position.faceRight = faceRight;
 			socket.to(key).emit("friendMoved", activeGames[key].players[playerId]);
+		});
+
+		socket.on("QuestionOpen", async function ({ clamInfo, key, level }) {
+			let currentLevel = level;
+			switch (level) {
+				case 1:
+					activeGames[key].questionsLevel1.forEach(question => {
+						if (clamInfo.question === question.question) {
+							question.isOpen = !question.isOpen;
+						}
+					});
+					break;
+				case 2:
+					activeGames[key].questionsLevel2.forEach(question => {
+						if (clamInfo.question === question.question) {
+							question.isOpen = !question.isOpen;
+						}
+					});
+					break;
+				case 3:
+					activeGames[key].questionsLevel3.forEach(question => {
+						if (clamInfo.question === question.question) {
+							question.isOpen = !question.isOpen;
+						}
+					});
+					break;
+				case 4:
+					activeGames[key].questionsLevel4.forEach(question => {
+						if (clamInfo.question === question.question) {
+							question.isOpen = !question.isOpen;
+						}
+					});
+					break;
+				default:
+					activeGames[key].questionsLevel5.forEach(question => {
+						if (clamInfo.question === question.question) {
+							question.isOpen = !question.isOpen;
+						}
+					});
+					break;
+			}
+
+			socket.to(key).emit("QuestionOpened", {
+				question: clamInfo.question,
+				level: currentLevel
+			});
 		});
 
 		socket.on(

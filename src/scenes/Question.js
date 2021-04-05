@@ -30,6 +30,11 @@ export default class Question extends Phaser.Scene {
 			this.scene.stop("Question");
 			this.surface.play();
 			this.scubaDiver.frozen = false;
+			this.socket.emit("QuestionOpen", {
+				clamInfo: this.clam.info,
+				key: this.key,
+				level: this.level
+			});
 		}
 	}
 	isCorrect(answer) {
@@ -54,6 +59,11 @@ export default class Question extends Phaser.Scene {
 			this.surface.play();
 			this.scubaDiver.frozen = false;
 			this.timer.paused = !this.timer.paused;
+			this.socket.emit("QuestionOpen", {
+				clamInfo: this.clam.info,
+				key: this.key,
+				level: this.level
+			});
 		}
 		this.scene.stop("Question");
 	}
@@ -93,7 +103,7 @@ export default class Question extends Phaser.Scene {
 
 		info.options.forEach(option => {
 			scene.add
-				.text(x, y, `${option.split(',').join(`\n`)}`, {
+				.text(x, y, `${option.split(",").join(`\n`)}`, {
 					fill: "#FFFFFF",
 					backgroundColor: "#02075D",
 					fontSize: "15px",
@@ -109,50 +119,3 @@ export default class Question extends Phaser.Scene {
 
 	update() {}
 }
-
-// this.add.text(50, 200, `${info.question}`, {
-// 	fill: "#FFFFFF",
-// 	backgroundColor: "#02075D",
-// 	fontSize: "17px",
-// 	fontStyle: "bold",
-// 	align: "left",
-// 	wordWrap: { width: 700, height: 445, useAdvancedWrap: true }
-// });
-// let x = 50;
-// let y;
-// switch (this.level) {
-// 	case 1:
-// 		y = 250;
-// 		break;
-// 	case 2:
-// 		y = 250;
-// 		break;
-// 	case 3:
-// 		y = 300;
-// 		break;
-// 	case 4:
-// 		y = 400;
-// 		break;
-// 	case 5:
-// 		y = 500;
-// 		break;
-// }
-
-// info.options.forEach(option => {
-// 	scene.add
-// 		.text(x, y, `${option}`, {
-// 			fill: "#FFFFFF",
-// 			backgroundColor: "#02075D",
-// 			fontSize: "15px",
-// 			wordWrap: { width: 300, height: 445, useAdvancedWrap: true }
-// 		})
-// 		.setInteractive()
-// 		.on("pointerdown", () => {
-// 			this.isCorrect(option);
-// 		});
-// 	x += 200;
-// });
-// }
-
-// update() {}
-// }
