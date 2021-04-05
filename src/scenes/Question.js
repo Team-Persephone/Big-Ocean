@@ -71,7 +71,7 @@ export default class Question extends Phaser.Scene {
 		const info = this.clam.info;
 		const scene = this;
 
-		const time = this.level < 4 ? 10 : 15;
+		const time = this.level < 4 ? 10 : this.level === 4 ? 15 : 20;
 		this.scubaDiver.frozen = true;
 		this.timer = this.time.addEvent({
 			delay: 1000,
