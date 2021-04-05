@@ -56,7 +56,7 @@ export default class MainScene extends Phaser.Scene {
 			frameWidth: 820,
 			frameHeight: 420
 		});
-		this.load.spritesheet("scubaPurple", "/assets/scuba_divers/scubaPurple.png", {
+		this.load.spritesheet("scubaPurple", "/assets/scuba_divers/scubaPurpleNew.png", {
 			frameWidth: 820,
 			frameHeight: 420
 		});
@@ -159,7 +159,8 @@ export default class MainScene extends Phaser.Scene {
 		scene.scubaDiver.faceRight = true;
 		scene.scubaDiver.setSize(scene.scubaDiver.width * 0.5, scene.scubaDiver.height * 0.5, true)
 		//create animation
-		scene.createAnimations(`${player.avatar}`);
+		scene.createScubaAnims(`${player.avatar}`);
+		scene.scubaDiver.anims.play("swim")
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
 		//add chat if new player created
@@ -199,10 +200,11 @@ export default class MainScene extends Phaser.Scene {
 	}
 	createShrimp(scene, info, file) {
 		const { x, y, fact, isRead } = info;
+		const level = scene.state.level;
 		scene.createAnimations("shrimp");
 		const shrimp = new Shrimp(scene, x, y, file).setScale(0.05);
 		shrimp.setSize(shrimp.width, shrimp.height, true)
-		shrimp.info = { fact, isRead };
+		shrimp.info = { fact, isRead, level };
 		scene.shrimps.add(shrimp);
 	}
 
@@ -212,15 +214,56 @@ export default class MainScene extends Phaser.Scene {
 		let x = scene.physics.world.bounds.width;
 		let startX =  Math.ceil(Math.random() * x);
 		let startY =  Math.ceil(Math.random() * 500) + y;
+		let jellyfishCloud = [];
 		for(let i = 0; i < 10; i++){
 			let addX = Math.ceil(Math.random() * 150)
 			let addY = Math.ceil(Math.random() * 150)
-			new Jellyfish(scene, startX + addX, startY + addY, file).setScale(0.2).setVelocity(10, -50)
+			jellyfishCloud.push(new Jellyfish(scene, startX + addX, startY + addY, file).setScale(0.2).setVelocity(10, -50)) 
 		}
+		this.physics.add.overlap(scene.scubaDiver, jellyfishCloud, this.jellyBuzz, this.checkOverlappingJelly, scene)
 		//add collition and collition effect
 	}
 
+	jellyBuzz(scubaDiver, jellyfish) {
+		//make buzz happeing here!!
+		jellyfish.setTint("0xfffff");
+		scubaDiver.anims.play("scubaHit",true)
+	}
+
+	checkOverlappingJelly(scubaDiver, jellyfish) {
+		const boundsJelly = jellyfish.getBounds();
+		const boundsScuba = scubaDiver.getBounds();
+		if ( !Phaser.Geom.Intersects.GetRectangleToRectangle(boundsJelly, boundsScuba).length < 1) {
+			this.deactivateJelly(scubaDiver, jellyfish)
+		}
+	}
+	
+	async deactivateJelly(scubaDiver, jellyfish){
+		await this.sleep(1000);
+		jellyfish.clearTint();
+		scubaDiver.anims.play("swim", true);
+	}
 	// helper function to add animation to avatars
+	createScubaAnims(scuba){
+		this.anims.create({
+				key: "scubaHit",
+				frames: this.anims.generateFrameNumbers(scuba, {
+					start: 10,
+					end: 14
+				}),
+				frameRate: 5,
+				repeat: 5
+			})
+		this.anims.create({
+			key: "swim",
+			frames: this.anims.generateFrameNumbers(scuba, {
+				start: 5,
+				end: 9
+			}),
+			frameRate: 5,
+			repeat: -1
+		});
+	}
 	createAnimations(sprite) {
 		switch (sprite) {
 			case "shrimp":
@@ -303,6 +346,7 @@ export default class MainScene extends Phaser.Scene {
 				shrimp: shrimp,
 				level: this.state.level,
 				scubaDiver: scubaDiver,
+				score: this.score,
 				key: this.state.key,
 				click: this.click,
 			});
@@ -607,6 +651,7 @@ export default class MainScene extends Phaser.Scene {
 		scene.clamsLevel4 = this.physics.add.group();
 		scene.clamsLevel5 = this.physics.add.group();
 		scene.shrimps = this.physics.add.group();
+		//not solving the problem!
 
 		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 1216);
@@ -958,5 +1003,6 @@ export default class MainScene extends Phaser.Scene {
 				scene.checkOverlappingEffects(scene, this.scubaDiver, shrimp);
 			});
 		}
+
 	}
 }

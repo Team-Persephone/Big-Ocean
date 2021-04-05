@@ -10,6 +10,7 @@ export default class Facts extends Phaser.Scene {
 		this.socket = data.socket;
 		this.level = data.level;
 		this.scubaDiver = data.scubaDiver;
+		this.score = data.score;
 		this.click = data.click;
 		this.key = data.key;
 	}
@@ -55,7 +56,7 @@ export default class Facts extends Phaser.Scene {
 		});
 		this.startTimer(7, this.shrimp, this.scubaDiver, "Facts");
 		this.scubaDiver.score = Number(
-			(this.scubaDiver.score + this.level / 2).toFixed(1)
+			(this.scubaDiver.score + this.shrimp.info.level / 2).toFixed(1)
 		);
 		this.scubaDiver.updateScore(this.score);
 		this.socket.emit("Scored", {
