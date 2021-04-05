@@ -48,11 +48,11 @@ export default class MainScene extends Phaser.Scene {
 		percentText.setOrigin(0.5, 0.5);
 
 		// all avatars are loaded
-		this.load.spritesheet("scubaPink", "/assets/scuba_divers/scubaPink.png", {
+		this.load.spritesheet("scubaPink", "/assets/scuba_divers/scubaPinkNew.png", {
 			frameWidth: 820,
 			frameHeight: 420
 		});
-		this.load.spritesheet("scubaGreen", "/assets/scuba_divers/scubaGreen.png", {
+		this.load.spritesheet("scubaGreen", "/assets/scuba_divers/scubaGreenNew.png", {
 			frameWidth: 820,
 			frameHeight: 420
 		});
@@ -651,7 +651,6 @@ export default class MainScene extends Phaser.Scene {
 		scene.clamsLevel4 = this.physics.add.group();
 		scene.clamsLevel5 = this.physics.add.group();
 		scene.shrimps = this.physics.add.group();
-		//not solving the problem!
 
 		//set world bounds
 		this.physics.world.setBounds(0, 320, 1088, 1216);

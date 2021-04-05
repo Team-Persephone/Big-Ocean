@@ -47,9 +47,6 @@ export default class Scuba extends Phaser.Physics.Arcade.Sprite {
 		const waiting = this.waiting;
 		const frozen = this.frozen;
 		if (!waiting && !frozen && cursors.down.isDown) {
-			if(this.hit){
-				this.anims.play("scubaHit", true)
-			}
 			if (this.faceRight) {
 				this.setAngle(45);
 			} else if (!this.faceRight) {
