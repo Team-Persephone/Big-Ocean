@@ -497,6 +497,14 @@ export default class MainScene extends Phaser.Scene {
 			});
 	}
 
+	openQuestion(clamLevel, question) {
+		clamLevel.getChildren().forEach(function (clam) {
+			if (clam.info.question === question) {
+				clam.info.isOpen = !clam.info.isOpen;
+			}
+		});
+	}
+
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
 	create() {
 		const scene = this;
@@ -878,39 +886,19 @@ export default class MainScene extends Phaser.Scene {
 		this.socket.on("QuestionOpened", ({ question, level }) => {
 			switch (level) {
 				case 1:
-					scene.clamsLevel1.getChildren().forEach(function (clam) {
-						if (clam.info.question === question) {
-							clam.info.isOpen = !clam.info.isOpen;
-						}
-					});
+					this.openQuestion(scene.clamsLevel1, question)
 					break;
 				case 2:
-					scene.clamsLevel2.getChildren().forEach(function (clam) {
-						if (clam.info.question === question) {
-							clam.info.isOpen = !clam.info.isOpen;
-						}
-					});
+					this.openQuestion(scene.clamsLevel2, question)
 					break;
 				case 3:
-					scene.clamsLevel3.getChildren().forEach(function (clam) {
-						if (clam.info.question === question) {
-							clam.info.isOpen = !clam.info.isOpen;
-						}
-					});
+					this.openQuestion(scene.clamsLevel3, question)
 					break;
 				case 4:
-					scene.clamsLevel4.getChildren().forEach(function (clam) {
-						if (clam.info.question === question) {
-							clam.info.isOpen = !clam.info.isOpen;
-						}
-					});
+					this.openQuestion(scene.clamsLevel4, question)
 					break;
 				default:
-					scene.clamsLevel5.getChildren().forEach(function (clam) {
-						if (clam.info.question === question) {
-							clam.info.isOpen = !clam.info.isOpen;
-						}
-					});
+					this.openQuestion(scene.clamsLevel5, question)
 					break;
 			}
 		});
@@ -957,7 +945,6 @@ export default class MainScene extends Phaser.Scene {
 				playerFriends: scene.playerFriends
 			});
 
-			let seaweedLength = this.seaweed[0].length;
 			if (scene.state.level === 2) {
 				//all weeds for level
 				this.levelChange(scene, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed)
