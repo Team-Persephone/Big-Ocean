@@ -886,62 +886,18 @@ export default class MainScene extends Phaser.Scene {
 			if (scene.state.level === 2) {
 				//all weeds for level
 				this.levelChange(scene, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed)
-				// scene.state.questionsLevel2.forEach(question => {
-				// 	scene.createClam(scene, 2, question, "clam");
-				// });
-				// scene.state.factsLevel2.forEach(fact => {
-				// 	scene.createShrimp(scene, fact, "shrimp");
-				// });
-				// this.seaweed[0]
-				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-				// 	.forEach(eachWeed => {
-				// 		eachWeed.destroy();
-				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 2112);
 			}
 			if (scene.state.level === 3) {
 				this.levelChange(scene, scene.state.questionsLevel3, scene.state.factsLevel3, scene.seaweed)
-				// scene.state.questionsLevel3.forEach(question => {
-				// 	scene.createClam(scene, 3, question, "clam");
-				// });
-				// scene.state.factsLevel3.forEach(fact => {
-				// 	scene.createShrimp(scene, fact, "shrimp");
-				// });
-				// this.seaweed[1]
-				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-				// 	.forEach(eachWeed => {
-				// 		eachWeed.destroy();
-				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 3008);
 			}
 			if (scene.state.level === 4) {
 				this.levelChange(scene, scene.state.questionsLevel4, scene.state.factsLevel4, scene.seaweed)
-				// scene.state.questionsLevel4.forEach(question => {
-				// 	scene.createClam(scene, 4, question, "clam");
-				// });
-				// scene.state.factsLevel4.forEach(fact => {
-				// 	scene.createShrimp(scene, fact, "shrimp");
-				// });
-				// this.seaweed[2]
-				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-				// 	.forEach(eachWeed => {
-				// 		eachWeed.destroy();
-				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 3904);
 			}
 			if (scene.state.level === 5) {
 				this.levelChange(scene, scene.state.questionsLevel5, scene.state.factsLevel5, scene.seaweed)
-				// scene.state.questionsLevel5.forEach(question => {
-				// 	scene.createClam(scene, 5, question, "clam");
-				// });
-				// scene.state.factsLevel5.forEach(fact => {
-				// 	scene.createShrimp(scene, fact, "shrimp");
-				// });
-				// this.seaweed[3]
-				// 	.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
-				// 	.forEach(eachWeed => {
-				// 		eachWeed.destroy();
-				// 	});
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 
