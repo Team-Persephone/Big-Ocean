@@ -464,18 +464,22 @@ export default class MainScene extends Phaser.Scene {
 		// this.pearl = this.add.image(450, 115, "pearl").setScrollFactor(0);
 		// this.pearl = this.add.image(500, 115, "pearl").setScrollFactor(0);
 
-		//            number of clams
-		// let numClams = 5 - questionsLevel.reduce((acc, question) => {
-		// 	if (question.isResolved){
-		// 		acc++
-		// 	}
-		// 	return acc
-		// }, 0);
-		// if(numClams === 0) numClams = 5;
+		          //  number of clams
+		let numClams = 5 - questionsLevel.reduce((acc, question) => {
+			if (question.isResolved){
+				acc++
+			}
+			return acc
+		}, 0);
+		if(numClams === 0) numClams = 5;
 		// // scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")	}`).setScrollFactor(0))
 		// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")}`).setScrollFactor(0))
 		// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
-
+		let x = 50;
+		for(let i = 0; i < numClams; i++){
+			scores.push(this.add.image(x, 115, "pearl").setScrollFactor(0))
+			x+=50
+		}
 		return scores;
 	}
 
@@ -490,8 +494,9 @@ export default class MainScene extends Phaser.Scene {
 		scene.createJellyfish(scene, "jellyfish");
 	}
 
-	levelChange(scene, questions, facts, seaweed) {
-		let seaweedLength = this.seaweed[0].length;
+
+	levelChange(scene, questions, facts, seaweed){
+		let seaweedLength = seaweed.length;
 
 		questions.forEach(question => {
 			scene.createClam(scene, 2, question, "clam");
@@ -499,7 +504,7 @@ export default class MainScene extends Phaser.Scene {
 		facts.forEach(fact => {
 			scene.createShrimp(scene, fact, "shrimp");
 		});
-		seaweed[0]
+		seaweed
 			.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
 			.forEach(eachWeed => {
 				eachWeed.destroy();
@@ -956,39 +961,19 @@ export default class MainScene extends Phaser.Scene {
 
 			if (scene.state.level === 2) {
 				//all weeds for level
-				this.levelChange(
-					scene,
-					scene.state.questionsLevel2,
-					scene.state.factsLevel2,
-					scene.seaweed
-				);
+				this.levelChange(scene, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed[0])
 				scene.physics.world.setBounds(0, 320, 1088, 2112);
 			}
 			if (scene.state.level === 3) {
-				this.levelChange(
-					scene,
-					scene.state.questionsLevel3,
-					scene.state.factsLevel3,
-					scene.seaweed
-				);
+				this.levelChange(scene, scene.state.questionsLevel3, scene.state.factsLevel3, scene.seaweed[1])
 				scene.physics.world.setBounds(0, 320, 1088, 3008);
 			}
 			if (scene.state.level === 4) {
-				this.levelChange(
-					scene,
-					scene.state.questionsLevel4,
-					scene.state.factsLevel4,
-					scene.seaweed
-				);
+				this.levelChange(scene, scene.state.questionsLevel4, scene.state.factsLevel4, scene.seaweed[2])
 				scene.physics.world.setBounds(0, 320, 1088, 3904);
 			}
 			if (scene.state.level === 5) {
-				this.levelChange(
-					scene,
-					scene.state.questionsLevel5,
-					scene.state.factsLevel5,
-					scene.seaweed
-				);
+				this.levelChange(scene, scene.state.questionsLevel5, scene.state.factsLevel5, scene.seaweed[3])
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 
