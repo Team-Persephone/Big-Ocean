@@ -487,7 +487,6 @@ export default class MainScene extends Phaser.Scene {
 		clamLevel.getChildren().forEach(function (clam) {
 			if (clam.info.question === question) {
 				clam.info.isResolved = true;
-				clam.setTint(0xcbc3e3);
 				clam.destroy();
 			}
 		});
@@ -495,14 +494,14 @@ export default class MainScene extends Phaser.Scene {
 	}
 
 
-	levelChange(scene, questions, facts, seaweed){
+	levelChange(scene, level, questions, facts, seaweed){
 		let seaweedLength = seaweed.length;
 
 		questions.forEach(question => {
-			scene.createClam(scene, 2, question, "clam");
+			scene.createClam(scene, level, question, "clam");
 		});
 		facts.forEach(fact => {
-			scene.createShrimp(scene, fact, "shrimp");
+			scene.createShrimp(scene, level, fact, "shrimp");
 		});
 		seaweed
 			.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
@@ -961,19 +960,19 @@ export default class MainScene extends Phaser.Scene {
 
 			if (scene.state.level === 2) {
 				//all weeds for level
-				this.levelChange(scene, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed[0])
+				this.levelChange(scene, scene.state.level, scene.state.questionsLevel2, scene.state.factsLevel2, scene.seaweed[0])
 				scene.physics.world.setBounds(0, 320, 1088, 2112);
 			}
 			if (scene.state.level === 3) {
-				this.levelChange(scene, scene.state.questionsLevel3, scene.state.factsLevel3, scene.seaweed[1])
+				this.levelChange(scene, scene.state.level, scene.state.questionsLevel3, scene.state.factsLevel3, scene.seaweed[1])
 				scene.physics.world.setBounds(0, 320, 1088, 3008);
 			}
 			if (scene.state.level === 4) {
-				this.levelChange(scene, scene.state.questionsLevel4, scene.state.factsLevel4, scene.seaweed[2])
+				this.levelChange(scene, scene.state.level, scene.state.questionsLevel4, scene.state.factsLevel4, scene.seaweed[2])
 				scene.physics.world.setBounds(0, 320, 1088, 3904);
 			}
 			if (scene.state.level === 5) {
-				this.levelChange(scene, scene.state.questionsLevel5, scene.state.factsLevel5, scene.seaweed[3])
+				this.levelChange(scene, scene.state.level, scene.state.questionsLevel5, scene.state.factsLevel5, scene.seaweed[3])
 				scene.physics.world.setBounds(0, 320, 1088, 4800);
 			}
 
