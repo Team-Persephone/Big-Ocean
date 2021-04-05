@@ -48,14 +48,22 @@ export default class MainScene extends Phaser.Scene {
 		percentText.setOrigin(0.5, 0.5);
 
 		// all avatars are loaded
-		this.load.spritesheet("scubaPink", "/assets/scuba_divers/scubaPinkNew.png", {
-			frameWidth: 820,
-			frameHeight: 420
-		});
-		this.load.spritesheet("scubaGreen", "/assets/scuba_divers/scubaGreenNew.png", {
-			frameWidth: 820,
-			frameHeight: 420
-		});
+		this.load.spritesheet(
+			"scubaPink",
+			"/assets/scuba_divers/scubaPinkNew.png",
+			{
+				frameWidth: 820,
+				frameHeight: 420
+			}
+		);
+		this.load.spritesheet(
+			"scubaGreen",
+			"/assets/scuba_divers/scubaGreenNew.png",
+			{
+				frameWidth: 820,
+				frameHeight: 420
+			}
+		);
 		this.load.spritesheet(
 			"scubaPurple",
 			"/assets/scuba_divers/scubaPurpleNew.png",
@@ -102,6 +110,8 @@ export default class MainScene extends Phaser.Scene {
 
 		//WATERPLANT IMAGE
 		this.load.image("waterPlant", "/assets/waterplant3.png");
+		//mouse bubbles
+		this.load.image("littlebubble", "/assets/littlebubble.png");
 
 		//Audio Sounds
 		//background bubbles
@@ -484,8 +494,8 @@ export default class MainScene extends Phaser.Scene {
 		scene.createJellyfish(scene, "jellyfish");
 	}
 
-	levelChange(scene, questions, facts, seaweed){
 
+	levelChange(scene, questions, facts, seaweed){
 		let seaweedLength = seaweed.length;
 
 		questions.forEach(question => {
@@ -890,38 +900,38 @@ export default class MainScene extends Phaser.Scene {
 		this.socket.on("QuestionOpened", ({ question, level }) => {
 			switch (level) {
 				case 1:
-					this.openQuestion(scene.clamsLevel1, question)
+					this.openQuestion(scene.clamsLevel1, question);
 					break;
 				case 2:
-					this.openQuestion(scene.clamsLevel2, question)
+					this.openQuestion(scene.clamsLevel2, question);
 					break;
 				case 3:
-					this.openQuestion(scene.clamsLevel3, question)
+					this.openQuestion(scene.clamsLevel3, question);
 					break;
 				case 4:
-					this.openQuestion(scene.clamsLevel4, question)
+					this.openQuestion(scene.clamsLevel4, question);
 					break;
 				default:
-					this.openQuestion(scene.clamsLevel5, question)
+					this.openQuestion(scene.clamsLevel5, question);
 					break;
 			}
 		});
 
 		this.socket.on("someoneScored", ({ friend, question, level }) => {
 			if (level === 1) {
-				this.scoreChange(scene, scene.clamsLevel1, question)
+				this.scoreChange(scene, scene.clamsLevel1, question);
 			}
 			if (level === 2) {
-				this.scoreChange(scene, scene.clamsLevel2, question)
+				this.scoreChange(scene, scene.clamsLevel2, question);
 			}
 			if (level === 3) {
-				this.scoreChange(scene, scene.clamsLevel3, question)
+				this.scoreChange(scene, scene.clamsLevel3, question);
 			}
 			if (level === 4) {
-				this.scoreChange(scene, scene.clamsLevel4, question)
+				this.scoreChange(scene, scene.clamsLevel4, question);
 			}
 			if (level === 5) {
-				this.scoreChange(scene, scene.clamsLevel5, question)
+				this.scoreChange(scene, scene.clamsLevel5, question);
 			}
 
 			scores.forEach(score => {
@@ -985,6 +995,19 @@ export default class MainScene extends Phaser.Scene {
 			if (numPlayers < 2) {
 				chatContainer.classList.add("chat-hidden");
 			}
+		});
+		
+		//mouse bubbles
+		var particles = this.add.particles("littlebubble");
+
+		var emitter = particles.createEmitter({
+			speed: 100,
+			scale: { start: 1, end: 0 },
+			blendMode: "ADD"
+		});
+
+		this.input.on("pointermove", function (pointer) {
+			emitter.setPosition(pointer.x, pointer.y);
 		});
 	}
 

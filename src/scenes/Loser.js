@@ -6,14 +6,12 @@ export default class Loser extends Phaser.Scene {
 	}
 	init(data) {
 		this.scene.scubaDiver = data.scubaDiver;
-		this.playerFriends = data.playerFriends
+		this.playerFriends = data.playerFriends;
 	}
 	preload() {
-		this.load.image("darkocean", "assets/darkocean.png")
+		this.load.image("darkocean", "assets/darkocean.png");
 		this.load.image("bubblecopy", "/assets/bubble-blankcopy.png");
 		this.load.image("littlebubble", "/assets/littlebubble.png");
-		this.load.image("logo", "assets/logo.png");
-
 		this.load.audio("gameOver", "/audio/gameOver.mp3");
 	}
 	async create() {
@@ -32,33 +30,21 @@ export default class Loser extends Phaser.Scene {
 
 		let y = 250;
 		this.playerFriends.getChildren().forEach(friend => {
-			this.add.text(
-				320,
-				y,
-				`${friend.avatar}: ${friend.score}`,
-				{
-					fill: "#02075D",
-					fontSize: "19px",
-					// fontStyle: "bold",
-					// align: "center",
-					wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
-				}
-			)
-			y += 20
-		})
-		//Game over message
-		scene.add.text(
-			320,
-			175,
-			`\nyOur scOre: ${this.scene.scubaDiver.score}`,
-			{
-				fill: "#ffffff",
+			this.add.text(320, y, `${friend.avatar}: ${friend.score}`, {
+				fill: "#02075D",
 				fontSize: "19px",
-				fontStyle: "bold",
-				align: "center",
 				wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
-			}
-		);
+			});
+			y += 20;
+		});
+		//Game over message
+		scene.add.text(320, 175, `\nyOur scOre: ${this.scene.scubaDiver.score}`, {
+			fill: "#ffffff",
+			fontSize: "19px",
+			fontStyle: "bold",
+			align: "center",
+			wordWrap: { width: 400, height: 300, useAdvancedWrap: true }
+		});
 
 		//credits
 		scene.add.text(
@@ -77,33 +63,30 @@ export default class Loser extends Phaser.Scene {
 			fontSize: "20px",
 			fontStyle: "bold",
 			fill: "#FFFFFF",
-			backgroundColor: "#02075D",
+			backgroundColor: "#02075D"
 		});
 		createGameButton.setInteractive();
 		createGameButton.on("pointerdown", () => {
 			if (window.location.pathname.length > 1) {
-			window.open(`${window.location.href.slice(0, window.location.href.length - 6)}`,
-				"_blank"
-		)} else {
-			window.open(`${window.location.pathname}`),
-			"_blank"
-		}
+				window.open(
+					`${window.location.href.slice(0, window.location.href.length - 6)}`,
+					"_blank"
+				);
+			} else {
+				window.open(`${window.location.pathname}`), "_blank";
+			}
 		});
-		// var bg = this.add.image(400, 300, 'bubble').setScale(3);
-		var particles = this.add.particles('littlebubble');
+		//mouse bubbles
+		var particles = this.add.particles("littlebubble");
 
-    var emitter = particles.createEmitter({
-        speed: 100,
-        scale: { start: 1, end: 0 },
-        blendMode: 'ADD'
-    });
+		var emitter = particles.createEmitter({
+			speed: 100,
+			scale: { start: 1, end: 0 },
+			blendMode: "ADD"
+		});
 
-    var logo = this.physics.add.image(400, 100, 'logo');
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(logo);
+		this.input.on("pointermove", function (pointer) {
+			emitter.setPosition(pointer.x, pointer.y);
+		});
 	}
 }

@@ -12,6 +12,7 @@ export default class IntroScene extends Phaser.Scene {
 	// THIS IS PHASER PRELOAD FUCNTION TO LOAD ALL FILES NEEDED TO CREATE SCENE
 	preload() {
 		this.load.image("blue", "/assets/background/babyGotBlue.png");
+		this.load.image("littlebubble", "/assets/littlebubble.png");
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -50,6 +51,19 @@ export default class IntroScene extends Phaser.Scene {
 			this.scene.stop("MainScene");
 			this.scene.stop("Instructions");
 			this.scene.launch("GameFull", { socket: this.socket });
+		});
+
+		//mouse bubbles
+		var particles = this.add.particles("littlebubble");
+
+		var emitter = particles.createEmitter({
+			speed: 100,
+			scale: { start: 1, end: 0 },
+			blendMode: "ADD"
+		});
+
+		this.input.on("pointermove", function (pointer) {
+			emitter.setPosition(pointer.x, pointer.y);
 		});
 	}
 
