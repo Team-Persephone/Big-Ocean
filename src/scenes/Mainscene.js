@@ -56,10 +56,14 @@ export default class MainScene extends Phaser.Scene {
 			frameWidth: 820,
 			frameHeight: 420
 		});
-		this.load.spritesheet("scubaPurple", "/assets/scuba_divers/scubaPurpleNew.png", {
-			frameWidth: 820,
-			frameHeight: 420
-		});
+		this.load.spritesheet(
+			"scubaPurple",
+			"/assets/scuba_divers/scubaPurpleNew.png",
+			{
+				frameWidth: 820,
+				frameHeight: 420
+			}
+		);
 		this.load.spritesheet("clam", "/assets/animals/clam.png", {
 			frameWidth: 990,
 			frameHeight: 860
@@ -71,9 +75,9 @@ export default class MainScene extends Phaser.Scene {
 		this.load.spritesheet("jellyfish", "assets/animals/jellyfish_small.png", {
 			frameWidth: 300,
 			frameHeight: 300
-		})
+		});
 
-		this.load.image("pearl", "/assets/pearl.png")
+		this.load.image("pearl", "/assets/pearl.png");
 
 		//load background
 		this.load.image("tiles", "/assets/background/big-ocean-tilesheet.png");
@@ -154,13 +158,19 @@ export default class MainScene extends Phaser.Scene {
 
 	//helper function to create avatar for player
 	createPlayer(scene, player) {
-		scene.scubaDiver = new Scuba(scene, 100, 350, `${player.avatar}`).setScale(0.2);
+		scene.scubaDiver = new Scuba(scene, 100, 350, `${player.avatar}`).setScale(
+			0.2
+		);
 		scene.scubaDiver.setAngle(-45);
 		scene.scubaDiver.faceRight = true;
-		scene.scubaDiver.setSize(scene.scubaDiver.width * 0.5, scene.scubaDiver.height * 0.5, true)
+		scene.scubaDiver.setSize(
+			scene.scubaDiver.width * 0.5,
+			scene.scubaDiver.height * 0.5,
+			true
+		);
 		//create animation
 		scene.createScubaAnims(`${player.avatar}`);
-		scene.scubaDiver.anims.play("swim")
+		scene.scubaDiver.anims.play("swim");
 		//add to physics group for collision detection
 		scene.playerGroup.add(scene.scubaDiver);
 		//add chat if new player created
@@ -176,11 +186,11 @@ export default class MainScene extends Phaser.Scene {
 	}
 
 	createClam(scene, level, info, file) {
-		const { x, y, question, options, answer, isResolved } = info;
+		const { x, y, question, options, answer, isResolved, isOpen } = info;
 		scene.createAnimations("clam");
 		const clam = new Clam(scene, x, y, file).setScale(0.07);
-		clam.setSize(clam.width * 2, clam.height * 2, true)
-		clam.info = { question, options, answer, isResolved };
+		clam.setSize(clam.width * 2, clam.height * 2, true);
+		clam.info = { question, options, answer, isResolved, isOpen };
 		if (level === 1) {
 			scene.clamsLevel1.add(clam);
 		}
@@ -203,7 +213,7 @@ export default class MainScene extends Phaser.Scene {
 		const level = scene.state.level;
 		scene.createAnimations("shrimp");
 		const shrimp = new Shrimp(scene, x, y, file).setScale(0.05);
-		shrimp.setSize(shrimp.width, shrimp.height, true)
+		shrimp.setSize(shrimp.width, shrimp.height, true);
 		shrimp.info = { fact, isRead, level };
 		scene.shrimps.add(shrimp);
 	}
@@ -212,48 +222,61 @@ export default class MainScene extends Phaser.Scene {
 		scene.createAnimations("jellyfish");
 		let y = scene.physics.world.bounds.height;
 		let x = scene.physics.world.bounds.width;
-		let startX =  Math.ceil(Math.random() * x);
-		let startY =  Math.ceil(Math.random() * 500) + y;
+		let startX = Math.ceil(Math.random() * x);
+		let startY = Math.ceil(Math.random() * 500) + y;
 		let jellyfishCloud = [];
-		for(let i = 0; i < 10; i++){
-			let addX = Math.ceil(Math.random() * 150)
-			let addY = Math.ceil(Math.random() * 150)
-			jellyfishCloud.push(new Jellyfish(scene, startX + addX, startY + addY, file).setScale(0.2).setVelocity(10, -50)) 
+		for (let i = 0; i < 10; i++) {
+			let addX = Math.ceil(Math.random() * 150);
+			let addY = Math.ceil(Math.random() * 150);
+			jellyfishCloud.push(
+				new Jellyfish(scene, startX + addX, startY + addY, file)
+					.setScale(0.2)
+					.setVelocity(10, -50)
+			);
 		}
-		this.physics.add.overlap(scene.scubaDiver, jellyfishCloud, this.jellyBuzz, this.checkOverlappingJelly, scene)
+		this.physics.add.overlap(
+			scene.scubaDiver,
+			jellyfishCloud,
+			this.jellyBuzz,
+			this.checkOverlappingJelly,
+			scene
+		);
 		//add collition and collition effect
 	}
 
 	jellyBuzz(scubaDiver, jellyfish) {
 		//make buzz happeing here!!
 		jellyfish.setTint("0xfffff");
-		scubaDiver.anims.play("scubaHit",true)
+		scubaDiver.anims.play("scubaHit", true);
 	}
 
 	checkOverlappingJelly(scubaDiver, jellyfish) {
 		const boundsJelly = jellyfish.getBounds();
 		const boundsScuba = scubaDiver.getBounds();
-		if ( !Phaser.Geom.Intersects.GetRectangleToRectangle(boundsJelly, boundsScuba).length < 1) {
-			this.deactivateJelly(scubaDiver, jellyfish)
+		if (
+			!Phaser.Geom.Intersects.GetRectangleToRectangle(boundsJelly, boundsScuba)
+				.length < 1
+		) {
+			this.deactivateJelly(scubaDiver, jellyfish);
 		}
 	}
-	
-	async deactivateJelly(scubaDiver, jellyfish){
+
+	async deactivateJelly(scubaDiver, jellyfish) {
 		await this.sleep(1000);
 		jellyfish.clearTint();
 		scubaDiver.anims.play("swim", true);
 	}
 	// helper function to add animation to avatars
-	createScubaAnims(scuba){
+	createScubaAnims(scuba) {
 		this.anims.create({
-				key: "scubaHit",
-				frames: this.anims.generateFrameNumbers(scuba, {
-					start: 10,
-					end: 14
-				}),
-				frameRate: 5,
-				repeat: 5
-			})
+			key: "scubaHit",
+			frames: this.anims.generateFrameNumbers(scuba, {
+				start: 10,
+				end: 14
+			}),
+			frameRate: 5,
+			repeat: 5
+		});
 		this.anims.create({
 			key: "swim",
 			frames: this.anims.generateFrameNumbers(scuba, {
@@ -297,7 +320,7 @@ export default class MainScene extends Phaser.Scene {
 					}),
 					frameRate: 2,
 					repeat: -1
-				})
+				});
 				break;
 			default:
 				this.anims.create({
@@ -311,7 +334,7 @@ export default class MainScene extends Phaser.Scene {
 				});
 		}
 	}
-	createWaterPlant(scene, waterPlant, x, y, size=(.01, .008), angle = 0) {
+	createWaterPlant(scene, waterPlant, x, y, size = (0.01, 0.008), angle = 0) {
 		return scene.decorations
 			.create(x, y, waterPlant)
 			.setSize(size)
@@ -323,17 +346,24 @@ export default class MainScene extends Phaser.Scene {
 		clam.setTint(0xcbc3e3);
 		clam.setInteractive();
 		clam.on("pointerdown", () => {
-			this.scene.launch("Question", {
-				clam: clam,
-				scubaDiver: scubaDiver,
-				level: this.state.level,
-				socket: this.socket,
-				key: this.state.key,
-				score: this.score,
-				click: this.click
-			});
-			//needed an error thrown/stop it
-			throw new Error();
+			if (!clam.info.isOpen) {
+				this.scene.launch("Question", {
+					clam: clam,
+					scubaDiver: scubaDiver,
+					level: this.state.level,
+					socket: this.socket,
+					key: this.state.key,
+					score: this.score,
+					click: this.click
+				});
+				this.socket.emit("QuestionOpen", {
+					clamInfo: clam.info,
+					key: this.state.key,
+					level: this.state.level
+				});
+				//needed an error thrown/stop it
+				throw new Error();
+			}
 		});
 	}
 
@@ -348,7 +378,7 @@ export default class MainScene extends Phaser.Scene {
 				scubaDiver: scubaDiver,
 				score: this.score,
 				key: this.state.key,
-				click: this.click,
+				click: this.click
 			});
 			this.shrimpClick.play();
 			throw new Error();
@@ -409,29 +439,34 @@ export default class MainScene extends Phaser.Scene {
 			);
 			y += 20;
 		});
-			//using reduce from reacto
-			let questionsLevel = [this.state.questionsLevel1, this.state.questionsLevel2, this.state.questionsLevel3, this.state.questionsLevel4, this.state.questionsLevel5][this.state.level - 1];
+		//using reduce from reacto
+		let questionsLevel = [
+			this.state.questionsLevel1,
+			this.state.questionsLevel2,
+			this.state.questionsLevel3,
+			this.state.questionsLevel4,
+			this.state.questionsLevel5
+		][this.state.level - 1];
 
+		// this.pearl = this.add.image(300, 115, "pearl").setScrollFactor(0);
+		// this.pearl = this.add.image(350, 115, "pearl").setScrollFactor(0);
+		// this.pearl = this.add.image(400, 115, "pearl").setScrollFactor(0);
+		// this.pearl = this.add.image(450, 115, "pearl").setScrollFactor(0);
+		// this.pearl = this.add.image(500, 115, "pearl").setScrollFactor(0);
 
-			// this.pearl = this.add.image(300, 115, "pearl").setScrollFactor(0);
-			// this.pearl = this.add.image(350, 115, "pearl").setScrollFactor(0);
-			// this.pearl = this.add.image(400, 115, "pearl").setScrollFactor(0);
-			// this.pearl = this.add.image(450, 115, "pearl").setScrollFactor(0);
-			// this.pearl = this.add.image(500, 115, "pearl").setScrollFactor(0);
+		//            number of clams
+		// let numClams = 5 - questionsLevel.reduce((acc, question) => {
+		// 	if (question.isResolved){
+		// 		acc++
+		// 	}
+		// 	return acc
+		// }, 0);
+		// if(numClams === 0) numClams = 5;
+		// // scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")	}`).setScrollFactor(0))
+		// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")}`).setScrollFactor(0))
+		// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
 
-			//            number of clams
-			// let numClams = 5 - questionsLevel.reduce((acc, question) => {
-			// 	if (question.isResolved){
-			// 		acc++
-			// 	}
-			// 	return acc
-			// }, 0);
-			// if(numClams === 0) numClams = 5;
-			// // scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")	}`).setScrollFactor(0))
-			// scores.push(this.add.text(300, 100, `${Array(numClams).fill("clam")}`).setScrollFactor(0))
-			// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
-
-			return scores;
+		return scores;
 	}
 
 	// THIS IS PHASER CREATE FUNCTION TO CREATE SCENE
@@ -708,7 +743,7 @@ export default class MainScene extends Phaser.Scene {
 						x, //x
 						depths[level], //y
 						this.size, //scale
-						0, //angle
+						0 //angle
 					)
 				);
 			}
@@ -810,6 +845,46 @@ export default class MainScene extends Phaser.Scene {
 					}
 				}
 			});
+		});
+
+		this.socket.on("QuestionOpened", ({ question, level }) => {
+			switch (level) {
+				case 1:
+					scene.clamsLevel1.getChildren().forEach(function (clam) {
+						if (clam.info.question === question) {
+							clam.info.isOpen = !clam.info.isOpen;
+						}
+					});
+					break;
+				case 2:
+					scene.clamsLevel2.getChildren().forEach(function (clam) {
+						if (clam.info.question === question) {
+							clam.info.isOpen = !clam.info.isOpen;
+						}
+					});
+					break;
+				case 3:
+					scene.clamsLevel3.getChildren().forEach(function (clam) {
+						if (clam.info.question === question) {
+							clam.info.isOpen = !clam.info.isOpen;
+						}
+					});
+					break;
+				case 4:
+					scene.clamsLevel4.getChildren().forEach(function (clam) {
+						if (clam.info.question === question) {
+							clam.info.isOpen = !clam.info.isOpen;
+						}
+					});
+					break;
+				default:
+					scene.clamsLevel5.getChildren().forEach(function (clam) {
+						if (clam.info.question === question) {
+							clam.info.isOpen = !clam.info.isOpen;
+						}
+					});
+					break;
+			}
 		});
 
 		this.socket.on("someoneScored", ({ friend, question, level }) => {
@@ -948,7 +1023,10 @@ export default class MainScene extends Phaser.Scene {
 			}
 
 			if (scene.state.level === 6) {
-				scene.scene.launch("WinScene", { scubaDiver: scene.scubaDiver, playerFriends: scene.playerFriends });
+				scene.scene.launch("WinScene", {
+					scubaDiver: scene.scubaDiver,
+					playerFriends: scene.playerFriends
+				});
 			}
 		});
 
@@ -1002,6 +1080,5 @@ export default class MainScene extends Phaser.Scene {
 				scene.checkOverlappingEffects(scene, this.scubaDiver, shrimp);
 			});
 		}
-
 	}
 }
