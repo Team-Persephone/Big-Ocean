@@ -501,7 +501,8 @@ export default class MainScene extends Phaser.Scene {
 			scene.createClam(scene, level, question, "clam");
 		});
 		facts.forEach(fact => {
-			scene.createShrimp(scene, level, fact, "shrimp");
+			console.log("facts", fact, "level", level);
+			scene.createShrimp(scene, fact, "shrimp");
 		});
 		seaweed
 			.slice(seaweedLength / 4, (seaweedLength / 4) * 3)
@@ -995,7 +996,7 @@ export default class MainScene extends Phaser.Scene {
 				chatContainer.classList.add("chat-hidden");
 			}
 		});
-
+		
 		//mouse bubbles
 		var particles = this.add.particles("littlebubble");
 
