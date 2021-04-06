@@ -477,7 +477,7 @@ export default class MainScene extends Phaser.Scene {
 		// scores.push(this.add.image(300, 100, `${Array(numClams).fill("pearl")}`).setScrollFactor(0))
 		let x = 50;
 		for(let i = 0; i < numClams; i++){
-			scores.push(this.add.image(x, 115, "pearl").setScrollFactor(0))
+			scores.push(this.add.image(x, 140, "pearl").setScrollFactor(0))
 			x+=50
 		}
 		return scores;
@@ -995,7 +995,7 @@ export default class MainScene extends Phaser.Scene {
 				chatContainer.classList.add("chat-hidden");
 			}
 		});
-		
+
 		//mouse bubbles
 		var particles = this.add.particles("littlebubble");
 
