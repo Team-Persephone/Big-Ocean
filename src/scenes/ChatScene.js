@@ -3,19 +3,17 @@ import phaser from "phaser";
 const memoInput = document.getElementsByClassName("chat-input")[0];
 const chatContainer = document.getElementById("playerChatId");
 
-const NUM_MESSAGES = 10;
+const NUM_MESSAGES = 3;
 
 const broadcastMessage = (username, message) => {
 	//check the size of children for messagedisplay
-	console.log("in broadcast", message);
 	const messageDisplay = document.createElement("div");
 	messageDisplay.className = "bubble";
 	const newMessage = document.createElement("p");
 	newMessage.innerHTML = `<strong>${username}:</strong> &nbsp;${message}`;
 	messageDisplay.appendChild(newMessage);
-	console.log(messageDisplay);
 	chatContainer.appendChild(messageDisplay);
-	if (chatContainer.childNodes.length === NUM_MESSAGES) {
+	if (chatContainer.childNodes.length >= NUM_MESSAGES) {
 		//cap the num of messages at NUM_MESSAGES
 		chatContainer.removeChild(chatContainer.firstChild);
 	}
@@ -67,7 +65,7 @@ export default class ChatScene extends Phaser.Scene {
 			scene.state.questions = questions;
 			scene.state.facts = facts;
 		});
-    
+
 		this.socket.on("broadcastMessage", function ({ username, message }) {
 			broadcastMessage(username, message);
 		});
